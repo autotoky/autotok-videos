@@ -1,0 +1,367 @@
+{
+  "batches": [
+    {
+      "batch_number": 1,
+      "created_at": "2026-02-08T10:20:56.465136",
+      "video_count": 10,
+      "combinations": [
+        {
+          "video_id": "arrancador_coche_hookG_batch001_001",
+          "hook": "G_hook.mp4",
+          "brolls": [
+            "b_1.mp4",
+            "h_3.mp4",
+            "d_1.mp4",
+            "a_3.mp4",
+            "f_2.mp4",
+            "c_1.mp4"
+          ],
+          "audio": "c2_arrancador.m4a",
+          "overlay": {
+            "line1": "DESBLOQUEA OFERTA TOP",
+            "line2": "CUPÓN + 5% COMBO",
+            "deal_math": "doble descuento"
+          }
+        },
+        {
+          "video_id": "arrancador_coche_hookA_batch001_002",
+          "hook": "A_hook.mp4",
+          "brolls": [
+            "h_3.mp4",
+            "d_1.mp4",
+            "g_1_START1.5.mp4",
+            "b_1.mp4",
+            "e_2.mp4",
+            "c_2.mp4"
+          ],
+          "audio": "a1_arrancador.m4a",
+          "overlay": {
+            "line1": "AHORA SOLO 53 €",
+            "line2": "DESCUENTO DIRECTO",
+            "deal_math": "descuento directo"
+          }
+        },
+        {
+          "video_id": "arrancador_coche_hookC_batch001_003",
+          "hook": "C_hook_START1.mp4",
+          "brolls": [
+            "a_1.mp4",
+            "h_2.mp4",
+            "f_2.mp4",
+            "g_1_START1.5.mp4",
+            "b_1.mp4",
+            "d_1.mp4"
+          ],
+          "audio": "b2_arrancador.m4a",
+          "overlay": {
+            "line1": "NO LO COMPRES MÁS CARO",
+            "line2": "EN AMAZÓN 70!",
+            "deal_math": "comparado amazon"
+          }
+        },
+        {
+          "video_id": "arrancador_coche_hookF_batch001_004",
+          "hook": "F_hook.mp4",
+          "brolls": [
+            "b_1.mp4",
+            "e_1.mp4",
+            "c_2.mp4",
+            "h_2.mp4",
+            "g_2.mp4"
+          ],
+          "audio": "c2_arrancador.m4a",
+          "overlay": {
+            "line1": "COMPRANDO DOS",
+            "line2": "DOBLE DESCUENTO",
+            "deal_math": "doble descuento"
+          }
+        },
+        {
+          "video_id": "arrancador_coche_hookE_batch001_005",
+          "hook": "E_hook_START1.5.mp4",
+          "brolls": [
+            "f_3.mp4",
+            "h_4.mp4",
+            "a_2.mp4",
+            "g_2.mp4",
+            "b_1.mp4",
+            "d_1.mp4"
+          ],
+          "audio": "b2_arrancador.m4a",
+          "overlay": {
+            "line1": "AMAZON VS TIKTOK SHOP",
+            "line2": "69,89 € VS 53 €",
+            "deal_math": "comparado amazon"
+          }
+        },
+        {
+          "video_id": "arrancador_coche_hookI_batch001_006",
+          "hook": "I_hook.mp4",
+          "brolls": [
+            "c_2.mp4",
+            "d_1.mp4",
+            "e_2.mp4",
+            "g_1_START1.5.mp4",
+            "h_4.mp4"
+          ],
+          "audio": "a2_arrancador.m4a",
+          "overlay": {
+            "line1": "ARRANCADOR 6000A",
+            "line2": "-6 € EN 1 CLIC",
+            "deal_math": "descuento directo"
+          }
+        },
+        {
+          "video_id": "arrancador_coche_hookJ_batch001_007",
+          "hook": "J_hook.mp4",
+          "brolls": [
+            "h_2.mp4",
+            "a_3.mp4",
+            "c_1.mp4",
+            "e_1.mp4",
+            "g_2.mp4"
+          ],
+          "audio": "a1_arrancador.m4a",
+          "overlay": {
+            "line1": "CUPÓN ACTIVO",
+            "line2": "LLÉVATELO POR 53",
+            "deal_math": "descuento directo"
+          }
+        },
+        {
+          "video_id": "arrancador_coche_hookK_batch001_008",
+          "hook": "K_hook.mp4",
+          "brolls": [
+            "c_2.mp4",
+            "f_2.mp4",
+            "g_2.mp4",
+            "h_2.mp4",
+            "e_1.mp4"
+          ],
+          "audio": "c2_arrancador.m4a",
+          "overlay": {
+            "line1": "ARRANCADOR 6000A",
+            "line2": "¡CAZADA DE PRECIO!",
+            "deal_math": "doble descuento"
+          }
+        },
+        {
+          "video_id": "arrancador_coche_hookH_batch001_009",
+          "hook": "H_hook.mp4",
+          "brolls": [
+            "g_2.mp4",
+            "a_3.mp4",
+            "e_2.mp4",
+            "c_1.mp4",
+            "d_1.mp4",
+            "b_1.mp4"
+          ],
+          "audio": "c2_arrancador.m4a"
+        },
+        {
+          "video_id": "arrancador_coche_hookD_batch001_010",
+          "hook": "D_hook.mp4",
+          "brolls": [
+            "h_1.mp4",
+            "b_1.mp4",
+            "e_2.mp4",
+            "a_2.mp4",
+            "f_2.mp4"
+          ],
+          "audio": "a1_arrancador.m4a",
+          "overlay": {
+            "line1": "ANTES 59,98 €",
+            "line2": "AHORA 53€!!",
+            "deal_math": "descuento directo"
+          }
+        }
+      ]
+    },
+    {
+      "batch_number": 2,
+      "created_at": "2026-02-08T10:23:48.703917",
+      "video_count": 10,
+      "combinations": [
+        {
+          "video_id": "arrancador_coche_hookI_batch002_001",
+          "hook": "I_hook.mp4",
+          "brolls": [
+            "g_1_START1.5.mp4",
+            "c_1.mp4",
+            "a_3.mp4",
+            "b_1.mp4",
+            "f_1.mp4",
+            "h_4.mp4"
+          ],
+          "audio": "b1_arrancador.m4a",
+          "overlay": {
+            "line1": "ARRANCADOR COMPRESOR",
+            "line2": "PRECIO ESPECIAL TIKTOK",
+            "deal_math": "comparado amazon"
+          }
+        },
+        {
+          "video_id": "arrancador_coche_hookG_batch002_002",
+          "hook": "G_hook.mp4",
+          "brolls": [
+            "b_1.mp4",
+            "a_2.mp4",
+            "c_2.mp4",
+            "h_4.mp4",
+            "e_1.mp4"
+          ],
+          "audio": "b1_arrancador.m4a",
+          "overlay": {
+            "line1": "NO COMPRES EN AMAZON",
+            "line2": "EN TIKTOK SHOP ES MÁS BARATO",
+            "deal_math": "comparado amazon"
+          }
+        },
+        {
+          "video_id": "arrancador_coche_hookA_batch002_003",
+          "hook": "A_hook.mp4",
+          "brolls": [
+            "h_4.mp4",
+            "f_3.mp4",
+            "g_2.mp4",
+            "c_1.mp4",
+            "b_1.mp4",
+            "e_1.mp4"
+          ],
+          "audio": "c1_arrancador.m4a",
+          "overlay": {
+            "line1": "ARRANCADOR 5 EN 1",
+            "line2": "HASTA -12 € SI COMPRAS 2",
+            "deal_math": "doble descuento"
+          }
+        },
+        {
+          "video_id": "arrancador_coche_hookC_batch002_004",
+          "hook": "C_hook_START1.mp4",
+          "brolls": [
+            "h_4.mp4",
+            "f_2.mp4",
+            "a_2.mp4",
+            "b_1.mp4",
+            "e_1.mp4"
+          ],
+          "audio": "b1_arrancador.m4a",
+          "overlay": {
+            "line1": "¿QUIERES PAGAR 70 O 53?",
+            "line2": "PILLALO EN TIKTOK SHOP",
+            "deal_math": "comparado amazon"
+          }
+        },
+        {
+          "video_id": "arrancador_coche_hookK_batch002_005",
+          "hook": "K_hook.mp4",
+          "brolls": [
+            "c_1.mp4",
+            "a_2.mp4",
+            "f_2.mp4",
+            "d_1.mp4",
+            "b_1.mp4",
+            "h_4.mp4"
+          ],
+          "audio": "c1_arrancador.m4a",
+          "overlay": {
+            "line1": "COMPRANDO DOS",
+            "line2": "DESCUENTO OCULTO",
+            "deal_math": "doble descuento"
+          }
+        },
+        {
+          "video_id": "arrancador_coche_hookF_batch002_006",
+          "hook": "F_hook.mp4",
+          "brolls": [
+            "b_1.mp4",
+            "a_3.mp4",
+            "h_1.mp4",
+            "c_1.mp4",
+            "e_2.mp4"
+          ],
+          "audio": "a1_arrancador.m4a",
+          "overlay": {
+            "line1": "CUPÓN ACTIVO",
+            "line2": "LLÉVATELO POR 53",
+            "deal_math": "descuento directo"
+          }
+        },
+        {
+          "video_id": "arrancador_coche_hookH_batch002_007",
+          "hook": "H_hook.mp4",
+          "brolls": [
+            "g_1_START1.5.mp4",
+            "e_1.mp4",
+            "f_2.mp4",
+            "d_1.mp4",
+            "a_2.mp4",
+            "c_2.mp4"
+          ],
+          "audio": "b2_arrancador.m4a",
+          "overlay": {
+            "line1": "NO LO COMPRES MÁS CARO",
+            "line2": "EN AMAZÓN 70!",
+            "deal_math": "comparado amazon"
+          }
+        },
+        {
+          "video_id": "arrancador_coche_hookB_batch002_008",
+          "hook": "B_hook.mp4",
+          "brolls": [
+            "e_1.mp4",
+            "a_1.mp4",
+            "c_1.mp4",
+            "f_2.mp4",
+            "h_1.mp4",
+            "g_1_START1.5.mp4"
+          ],
+          "audio": "b2_arrancador.m4a",
+          "overlay": {
+            "line1": "LO PILLE EN AMAZON :(",
+            "line2": "MÁS DE 15 € DE DIFERENCIA",
+            "deal_math": "comparado amazon"
+          }
+        },
+        {
+          "video_id": "arrancador_coche_hookJ_batch002_009",
+          "hook": "J_hook.mp4",
+          "brolls": [
+            "e_2.mp4",
+            "a_2.mp4",
+            "f_3.mp4",
+            "b_1.mp4",
+            "d_1.mp4",
+            "c_1.mp4"
+          ],
+          "audio": "c1_arrancador.m4a",
+          "overlay": {
+            "line1": "ARRANCADOR COMPRESOR",
+            "line2": "AÑADE DOS Y BAJA MÁS",
+            "deal_math": "doble descuento"
+          }
+        },
+        {
+          "video_id": "arrancador_coche_hookE_batch002_010",
+          "hook": "E_hook_START1.5.mp4",
+          "brolls": [
+            "g_2.mp4",
+            "h_1.mp4",
+            "c_2.mp4",
+            "f_3.mp4",
+            "a_2.mp4"
+          ],
+          "audio": "b1_arrancador.m4a",
+          "overlay": {
+            "line1": "ARRANCADOR 5 EN 1",
+            "line2": "EL MISMO EN AMAZON = 70 €",
+            "deal_math": "comparado amazon"
+          }
+        }
+      ]
+    }
+  ],
+  "total_videos": 20,
+  "created_at": "2026-02-08T10:17:55.184472",
+  "last_updated": "2026-02-08T10:23:48.703917"
+}

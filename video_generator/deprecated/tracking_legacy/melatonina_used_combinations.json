@@ -1,0 +1,406 @@
+{
+  "batches": [
+    {
+      "batch_number": 1,
+      "created_at": "2026-02-08T10:32:11.320841",
+      "video_count": 10,
+      "combinations": [
+        {
+          "video_id": "melatonina_hookL_batch001_001",
+          "hook": "L_hook_zoom_START1.mp4",
+          "brolls": [
+            "e_2.mp4",
+            "a_3.mp4",
+            "f_3.mp4",
+            "d_2.mp4",
+            "b_1.mp4",
+            "g_4.mp4"
+          ],
+          "audio": "c2_melatonina.m4a",
+          "overlay": {
+            "line1": "NOCHES TRANQUILAS",
+            "line2": "POR CÉNTIMOS",
+            "deal_math": "compra 3 y ahorra"
+          }
+        },
+        {
+          "video_id": "melatonina_hookJ_batch001_002",
+          "hook": "J_hook_patas.mp4",
+          "brolls": [
+            "b_2.mp4",
+            "f_2.mp4",
+            "a_1.mp4",
+            "c_4.mp4",
+            "d_3.mp4",
+            "h_3.mp4"
+          ],
+          "audio": "a1_melatonina.m4a",
+          "overlay": {
+            "line1": "500 NOCHES",
+            "line2": "POR MENOS DE 16 €",
+            "deal_math": "500 por 16"
+          }
+        },
+        {
+          "video_id": "melatonina_hookA_batch001_003",
+          "hook": "A_hook.mp4",
+          "brolls": [
+            "c_2.mp4",
+            "f_3.mp4",
+            "d_4.mp4",
+            "b_2.mp4",
+            "h_1.mp4",
+            "e_1.mp4"
+          ],
+          "audio": "a1_melatonina.m4a",
+          "overlay": {
+            "line1": "¡500 COMPRIMIDOS!",
+            "line2": "DESCUENTO LOCO",
+            "deal_math": "500 por 16"
+          }
+        },
+        {
+          "video_id": "melatonina_hookE_batch001_004",
+          "hook": "E_hook_mesilla.mp4",
+          "brolls": [
+            "c_3.mp4",
+            "b_1.mp4",
+            "a_3.mp4",
+            "g_1.mp4",
+            "h_3.mp4",
+            "f_1.mp4"
+          ],
+          "audio": "c1_melatonina.m4a",
+          "overlay": {
+            "line1": "DOBLE CUPÓN",
+            "line2": "EN MELATONINA ALDOUS",
+            "deal_math": "compra 3 y ahorra"
+          }
+        },
+        {
+          "video_id": "melatonina_hookK_batch001_005",
+          "hook": "K_hook_sabana.mp4",
+          "brolls": [
+            "c_2.mp4",
+            "f_1.mp4",
+            "d_4.mp4",
+            "e_1.mp4",
+            "h_3.mp4",
+            "g_2.mp4"
+          ],
+          "audio": "b2_melatonina.m4a",
+          "overlay": {
+            "line1": "LA OFERTA MÁS BESTIA",
+            "line2": "MELATONINA ALDOUS",
+            "deal_math": "un año de melatonina"
+          }
+        },
+        {
+          "video_id": "melatonina_hookH_batch001_006",
+          "hook": "H_hook_ovejasorpresa.mp4",
+          "brolls": [
+            "f_2.mp4",
+            "c_3.mp4",
+            "g_1.mp4",
+            "d_1.mp4",
+            "a_1.mp4",
+            "b_1.mp4"
+          ],
+          "audio": "b1_melatonina.m4a",
+          "overlay": {
+            "line1": "MELATONINA ALDOUS",
+            "line2": "AÑO ENTERO POR 15,89 €",
+            "deal_math": "un año de melatonina"
+          }
+        },
+        {
+          "video_id": "melatonina_hookI_batch001_007",
+          "hook": "I_hook_oveja-zampa.mp4",
+          "brolls": [
+            "c_4.mp4",
+            "h_1.mp4",
+            "g_3.mp4",
+            "b_2.mp4",
+            "d_4.mp4",
+            "a_1.mp4"
+          ],
+          "audio": "c2_melatonina.m4a",
+          "overlay": {
+            "line1": "MELATONINA XL",
+            "line2": "REBAJADA",
+            "deal_math": "compra 3 y ahorra"
+          }
+        },
+        {
+          "video_id": "melatonina_hookC_batch001_008",
+          "hook": "C_hook_genio.mp4",
+          "brolls": [
+            "a_1.mp4",
+            "e_1.mp4",
+            "b_2.mp4",
+            "g_3.mp4",
+            "h_3.mp4",
+            "d_1.mp4"
+          ],
+          "audio": "c1_melatonina.m4a",
+          "overlay": {
+            "line1": "TIKTOK TE REGALA 2 CUPONES",
+            "line2": "MELATONINA XL",
+            "deal_math": "compra 3 y ahorra"
+          }
+        },
+        {
+          "video_id": "melatonina_hookG_batch001_009",
+          "hook": "G_hook_oveja.mp4",
+          "brolls": [
+            "d_4.mp4",
+            "c_3.mp4",
+            "a_2.mp4",
+            "f_1.mp4",
+            "e_2.mp4",
+            "h_2.mp4"
+          ],
+          "audio": "a1_melatonina.m4a",
+          "overlay": {
+            "line1": "500 NOCHES",
+            "line2": "PRECIO FLASH",
+            "deal_math": "500 por 16"
+          }
+        },
+        {
+          "video_id": "melatonina_hookD_batch001_010",
+          "hook": "D_hook_lanzacabra_START1.mp4",
+          "brolls": [
+            "a_1.mp4",
+            "c_2.mp4",
+            "h_1.mp4",
+            "g_2.mp4",
+            "e_1.mp4",
+            "f_3.mp4"
+          ],
+          "audio": "b2_melatonina.m4a",
+          "overlay": {
+            "line1": "TE DURA UN AÑO",
+            "line2": "SOLO 16€",
+            "deal_math": "un año de melatonina"
+          }
+        }
+      ]
+    },
+    {
+      "batch_number": 2,
+      "created_at": "2026-02-08T10:34:58.516765",
+      "video_count": 10,
+      "combinations": [
+        {
+          "video_id": "melatonina_hookB_batch002_001",
+          "hook": "B_hook_boom.mp4",
+          "brolls": [
+            "a_1.mp4",
+            "e_1.mp4",
+            "c_1.mp4",
+            "h_2.mp4",
+            "g_4.mp4",
+            "f_3.mp4"
+          ],
+          "audio": "a1_melatonina.m4a",
+          "overlay": {
+            "line1": "¡500 COMPRIMIDOS!",
+            "line2": "DESCUENTO LOCO",
+            "deal_math": "500 por 16"
+          }
+        },
+        {
+          "video_id": "melatonina_hookJ_batch002_002",
+          "hook": "J_hook_patas.mp4",
+          "brolls": [
+            "f_2.mp4",
+            "b_2.mp4",
+            "h_1.mp4",
+            "g_3.mp4",
+            "c_2.mp4",
+            "a_2.mp4"
+          ],
+          "audio": "b1_melatonina.m4a",
+          "overlay": {
+            "line1": "NO NECESITAS CÓDIGOS",
+            "line2": "MELATONINA ALDOUS",
+            "deal_math": "un año de melatonina"
+          }
+        },
+        {
+          "video_id": "melatonina_hookI_batch002_003",
+          "hook": "I_hook_oveja-zampa.mp4",
+          "brolls": [
+            "g_3.mp4",
+            "f_3.mp4",
+            "a_2.mp4",
+            "e_1.mp4",
+            "b_1.mp4",
+            "h_1.mp4"
+          ],
+          "audio": "b2_melatonina.m4a",
+          "overlay": {
+            "line1": "MELATONINA ALDOUS",
+            "line2": "¡CADA DOSIS POR CÉNTIMOS!",
+            "deal_math": "un año de melatonina"
+          }
+        },
+        {
+          "video_id": "melatonina_hookC_batch002_004",
+          "hook": "C_hook_genio.mp4",
+          "brolls": [
+            "a_2.mp4",
+            "d_3.mp4",
+            "e_2.mp4",
+            "b_1.mp4",
+            "h_1.mp4",
+            "g_3.mp4"
+          ],
+          "audio": "a1_melatonina.m4a",
+          "overlay": {
+            "line1": "500 NOCHES",
+            "line2": "POR MENOS DE 16 €",
+            "deal_math": "500 por 16"
+          }
+        },
+        {
+          "video_id": "melatonina_hookA_batch002_005",
+          "hook": "A_hook.mp4",
+          "brolls": [
+            "b_2.mp4",
+            "h_2.mp4",
+            "d_3.mp4",
+            "c_4.mp4",
+            "f_1.mp4",
+            "g_1.mp4"
+          ],
+          "audio": "a1_melatonina.m4a",
+          "overlay": {
+            "line1": "500 COMPRIMIDOS",
+            "line2": "REBAJADOS",
+            "deal_math": "500 por 16"
+          }
+        },
+        {
+          "video_id": "melatonina_hookF_batch002_006",
+          "hook": "F_hook_move_START1.mp4",
+          "brolls": [
+            "h_1.mp4",
+            "a_3.mp4",
+            "d_2.mp4",
+            "b_1.mp4",
+            "g_4.mp4",
+            "c_3.mp4"
+          ],
+          "audio": "a1_melatonina.m4a",
+          "overlay": {
+            "line1": "ACTIVA CUPONES Y AHORRA",
+            "line2": "MELATONINA ALDOUS",
+            "deal_math": "500 por 16"
+          }
+        },
+        {
+          "video_id": "melatonina_hookE_batch002_007",
+          "hook": "E_hook_mesilla.mp4",
+          "brolls": [
+            "h_1.mp4",
+            "c_1.mp4",
+            "a_2.mp4",
+            "b_1.mp4",
+            "d_4.mp4",
+            "f_1.mp4"
+          ],
+          "audio": "a2_melatonina.m4a",
+          "overlay": {
+            "line1": "LA MÁS BARATA DE TIKTOK",
+            "line2": "MELATONINA ALDOUS",
+            "deal_math": "500 por 16"
+          }
+        },
+        {
+          "video_id": "melatonina_hookL_batch002_008",
+          "hook": "L_hook_zoom_START1.mp4",
+          "brolls": [
+            "d_3.mp4",
+            "f_1.mp4",
+            "c_4.mp4",
+            "e_1.mp4",
+            "g_3.mp4",
+            "h_3.mp4"
+          ],
+          "audio": "b1_melatonina.m4a",
+          "overlay": {
+            "line1": "MENOS DE 4 €/MES",
+            "line2": "MELATONINA ALDOUS",
+            "deal_math": "un año de melatonina"
+          }
+        },
+        {
+          "video_id": "melatonina_hookD_batch002_009",
+          "hook": "D_hook_lanzacabra_START1.mp4",
+          "brolls": [
+            "b_2.mp4",
+            "g_4.mp4",
+            "h_2.mp4",
+            "f_2.mp4",
+            "c_2.mp4",
+            "e_2.mp4"
+          ],
+          "audio": "a2_melatonina.m4a",
+          "overlay": {
+            "line1": "MELATONINA XL",
+            "line2": "REBAJA OCULTA ACTIVA",
+            "deal_math": "500 por 16"
+          }
+        },
+        {
+          "video_id": "melatonina_hookH_batch002_010",
+          "hook": "H_hook_ovejasorpresa.mp4",
+          "brolls": [
+            "g_3.mp4",
+            "b_1.mp4",
+            "e_2.mp4",
+            "c_4.mp4",
+            "d_3.mp4",
+            "f_2.mp4"
+          ],
+          "audio": "b2_melatonina.m4a",
+          "overlay": {
+            "line1": "MÁS DE UN AÑO",
+            "line2": "DE DULCES SUEÑOS",
+            "deal_math": "un año de melatonina"
+          }
+        }
+      ]
+    },
+    {
+      "batch_number": 3,
+      "created_at": "2026-02-10T17:29:38.770256",
+      "video_count": 1,
+      "combinations": [
+        {
+          "video_id": "melatonina_hookL_batch003_001",
+          "hook": "L_hook_zoom_START1.mp4",
+          "brolls": [
+            "h_1.mp4",
+            "b_2.mp4",
+            "f_2.mp4",
+            "d_4.mp4",
+            "a_3.mp4",
+            "c_2.mp4"
+          ],
+          "audio": "b2_melatonina.m4a",
+          "overlay": {
+            "line1": "LA OFERTA MÁS BESTIA",
+            "line2": "MELATONINA ALDOUS",
+            "deal_math": "un año de melatonina"
+          }
+        }
+      ]
+    }
+  ],
+  "total_videos": 21,
+  "created_at": "2026-02-08T10:29:19.120212",
+  "last_updated": "2026-02-10T17:29:38.770256"
+}

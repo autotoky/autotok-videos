@@ -1,0 +1,556 @@
+{
+  "batches": [
+    {
+      "batch_number": 1,
+      "created_at": "2026-02-08T10:12:09.587113",
+      "video_count": 15,
+      "combinations": [
+        {
+          "video_id": "anillo_simson_hookD_batch001_001",
+          "hook": "D_hook_cupido_START1.5.mp4",
+          "brolls": [
+            "g_1.mp4",
+            "i_2.mp4",
+            "j_2.mp4",
+            "c_2.mp4",
+            "f_2.mp4",
+            "a_2.mp4"
+          ],
+          "audio": "b1_anillo.m4a",
+          "overlay": {
+            "line1": "ANILLO CON TRACKER",
+            "line2": "CAZALO ANTES QUE LO QUITEN",
+            "deal_math": "Doble descuento oculto"
+          }
+        },
+        {
+          "video_id": "anillo_simson_hookA_batch001_002",
+          "hook": "A_hook_cupido.mp4",
+          "brolls": [
+            "f_2.mp4",
+            "c_3.mp4",
+            "i_1.mp4",
+            "j_2.mp4",
+            "e_2.mp4"
+          ],
+          "audio": "b2_anillo.m4a",
+          "overlay": {
+            "line1": "ANILLO INTELIGENTE",
+            "line2": "NI TE LO PIENSES POR 10 €",
+            "deal_math": "Doble descuento oculto"
+          }
+        },
+        {
+          "video_id": "anillo_simson_hookG_batch001_003",
+          "hook": "G_hook.mp4",
+          "brolls": [
+            "f_2.mp4",
+            "j_1.mp4",
+            "c_3.mp4",
+            "a_2.mp4",
+            "d_2.mp4",
+            "e_2.mp4"
+          ],
+          "audio": "a1_anillo.m4a",
+          "overlay": {
+            "line1": "SMART RING",
+            "line2": "10 € SIN METER CÓDIGOS",
+            "deal_math": "Precio bajo directo"
+          }
+        },
+        {
+          "video_id": "anillo_simson_hookF_batch001_004",
+          "hook": "F_hook.mp4",
+          "brolls": [
+            "d_2.mp4",
+            "c_2.mp4",
+            "a_1.mp4",
+            "e_1.mp4",
+            "g_1.mp4",
+            "i_1.mp4"
+          ],
+          "audio": "a2_anillo.m4a",
+          "overlay": {
+            "line1": "OJO A ESTE ANILLO",
+            "line2": "REBAJA INVISIBLE EN MARCHA",
+            "deal_math": "Precio bajo directo"
+          }
+        },
+        {
+          "video_id": "anillo_simson_hookC_batch001_005",
+          "hook": "C_hook.mp4",
+          "brolls": [
+            "b_1.mp4",
+            "d_1.mp4",
+            "i_3.mp4",
+            "h_2_START2.mp4",
+            "e_1.mp4",
+            "g_2.mp4"
+          ],
+          "audio": "a1_anillo.m4a",
+          "overlay": {
+            "line1": "DE LOCOS",
+            "line2": "ANILLO INTELIGENTE A 10 €",
+            "deal_math": "Precio bajo directo"
+          }
+        },
+        {
+          "video_id": "anillo_simson_hookB_batch001_006",
+          "hook": "B_hook.mp4",
+          "brolls": [
+            "e_2.mp4",
+            "i_2.mp4",
+            "d_2.mp4",
+            "h_2_START2.mp4",
+            "a_1.mp4",
+            "g_2.mp4"
+          ],
+          "audio": "b1_anillo.m4a",
+          "overlay": {
+            "line1": "NO ES BUG!!!",
+            "line2": "ES DESCUENTO COMBO",
+            "deal_math": "Doble descuento oculto"
+          }
+        },
+        {
+          "video_id": "anillo_simson_hookK_batch001_007",
+          "hook": "K_hook.mp4",
+          "brolls": [
+            "j_2.mp4",
+            "d_1.mp4",
+            "g_1.mp4",
+            "c_3.mp4",
+            "e_3.mp4",
+            "h_2_START2.mp4"
+          ],
+          "audio": "b2_anillo.m4a",
+          "overlay": {
+            "line1": "ANTES DE QUE LO QUITEN",
+            "line2": "CUPÓN + TRUCO DE MODELO",
+            "deal_math": "Doble descuento oculto"
+          }
+        },
+        {
+          "video_id": "anillo_simson_hookJ_batch001_008",
+          "hook": "J_hook.mp4",
+          "brolls": [
+            "h_1.mp4",
+            "d_2.mp4",
+            "g_1.mp4",
+            "i_2.mp4",
+            "c_1.mp4",
+            "b_1.mp4"
+          ],
+          "audio": "b2_anillo.m4a",
+          "overlay": {
+            "line1": "DOS DESCUENTOS!!!",
+            "line2": "NO DURA MUCHO ESTO…",
+            "deal_math": "Doble descuento oculto"
+          }
+        },
+        {
+          "video_id": "anillo_simson_hookI_batch001_009",
+          "hook": "I_hook_START2.5.mp4",
+          "brolls": [
+            "c_3.mp4",
+            "j_1.mp4",
+            "b_1.mp4",
+            "g_3.mp4",
+            "e_3.mp4",
+            "h_1.mp4"
+          ],
+          "audio": "a2_anillo.m4a",
+          "overlay": {
+            "line1": "UN ANILLO INTELIGENTE",
+            "line2": "AL PRECIO DE 4 CAFÉS",
+            "deal_math": "Precio bajo directo"
+          }
+        },
+        {
+          "video_id": "anillo_simson_hookE_batch001_010",
+          "hook": "E_hook.mp4",
+          "brolls": [
+            "c_3.mp4",
+            "b_1.mp4",
+            "i_2.mp4",
+            "g_1.mp4",
+            "d_2.mp4",
+            "a_1.mp4"
+          ],
+          "audio": "b1_anillo.m4a",
+          "overlay": {
+            "line1": "ANILLO INTELIGENTE",
+            "line2": "CARRITO Y CUPÓN = PRECIO NUEVO",
+            "deal_math": "Doble descuento oculto"
+          }
+        },
+        {
+          "video_id": "anillo_simson_hookC_batch001_011",
+          "hook": "C_hook.mp4",
+          "brolls": [
+            "f_2.mp4",
+            "i_1.mp4",
+            "d_1.mp4",
+            "g_3.mp4",
+            "h_2_START2.mp4"
+          ],
+          "audio": "a2_anillo.m4a",
+          "overlay": {
+            "line1": "SMART RING VIRAL",
+            "line2": "PRECIO OCULTO ACTIVADO",
+            "deal_math": "Precio bajo directo"
+          }
+        },
+        {
+          "video_id": "anillo_simson_hookF_batch001_012",
+          "hook": "F_hook.mp4",
+          "brolls": [
+            "g_3.mp4",
+            "c_2.mp4",
+            "i_1.mp4",
+            "j_2.mp4",
+            "h_1.mp4",
+            "b_1.mp4"
+          ],
+          "audio": "c2_anillo.m4a",
+          "overlay": {
+            "line1": "COMBINACIÓN REBAJADA",
+            "line2": "SI LO ENCUENTRAS, GANAS",
+            "deal_math": "Oferta escondida"
+          }
+        },
+        {
+          "video_id": "anillo_simson_hookA_batch001_013",
+          "hook": "A_hook_cupido.mp4",
+          "brolls": [
+            "g_1.mp4",
+            "i_1.mp4",
+            "d_2.mp4",
+            "j_2.mp4",
+            "h_1.mp4",
+            "b_1.mp4"
+          ],
+          "audio": "b1_anillo.m4a",
+          "overlay": {
+            "line1": "OJO OJO OJO",
+            "line2": "DOBLE DESCUENTO OCULTO",
+            "deal_math": "Doble descuento oculto"
+          }
+        },
+        {
+          "video_id": "anillo_simson_hookI_batch001_014",
+          "hook": "I_hook_START2.5.mp4",
+          "brolls": [
+            "f_2.mp4",
+            "b_1.mp4",
+            "d_2.mp4",
+            "a_1.mp4",
+            "c_2.mp4",
+            "j_2.mp4"
+          ],
+          "audio": "a2_anillo.m4a",
+          "overlay": {
+            "line1": "SMART RING REBAJADO",
+            "line2": "ESTÁN CAYENDO COMO LOCOS",
+            "deal_math": "Precio bajo directo"
+          }
+        },
+        {
+          "video_id": "anillo_simson_hookJ_batch001_015",
+          "hook": "J_hook.mp4",
+          "brolls": [
+            "i_1.mp4",
+            "h_1.mp4",
+            "e_2.mp4",
+            "c_4.mp4",
+            "g_2.mp4",
+            "a_1.mp4"
+          ],
+          "audio": "c1_anillo.m4a",
+          "overlay": {
+            "line1": "NO ES FÁCIL...",
+            "line2": "ENCUENTRA EL MODELO CON DESCUENTO",
+            "deal_math": "Oferta escondida"
+          }
+        }
+      ]
+    },
+    {
+      "batch_number": 2,
+      "created_at": "2026-02-08T10:16:40.984500",
+      "video_count": 15,
+      "combinations": [
+        {
+          "video_id": "anillo_simson_hookJ_batch002_001",
+          "hook": "J_hook.mp4",
+          "brolls": [
+            "g_2.mp4",
+            "h_1.mp4",
+            "i_1.mp4",
+            "d_1.mp4",
+            "a_2.mp4",
+            "f_2.mp4"
+          ],
+          "audio": "a1_anillo.m4a",
+          "overlay": {
+            "line1": "DE LOCOS",
+            "line2": "ANILLO INTELIGENTE A 10 €",
+            "deal_math": "Precio bajo directo"
+          }
+        },
+        {
+          "video_id": "anillo_simson_hookD_batch002_002",
+          "hook": "D_hook_cupido_START1.5.mp4",
+          "brolls": [
+            "g_3.mp4",
+            "a_2.mp4",
+            "i_1.mp4",
+            "c_3.mp4",
+            "h_1.mp4",
+            "j_1.mp4"
+          ],
+          "audio": "c2_anillo.m4a",
+          "overlay": {
+            "line1": "COMBINACIÓN REBAJADA",
+            "line2": "SI LO ENCUENTRAS, GANAS",
+            "deal_math": "Oferta escondida"
+          }
+        },
+        {
+          "video_id": "anillo_simson_hookG_batch002_003",
+          "hook": "G_hook.mp4",
+          "brolls": [
+            "f_2.mp4",
+            "c_1.mp4",
+            "h_1.mp4",
+            "e_3.mp4",
+            "i_2.mp4",
+            "b_1.mp4"
+          ],
+          "audio": "b2_anillo.m4a",
+          "overlay": {
+            "line1": "ANTES DE QUE LO QUITEN",
+            "line2": "CUPÓN + TRUCO DE MODELO",
+            "deal_math": "Doble descuento oculto"
+          }
+        },
+        {
+          "video_id": "anillo_simson_hookK_batch002_004",
+          "hook": "K_hook.mp4",
+          "brolls": [
+            "a_2.mp4",
+            "c_4.mp4",
+            "d_2.mp4",
+            "g_3.mp4",
+            "j_2.mp4",
+            "e_1.mp4"
+          ],
+          "audio": "c2_anillo.m4a",
+          "overlay": {
+            "line1": "OFERTA SECRETA",
+            "line2": "SOLO ALGUNAS VARIANTES LO ACTIVAN",
+            "deal_math": "Oferta escondida"
+          }
+        },
+        {
+          "video_id": "anillo_simson_hookC_batch002_005",
+          "hook": "C_hook.mp4",
+          "brolls": [
+            "i_1.mp4",
+            "h_2_START2.mp4",
+            "f_2.mp4",
+            "e_2.mp4",
+            "d_2.mp4",
+            "a_1.mp4"
+          ],
+          "audio": "c2_anillo.m4a",
+          "overlay": {
+            "line1": "OFERTA SECRETA",
+            "line2": "SOLO UNA COMBINACIÓN LO TIENE ASÍ",
+            "deal_math": "Oferta escondida"
+          }
+        },
+        {
+          "video_id": "anillo_simson_hookI_batch002_006",
+          "hook": "I_hook_START2.5.mp4",
+          "brolls": [
+            "a_2.mp4",
+            "h_2_START2.mp4",
+            "g_2.mp4",
+            "d_1.mp4",
+            "e_3.mp4",
+            "j_2.mp4"
+          ],
+          "audio": "b2_anillo.m4a",
+          "overlay": {
+            "line1": "HAZLO BIEN",
+            "line2": "NO TODOS ESTÁN REBAJADOS",
+            "deal_math": "Doble descuento oculto"
+          }
+        },
+        {
+          "video_id": "anillo_simson_hookB_batch002_007",
+          "hook": "B_hook.mp4",
+          "brolls": [
+            "i_1.mp4",
+            "j_2.mp4",
+            "a_2.mp4",
+            "e_3.mp4",
+            "h_2_START2.mp4",
+            "g_2.mp4"
+          ],
+          "audio": "c1_anillo.m4a",
+          "overlay": {
+            "line1": "PISTA DESCUENTO EXTRA",
+            "line2": "MODELO PLATEADO + TALLA X = 10 €",
+            "deal_math": "Oferta escondida"
+          }
+        },
+        {
+          "video_id": "anillo_simson_hookA_batch002_008",
+          "hook": "A_hook_cupido.mp4",
+          "brolls": [
+            "i_3.mp4",
+            "h_1.mp4",
+            "c_3.mp4",
+            "g_1.mp4",
+            "d_2.mp4",
+            "e_1.mp4"
+          ],
+          "audio": "b1_anillo.m4a",
+          "overlay": {
+            "line1": "LO ESTÁ PETANDO",
+            "line2": "2 DESCUENTOS QUE SE ACUMULAN",
+            "deal_math": "Doble descuento oculto"
+          }
+        },
+        {
+          "video_id": "anillo_simson_hookE_batch002_009",
+          "hook": "E_hook.mp4",
+          "brolls": [
+            "b_1.mp4",
+            "i_3.mp4",
+            "a_2.mp4",
+            "c_4.mp4",
+            "h_1.mp4"
+          ],
+          "audio": "c1_anillo.m4a",
+          "overlay": {
+            "line1": "NO ES FÁCIL...",
+            "line2": "ENCUENTRA EL MODELO CON DESCUENTO",
+            "deal_math": "Oferta escondida"
+          }
+        },
+        {
+          "video_id": "anillo_simson_hookF_batch002_010",
+          "hook": "F_hook.mp4",
+          "brolls": [
+            "i_1.mp4",
+            "a_2.mp4",
+            "d_1.mp4",
+            "e_2.mp4",
+            "b_1.mp4"
+          ],
+          "audio": "b2_anillo.m4a",
+          "overlay": {
+            "line1": "ANILLO INTELIGENTE",
+            "line2": "NI TE LO PIENSES POR 10 €",
+            "deal_math": "Doble descuento oculto"
+          }
+        },
+        {
+          "video_id": "anillo_simson_hookC_batch002_011",
+          "hook": "C_hook.mp4",
+          "brolls": [
+            "i_3.mp4",
+            "g_2.mp4",
+            "d_2.mp4",
+            "a_2.mp4",
+            "b_1.mp4",
+            "e_1.mp4"
+          ],
+          "audio": "c2_anillo.m4a",
+          "overlay": {
+            "line1": "NO ESTÁS FLIPANDO",
+            "line2": "30 % DE TIKTOK + EXTRA OCULTO",
+            "deal_math": "Oferta escondida"
+          }
+        },
+        {
+          "video_id": "anillo_simson_hookD_batch002_012",
+          "hook": "D_hook_cupido_START1.5.mp4",
+          "brolls": [
+            "e_1.mp4",
+            "f_2.mp4",
+            "j_1.mp4",
+            "a_1.mp4",
+            "h_1.mp4",
+            "i_2.mp4"
+          ],
+          "audio": "c2_anillo.m4a",
+          "overlay": {
+            "line1": "OFERTA ESCONDIDA",
+            "line2": "HAY UNA COMBINACIÓN QUE LO BAJA",
+            "deal_math": "Oferta escondida"
+          }
+        },
+        {
+          "video_id": "anillo_simson_hookK_batch002_013",
+          "hook": "K_hook.mp4",
+          "brolls": [
+            "h_2_START2.mp4",
+            "c_1.mp4",
+            "j_1.mp4",
+            "g_3.mp4",
+            "i_1.mp4",
+            "b_1.mp4"
+          ],
+          "audio": "c1_anillo.m4a",
+          "overlay": {
+            "line1": "CON ESTE ANILLO",
+            "line2": "HAY UN TRUCO EN LA SELECCIÓN",
+            "deal_math": "Oferta escondida"
+          }
+        },
+        {
+          "video_id": "anillo_simson_hookA_batch002_014",
+          "hook": "A_hook_cupido.mp4",
+          "brolls": [
+            "g_2.mp4",
+            "f_2.mp4",
+            "i_1.mp4",
+            "j_1.mp4",
+            "d_1.mp4",
+            "b_1.mp4"
+          ],
+          "audio": "c1_anillo.m4a",
+          "overlay": {
+            "line1": "HAY UN COMBO REBAJADO",
+            "line2": "SI ACIERTAS, SE BAJA SOLO",
+            "deal_math": "Oferta escondida"
+          }
+        },
+        {
+          "video_id": "anillo_simson_hookB_batch002_015",
+          "hook": "B_hook.mp4",
+          "brolls": [
+            "e_1.mp4",
+            "h_1.mp4",
+            "i_2.mp4",
+            "f_2.mp4",
+            "j_2.mp4"
+          ],
+          "audio": "c1_anillo.m4a",
+          "overlay": {
+            "line1": "TRUCO ANILLO INTELIGENTE",
+            "line2": "ELIGE BIEN Y BAJA A 10",
+            "deal_math": "Oferta escondida"
+          }
+        }
+      ]
+    }
+  ],
+  "total_videos": 30,
+  "created_at": "2026-02-08T10:07:12.401123",
+  "last_updated": "2026-02-08T10:16:40.984500"
+}

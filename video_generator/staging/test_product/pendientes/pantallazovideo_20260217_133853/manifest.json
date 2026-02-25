@@ -1,0 +1,26 @@
+{
+  "origen": "G:\\Mi unidad\\recursos_videos\\test_product\\screenshots\\pantallazovideo.jpeg",
+  "timestamp": "20260217_133853",
+  "variaciones": [
+    {
+      "archivo": "var_01.png",
+      "prompt": "hand holding product on modern kitchen counter, natural warm lighting, clean background, UGC style photo"
+    },
+    {
+      "archivo": "var_02.png",
+      "prompt": "hand holding product on minimalist wooden desk, soft daylight from window, casual photo style"
+    },
+    {
+      "archivo": "var_03.png",
+      "prompt": "hand holding product outdoors in natural sunlight, blurred green background, authentic mobile photo"
+    },
+    {
+      "archivo": "var_04.png",
+      "prompt": "hand holding product on white marble surface, bright studio lighting, product photography"
+    },
+    {
+      "archivo": "var_05.png",
+      "prompt": "hand presenting product on cozy sofa, warm living room background, casual lifestyle photo"
+    }
+  ]
+}

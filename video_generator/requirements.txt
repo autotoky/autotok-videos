@@ -1,0 +1,24 @@
+# Dependencias del Generador de Videos TikTok
+# Versión 1.1 - Con Google Sheets
+# Instalar con: pip install -r requirements.txt --break-system-packages
+
+# Para overlays de texto
+pillow>=10.0.0
+
+# Para Google Sheets
+gspread>=5.12.0
+oauth2client>=4.1.3
+
+# REQUISITOS DEL SISTEMA:
+# - Python 3.7+
+# - FFmpeg instalado y en PATH
+# - Google Drive Desktop (para sincronizar material)
+# - Credenciales de Google Cloud (credentials.json)
+
+# Para verificar FFmpeg:
+# ffmpeg -version
+
+# Para instalar FFmpeg:
+# Windows: https://ffmpeg.org/download.html
+# Mac: brew install ffmpeg
+# Linux: sudo apt install ffmpeg

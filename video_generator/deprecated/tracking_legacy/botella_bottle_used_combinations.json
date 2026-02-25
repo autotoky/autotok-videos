@@ -1,0 +1,366 @@
+{
+  "batches": [
+    {
+      "batch_number": 1,
+      "created_at": "2026-02-08T10:26:36.949322",
+      "video_count": 10,
+      "combinations": [
+        {
+          "video_id": "botella_bottle_hookC_batch001_001",
+          "hook": "C_hook_amarillo.mp4",
+          "brolls": [
+            "h_1.mp4",
+            "d_3.mp4",
+            "b_2.mp4",
+            "g_2.mp4",
+            "a_1.mp4",
+            "j_1.mp4"
+          ],
+          "audio": "c2_bottlebottle.m4a",
+          "overlay": {
+            "line1": "ANTES 29,99 €",
+            "line2": "LLEVATE LA TUYA",
+            "deal_math": "precio tachado"
+          }
+        },
+        {
+          "video_id": "botella_bottle_hookJ_batch001_002",
+          "hook": "J_hook.mp4",
+          "brolls": [
+            "a_1.mp4",
+            "f_1.mp4",
+            "b_2.mp4",
+            "g_1.mp4",
+            "d_3.mp4"
+          ],
+          "audio": "b1_bottlebottle.m4a",
+          "overlay": {
+            "line1": "REBAJAS DE INVIERNO",
+            "line2": "BOTELLA TERMO",
+            "deal_math": "Doble descuento"
+          }
+        },
+        {
+          "video_id": "botella_bottle_hookI_batch001_003",
+          "hook": "I_hook_volador.mp4",
+          "brolls": [
+            "j_1.mp4",
+            "c_3.mp4",
+            "a_1.mp4",
+            "h_3.mp4",
+            "g_1.mp4"
+          ],
+          "audio": "a1_bottlebottle.m4a",
+          "overlay": {
+            "line1": "CARRITO YA",
+            "line2": "BOTELLA VIRAL",
+            "deal_math": "descuento directo"
+          }
+        },
+        {
+          "video_id": "botella_bottle_hookB_batch001_004",
+          "hook": "B_hook.mp4",
+          "brolls": [
+            "j_2.mp4",
+            "f_3.mp4",
+            "a_2.mp4",
+            "g_2.mp4",
+            "c_2.mp4"
+          ],
+          "audio": "c1_bottlebottle.m4a",
+          "overlay": {
+            "line1": "NO LA DEJES PASAR",
+            "line2": "ANTES MÁS CARO",
+            "deal_math": "precio tachado"
+          }
+        },
+        {
+          "video_id": "botella_bottle_hookA_batch001_005",
+          "hook": "A_hook.mp4",
+          "brolls": [
+            "h_1.mp4",
+            "c_4.mp4",
+            "g_4.mp4",
+            "l_2.mp4",
+            "f_1.mp4"
+          ],
+          "audio": "c2_bottlebottle.m4a",
+          "overlay": {
+            "line1": "TU BOTELLA VIRAL",
+            "line2": "5 € MENOS SOLO HOY",
+            "deal_math": "precio tachado"
+          }
+        },
+        {
+          "video_id": "botella_bottle_hookD_batch001_006",
+          "hook": "D_hook_denim.mp4",
+          "brolls": [
+            "e_2.mp4",
+            "c_3.mp4",
+            "l_1.mp4",
+            "a_1.mp4",
+            "g_1.mp4",
+            "j_3.mp4"
+          ],
+          "audio": "c1_bottlebottle.m4a",
+          "overlay": {
+            "line1": "BAJADA DE PRECIO",
+            "line2": "APROVECHA HOY",
+            "deal_math": "precio tachado"
+          }
+        },
+        {
+          "video_id": "botella_bottle_hookK_batch001_007",
+          "hook": "K_hook.mp4",
+          "brolls": [
+            "c_4.mp4",
+            "j_3.mp4",
+            "d_1.mp4",
+            "f_1.mp4",
+            "l_2.mp4",
+            "h_3.mp4"
+          ],
+          "audio": "a1_bottlebottle.m4a",
+          "overlay": {
+            "line1": "BOTELLA TERMO",
+            "line2": "-16% ACTIVO YA",
+            "deal_math": "descuento directo"
+          }
+        },
+        {
+          "video_id": "botella_bottle_hookF_batch001_008",
+          "hook": "F_hook_fregadero.mp4",
+          "brolls": [
+            "j_1.mp4",
+            "h_3.mp4",
+            "a_2.mp4",
+            "b_2.mp4",
+            "c_3.mp4"
+          ],
+          "audio": "c1_bottlebottle.m4a",
+          "overlay": {
+            "line1": "ME COSTÓ MENOS DE 30 €",
+            "line2": "BOTELLA VIRAL",
+            "deal_math": "precio tachado"
+          }
+        },
+        {
+          "video_id": "botella_bottle_hookH_batch001_009",
+          "hook": "H_hook_pingüino.mp4",
+          "brolls": [
+            "c_2.mp4",
+            "a_1.mp4",
+            "e_1.mp4",
+            "b_1.mp4",
+            "j_2.mp4"
+          ],
+          "audio": "a1_bottlebottle.m4a",
+          "overlay": {
+            "line1": "SE AGOTAN YA",
+            "line2": "BOTELLA DISEÑO",
+            "deal_math": "descuento directo"
+          }
+        },
+        {
+          "video_id": "botella_bottle_hookK_batch001_010",
+          "hook": "K_hook.mp4",
+          "brolls": [
+            "f_4.mp4",
+            "j_3.mp4",
+            "e_1.mp4",
+            "a_2.mp4",
+            "c_3.mp4"
+          ],
+          "audio": "a2_bottlebottle.m4a",
+          "overlay": {
+            "line1": "ENVÍO GRATIS INCLUIDO",
+            "line2": "BOTTLE BOTTLE",
+            "deal_math": "descuento directo"
+          }
+        }
+      ]
+    },
+    {
+      "batch_number": 2,
+      "created_at": "2026-02-08T10:29:18.775534",
+      "video_count": 10,
+      "combinations": [
+        {
+          "video_id": "botella_bottle_hookB_batch002_001",
+          "hook": "B_hook.mp4",
+          "brolls": [
+            "e_1.mp4",
+            "l_1.mp4",
+            "d_3.mp4",
+            "h_1.mp4",
+            "a_2.mp4"
+          ],
+          "audio": "a1_bottlebottle.m4a",
+          "overlay": {
+            "line1": "BOTELLA TERMO",
+            "line2": "-16% ACTIVO YA",
+            "deal_math": "descuento directo"
+          }
+        },
+        {
+          "video_id": "botella_bottle_hookJ_batch002_002",
+          "hook": "J_hook.mp4",
+          "brolls": [
+            "g_1.mp4",
+            "f_2.mp4",
+            "d_2.mp4",
+            "a_1.mp4",
+            "h_3.mp4",
+            "e_1.mp4"
+          ],
+          "audio": "c1_bottlebottle.m4a",
+          "overlay": {
+            "line1": "NO LA DEJES PASAR",
+            "line2": "ANTES MÁS CARO",
+            "deal_math": "precio tachado"
+          }
+        },
+        {
+          "video_id": "botella_bottle_hookC_batch002_003",
+          "hook": "C_hook_amarillo.mp4",
+          "brolls": [
+            "f_2.mp4",
+            "h_3.mp4",
+            "j_1.mp4",
+            "g_3.mp4",
+            "d_3.mp4"
+          ],
+          "audio": "c2_bottlebottle.m4a",
+          "overlay": {
+            "line1": "ANTES 29,99 €",
+            "line2": "LLEVATE LA TUYA",
+            "deal_math": "precio tachado"
+          }
+        },
+        {
+          "video_id": "botella_bottle_hookK_batch002_004",
+          "hook": "K_hook.mp4",
+          "brolls": [
+            "g_2.mp4",
+            "a_1.mp4",
+            "d_2.mp4",
+            "f_2.mp4",
+            "e_2.mp4"
+          ],
+          "audio": "b1_bottlebottle.m4a",
+          "overlay": {
+            "line1": "BOTELLA VIRAL CACTUS",
+            "line2": "DOBLE DESCUENTO",
+            "deal_math": "Doble descuento"
+          }
+        },
+        {
+          "video_id": "botella_bottle_hookH_batch002_005",
+          "hook": "H_hook_pingüino.mp4",
+          "brolls": [
+            "c_4.mp4",
+            "a_1.mp4",
+            "b_1.mp4",
+            "d_2.mp4",
+            "l_1.mp4"
+          ],
+          "audio": "c1_bottlebottle.m4a",
+          "overlay": {
+            "line1": "BAJADA DE PRECIO",
+            "line2": "APROVECHA HOY",
+            "deal_math": "precio tachado"
+          }
+        },
+        {
+          "video_id": "botella_bottle_hookD_batch002_006",
+          "hook": "D_hook_denim.mp4",
+          "brolls": [
+            "f_4.mp4",
+            "j_2.mp4",
+            "h_3.mp4",
+            "g_1.mp4",
+            "l_2.mp4"
+          ],
+          "audio": "a1_bottlebottle.m4a",
+          "overlay": {
+            "line1": "SE AGOTAN YA",
+            "line2": "BOTELLA DISEÑO",
+            "deal_math": "descuento directo"
+          }
+        },
+        {
+          "video_id": "botella_bottle_hookI_batch002_007",
+          "hook": "I_hook_volador.mp4",
+          "brolls": [
+            "g_1.mp4",
+            "b_2.mp4",
+            "j_1.mp4",
+            "f_2.mp4",
+            "c_4.mp4"
+          ],
+          "audio": "a2_bottlebottle.m4a",
+          "overlay": {
+            "line1": "PROMO FLASH ACTIVA",
+            "line2": "TOCA EL CARRITO",
+            "deal_math": "descuento directo"
+          }
+        },
+        {
+          "video_id": "botella_bottle_hookA_batch002_008",
+          "hook": "A_hook.mp4",
+          "brolls": [
+            "d_2.mp4",
+            "g_3.mp4",
+            "h_2.mp4",
+            "l_1.mp4",
+            "j_2.mp4",
+            "f_1.mp4"
+          ],
+          "audio": "a1_bottlebottle.m4a",
+          "overlay": {
+            "line1": "DESCUENTO DIRECTO",
+            "line2": "BOTTLE BOTTLE",
+            "deal_math": "descuento directo"
+          }
+        },
+        {
+          "video_id": "botella_bottle_hookF_batch002_009",
+          "hook": "F_hook_fregadero.mp4",
+          "brolls": [
+            "j_3.mp4",
+            "g_3.mp4",
+            "b_1.mp4",
+            "c_3.mp4",
+            "d_3.mp4"
+          ],
+          "audio": "a2_bottlebottle.m4a",
+          "overlay": {
+            "line1": "ELIGE BIEN",
+            "line2": "CACTUS = DESCUENTO",
+            "deal_math": "descuento directo"
+          }
+        },
+        {
+          "video_id": "botella_bottle_hookA_batch002_010",
+          "hook": "A_hook.mp4",
+          "brolls": [
+            "c_4.mp4",
+            "g_1.mp4",
+            "d_2.mp4",
+            "e_2.mp4",
+            "b_1.mp4"
+          ],
+          "audio": "b2_bottlebottle.m4a",
+          "overlay": {
+            "line1": "OFERTA TEMPORAL",
+            "line2": "DOS DESCUENTOS ACTIVOS",
+            "deal_math": "Doble descuento"
+          }
+        }
+      ]
+    }
+  ],
+  "total_videos": 20,
+  "created_at": "2026-02-08T10:23:49.074021",
+  "last_updated": "2026-02-08T10:29:18.775534"
+}

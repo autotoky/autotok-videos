@@ -1,0 +1,331 @@
+{
+  "batches": [
+    {
+      "batch_number": 1,
+      "created_at": "2026-02-08T10:01:20.040421",
+      "video_count": 10,
+      "combinations": [
+        {
+          "video_id": "aceite_oregano_hookJ_batch001_001",
+          "hook": "J_hook_START2.5.mp4",
+          "brolls": [
+            "g_1.mp4",
+            "c_3.mp4",
+            "d_1_START1.5.mp4",
+            "e_2.mp4",
+            "f_1_START1.mp4"
+          ],
+          "audio": "a2_oregano.m4a",
+          "overlay": {
+            "line1": "ACEITE DE ORÉGANO REBAJADO",
+            "line2": "SIN CÓDIGOS RAROS",
+            "deal_math": "descuento directo"
+          }
+        },
+        {
+          "video_id": "aceite_oregano_hookI_batch001_002",
+          "hook": "I_hook_START2.5.mp4",
+          "brolls": [
+            "c_2.mp4",
+            "a_1.mp4",
+            "e_4_START1.mp4",
+            "b_1_START1.5.mp4",
+            "g_2_START1.5.mp4"
+          ],
+          "audio": "c1_oregano.m4a",
+          "overlay": {
+            "line1": "CUPÓN YA APLICADO",
+            "line2": "30% MENOS",
+            "deal_math": "30% cupon"
+          }
+        },
+        {
+          "video_id": "aceite_oregano_hookG_batch001_003",
+          "hook": "G_hook.mp4",
+          "brolls": [
+            "e_4_START1.mp4",
+            "a_2.mp4",
+            "c_2.mp4",
+            "f_1_START1.mp4",
+            "d_3_START1.5.mp4"
+          ],
+          "audio": "a1_oregano.m4a",
+          "overlay": {
+            "line1": "TU ACEITE DE ORÉGANO",
+            "line2": "5 € MENOS AL CARRITO",
+            "deal_math": "descuento directo"
+          }
+        },
+        {
+          "video_id": "aceite_oregano_hookE_batch001_004",
+          "hook": "E_hook_START1.mp4",
+          "brolls": [
+            "c_4_START1.5.mp4",
+            "d_1_START1.5.mp4",
+            "g_1.mp4",
+            "b_1_START1.5.mp4"
+          ],
+          "audio": "a1_oregano.m4a",
+          "overlay": {
+            "line1": "DE 18,89 € A 13 €",
+            "line2": "ACEITE VIRAL",
+            "deal_math": "descuento directo"
+          }
+        },
+        {
+          "video_id": "aceite_oregano_hookD_batch001_005",
+          "hook": "D_hook_START1.5.mp4",
+          "brolls": [
+            "f_1_START1.mp4",
+            "e_2.mp4",
+            "g_2_START1.5.mp4",
+            "a_3.mp4",
+            "c_6.mp4"
+          ],
+          "audio": "c1_oregano.m4a"
+        },
+        {
+          "video_id": "aceite_oregano_hookF_batch001_006",
+          "hook": "F_hook.mp4",
+          "brolls": [
+            "e_2.mp4",
+            "a_1.mp4",
+            "c_4_START1.5.mp4",
+            "g_1.mp4"
+          ],
+          "audio": "b1_oregano.m4a",
+          "overlay": {
+            "line1": "ERROR DE PRECIO",
+            "line2": "1 PACK + BARATO QUE 4",
+            "deal_math": "comparativa packs"
+          }
+        },
+        {
+          "video_id": "aceite_oregano_hookH_batch001_007",
+          "hook": "H_hook.mp4",
+          "brolls": [
+            "e_3_START1.mp4",
+            "d_1_START1.5.mp4",
+            "a_4.mp4",
+            "g_1.mp4",
+            "f_1_START1.mp4"
+          ],
+          "audio": "a1_oregano.m4a",
+          "overlay": {
+            "line1": "TIKTOK LO BAJA A 13 €",
+            "line2": "APROVECHA HOY",
+            "deal_math": "descuento directo"
+          }
+        },
+        {
+          "video_id": "aceite_oregano_hookA_batch001_008",
+          "hook": "A_hook.mp4",
+          "brolls": [
+            "g_1.mp4",
+            "c_2.mp4",
+            "d_3_START1.5.mp4",
+            "e_4_START1.mp4",
+            "b_1_START1.5.mp4"
+          ],
+          "audio": "c1_oregano.m4a"
+        },
+        {
+          "video_id": "aceite_oregano_hookG_batch001_009",
+          "hook": "G_hook.mp4",
+          "brolls": [
+            "c_6.mp4",
+            "b_1_START1.5.mp4",
+            "e_2.mp4",
+            "a_1.mp4",
+            "f_1_START1.mp4"
+          ],
+          "audio": "c1_oregano.m4a"
+        },
+        {
+          "video_id": "aceite_oregano_hookA_batch001_010",
+          "hook": "A_hook.mp4",
+          "brolls": [
+            "f_1_START1.mp4",
+            "c_6.mp4",
+            "e_1.mp4",
+            "d_2_START2.5.mp4",
+            "b_1_START1.5.mp4"
+          ],
+          "audio": "b2_oregano.m4a",
+          "overlay": {
+            "line1": "COMPRA CON TRUCO",
+            "line2": "1 MÁS BARATO QUE 4",
+            "deal_math": "comparativa packs"
+          }
+        }
+      ]
+    },
+    {
+      "batch_number": 2,
+      "created_at": "2026-02-08T10:04:07.525849",
+      "video_count": 10,
+      "combinations": [
+        {
+          "video_id": "aceite_oregano_hookH_batch002_001",
+          "hook": "H_hook.mp4",
+          "brolls": [
+            "c_2.mp4",
+            "g_1.mp4",
+            "e_3_START1.mp4",
+            "d_2_START2.5.mp4",
+            "a_1.mp4"
+          ],
+          "audio": "c2_oregano.m4a",
+          "overlay": {
+            "line1": "CUPÓN OCULTO TIKTOK",
+            "line2": "ACEITE ORÉGANO -30%",
+            "deal_math": "30% cupon"
+          }
+        },
+        {
+          "video_id": "aceite_oregano_hookE_batch002_002",
+          "hook": "E_hook_START1.mp4",
+          "brolls": [
+            "a_2.mp4",
+            "c_6.mp4",
+            "d_3_START1.5.mp4",
+            "b_1_START1.5.mp4",
+            "f_1_START1.mp4"
+          ],
+          "audio": "a2_oregano.m4a",
+          "overlay": {
+            "line1": "ACEITE DE ORÉGANO REBAJADO",
+            "line2": "SIN CÓDIGOS RAROS",
+            "deal_math": "descuento directo"
+          }
+        },
+        {
+          "video_id": "aceite_oregano_hookF_batch002_003",
+          "hook": "F_hook.mp4",
+          "brolls": [
+            "d_2_START2.5.mp4",
+            "g_1.mp4",
+            "c_2.mp4",
+            "b_1_START1.5.mp4",
+            "a_1.mp4"
+          ],
+          "audio": "c1_oregano.m4a",
+          "overlay": {
+            "line1": "CUPÓN YA APLICADO",
+            "line2": "30% MENOS",
+            "deal_math": "30% cupon"
+          }
+        },
+        {
+          "video_id": "aceite_oregano_hookJ_batch002_004",
+          "hook": "J_hook_START2.5.mp4",
+          "brolls": [
+            "c_2.mp4",
+            "a_4.mp4",
+            "e_2.mp4",
+            "d_3_START1.5.mp4",
+            "g_2_START1.5.mp4"
+          ],
+          "audio": "c2_oregano.m4a",
+          "overlay": {
+            "line1": "-30% EN 1 CLIC",
+            "line2": "ACEITE VIRAL",
+            "deal_math": "30% cupon"
+          }
+        },
+        {
+          "video_id": "aceite_oregano_hookI_batch002_005",
+          "hook": "I_hook_START2.5.mp4",
+          "brolls": [
+            "b_1_START1.5.mp4",
+            "e_2.mp4",
+            "d_3_START1.5.mp4",
+            "g_1.mp4"
+          ],
+          "audio": "c2_oregano.m4a",
+          "overlay": {
+            "line1": "30% AUTOMÁTICO",
+            "line2": "APLICANDO CUPÓN",
+            "deal_math": "30% cupon"
+          }
+        },
+        {
+          "video_id": "aceite_oregano_hookD_batch002_006",
+          "hook": "D_hook_START1.5.mp4",
+          "brolls": [
+            "a_4.mp4",
+            "c_2.mp4",
+            "g_1.mp4",
+            "e_3_START1.mp4",
+            "b_1_START1.5.mp4",
+            "f_1_START1.mp4"
+          ],
+          "audio": "a2_oregano.m4a",
+          "overlay": {
+            "line1": "BAJADA DIRECTA",
+            "line2": "ACEITE DE OREGANO",
+            "deal_math": "descuento directo"
+          }
+        },
+        {
+          "video_id": "aceite_oregano_hookA_batch002_007",
+          "hook": "A_hook.mp4",
+          "brolls": [
+            "e_1.mp4",
+            "f_1_START1.mp4",
+            "c_3.mp4",
+            "g_2_START1.5.mp4",
+            "d_2_START2.5.mp4"
+          ],
+          "audio": "c1_oregano.m4a"
+        },
+        {
+          "video_id": "aceite_oregano_hookG_batch002_008",
+          "hook": "G_hook.mp4",
+          "brolls": [
+            "a_2.mp4",
+            "d_3_START1.5.mp4",
+            "c_2.mp4",
+            "b_1_START1.5.mp4",
+            "e_2.mp4"
+          ],
+          "audio": "c1_oregano.m4a"
+        },
+        {
+          "video_id": "aceite_oregano_hookH_batch002_009",
+          "hook": "H_hook.mp4",
+          "brolls": [
+            "d_2_START2.5.mp4",
+            "f_1_START1.mp4",
+            "g_2_START1.5.mp4",
+            "a_1.mp4",
+            "e_3_START1.mp4",
+            "c_2.mp4"
+          ],
+          "audio": "c2_oregano.m4a",
+          "overlay": {
+            "line1": "NO PAGUES 19 POR ESTO",
+            "line2": "APLICA CUPÓN -30%",
+            "deal_math": "30% cupon"
+          }
+        },
+        {
+          "video_id": "aceite_oregano_hookF_batch002_010",
+          "hook": "F_hook.mp4",
+          "brolls": [
+            "c_4_START1.5.mp4",
+            "a_4.mp4",
+            "g_1.mp4",
+            "e_1.mp4",
+            "b_1_START1.5.mp4",
+            "d_2_START2.5.mp4"
+          ],
+          "audio": "c1_oregano.m4a"
+        }
+      ]
+    }
+  ],
+  "total_videos": 20,
+  "created_at": "2026-02-08T09:58:19.104995",
+  "last_updated": "2026-02-08T10:04:07.525849"
+}

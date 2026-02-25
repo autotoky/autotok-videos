@@ -1,0 +1,44 @@
+{
+  "autotoky": {
+    "nombre": "Autotoky",
+    "overlay_style": "blanco_amarillo",
+    "descripcion": "Texto blanco + amarillo con bordes negros",
+    "activa": false,
+    "videos_por_dia": 0,
+    "max_mismo_hook_por_dia": 1,
+    "max_mismo_producto_por_dia": 0,
+    "horarios": {
+      "inicio": "15:00",
+      "fin": "23:50",
+      "zona_horaria": "Europe/Madrid"
+    }
+  },
+  "ofertastrendy20": {
+    "nombre": "Ofertas Trendy 2.0",
+    "overlay_style": "cajas_rojo_blanco",
+    "descripcion": "Cajas de fondo rojo y blanco",
+    "activa": true,
+    "videos_por_dia": 20,
+    "max_mismo_hook_por_dia": 0,
+    "max_mismo_producto_por_dia": 2,
+    "horarios": {
+      "inicio": "08:00",
+      "fin": "23:50",
+      "zona_horaria": "Europe/Madrid"
+    }
+  },
+  "lotopdevicky": {
+    "nombre": "Lo Top de Vicky",
+    "overlay_style": "borde_glow",
+    "descripcion": "Borde grueso + glow suave",
+    "activa": true,
+    "videos_por_dia": 10,
+    "max_mismo_hook_por_dia": 0,
+    "max_mismo_producto_por_dia": 2,
+    "horarios": {
+      "inicio": "08:00",
+      "fin": "23:50",
+      "zona_horaria": "Europe/Madrid"
+    }
+  }
+}

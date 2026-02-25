@@ -1,0 +1,14 @@
+{
+  "origen": "G:\\Mi unidad\\recursos_videos\\test_product\\screenshots\\antiladridos.jpeg",
+  "timestamp": "20260217_135445",
+  "variaciones": [
+    {
+      "archivo": "var_01.png",
+      "prompt": "hand holding product on modern kitchen counter, natural warm lighting, clean background, UGC style photo"
+    },
+    {
+      "archivo": "var_02.png",
+      "prompt": "hand holding product on minimalist wooden desk, soft daylight from window, casual photo style"
+    }
+  ]
+}
