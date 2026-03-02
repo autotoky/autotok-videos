@@ -47,6 +47,7 @@ CREATE TABLE IF NOT EXISTS producto_bofs (
     hashtags TEXT,
     url_producto TEXT,
     veces_usado INTEGER DEFAULT 0,
+    activo INTEGER DEFAULT 1,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (producto_id) REFERENCES productos(id)
 );
@@ -274,6 +275,19 @@ def ensure_historial_table():
             CREATE INDEX IF NOT EXISTS idx_historial_accion ON historial_programacion(accion);
         """)
         conn.commit()
+    conn.close()
+
+
+def ensure_bof_activo_column():
+    """Añade columna 'activo' a producto_bofs si no existe (migración para BD existentes)."""
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    try:
+        cursor.execute("SELECT activo FROM producto_bofs LIMIT 1")
+    except sqlite3.OperationalError:
+        cursor.execute("ALTER TABLE producto_bofs ADD COLUMN activo INTEGER DEFAULT 1")
+        conn.commit()
+        print("[MIGRATION] Columna 'activo' añadida a producto_bofs")
     conn.close()
 
 

@@ -49,15 +49,17 @@ def sanitize_filename(name):
 class VideoGenerator:
     """Generador de videos TikTok con sistema de variantes por BOF"""
     
-    def __init__(self, producto=None, cuenta=None):
+    def __init__(self, producto=None, cuenta=None, bof_id=None):
         """
         Args:
             producto: Nombre del producto
             cuenta: Nombre de la cuenta TikTok
+            bof_id: ID de BOF específico a usar (None = auto-selección de BOFs activos)
         """
         self.paths = get_producto_paths(producto)
         self.producto = self.paths["producto"]
         self.cuenta = cuenta
+        self.force_bof_id = bof_id
         self.temp_dir = None
         
         # Conectar a DB
@@ -117,22 +119,39 @@ class VideoGenerator:
         self.brolls = [dict(row) for row in self.cursor.fetchall()]
         logger.info(f"   Brolls: {len(self.brolls)} encontrados")
 
-        # BOFs
-        self.cursor.execute("""
-            SELECT id, deal_math, guion_audio, hashtags, url_producto, veces_usado
-            FROM producto_bofs
-            WHERE producto_id = ?
-            ORDER BY veces_usado ASC, RANDOM()
-        """, (self.producto_id,))
+        # BOFs (solo activos)
+        bof_filter = "WHERE producto_id = ? AND activo = 1"
+        if self.force_bof_id:
+            bof_filter = "WHERE producto_id = ? AND id = ?"
+
+        if self.force_bof_id:
+            self.cursor.execute(f"""
+                SELECT id, deal_math, guion_audio, hashtags, url_producto, veces_usado
+                FROM producto_bofs
+                {bof_filter}
+                ORDER BY veces_usado ASC, RANDOM()
+            """, (self.producto_id, self.force_bof_id))
+        else:
+            self.cursor.execute(f"""
+                SELECT id, deal_math, guion_audio, hashtags, url_producto, veces_usado
+                FROM producto_bofs
+                {bof_filter}
+                ORDER BY veces_usado ASC, RANDOM()
+            """, (self.producto_id,))
         self.bofs = [dict(row) for row in self.cursor.fetchall()]
-        logger.info(f"   BOFs:   {len(self.bofs)} encontrados")
-        
+        if self.force_bof_id:
+            logger.info(f"   BOFs:   {len(self.bofs)} (forzado BOF ID: {self.force_bof_id})")
+        else:
+            logger.info(f"   BOFs:   {len(self.bofs)} activos encontrados")
+
         if not self.hooks:
             raise ValueError(f"[ERROR] No hooks en DB para: {self.producto}")
         if not self.brolls:
             raise ValueError(f"[ERROR] No brolls en DB para: {self.producto}")
         if not self.bofs:
-            raise ValueError(f"[ERROR] No BOFs en DB para: {self.producto}")
+            if self.force_bof_id:
+                raise ValueError(f"[ERROR] BOF ID {self.force_bof_id} no encontrado para: {self.producto}")
+            raise ValueError(f"[ERROR] No BOFs activos en DB para: {self.producto}")
     
     def _select_bof(self):
         """Selecciona BOF menos usado con audios disponibles"""
@@ -176,31 +195,38 @@ class VideoGenerator:
         row = self.cursor.fetchone()
         return dict(row) if row else None
     
-    def _select_variante(self, bof_id, hook_id):
+    def _select_variante(self, bof_id, hook_id, audio_id, brolls_ids):
         """
-        Selecciona variante disponible para hook+BOF
-        
+        Selecciona variante disponible comprobando la combinación COMPLETA.
+
+        La unicidad se comprueba contra combinaciones_usadas que registra
+        hook + variante + audio + brolls_ids. Así aprovechamos todas las
+        dimensiones de variación (miles/millones de combinaciones posibles).
+
         Args:
             bof_id: ID del BOF
             hook_id: ID del hook
-        
+            audio_id: ID del audio
+            brolls_ids: string con IDs de brolls separados por coma (ej: "485,490,494")
+
         Returns:
             dict o None si no hay variantes disponibles
         """
-        # Buscar variantes del BOF que NO estén usadas con este hook
+        # Buscar variantes del BOF que NO estén usadas con este hook+audio+brolls
         self.cursor.execute("""
             SELECT v.id, v.overlay_line1, v.overlay_line2, v.seo_text
             FROM variantes_overlay_seo v
             WHERE v.bof_id = ?
             AND NOT EXISTS (
-                SELECT 1 
-                FROM hook_variante_usado hv
-                WHERE hv.hook_id = ? AND hv.variante_id = v.id
+                SELECT 1
+                FROM combinaciones_usadas cu
+                WHERE cu.hook_id = ? AND cu.audio_id = ?
+                  AND cu.brolls_ids = ? AND cu.variante_id = v.id
             )
             ORDER BY RANDOM()
             LIMIT 1
-        """, (bof_id, hook_id))
-        
+        """, (bof_id, hook_id, audio_id, brolls_ids))
+
         row = self.cursor.fetchone()
         return dict(row) if row else None
     
@@ -376,15 +402,9 @@ class VideoGenerator:
             ))
             
             new_video_id = self.cursor.lastrowid
-            
-            # Marcar hook+variante como usado
-            self.cursor.execute("""
-                INSERT INTO hook_variante_usado (hook_id, variante_id, video_id)
-                VALUES (?, ?, ?)
-            """, (video_info['hook_id'], video_info['variante_id'], new_video_id))
-            
-            # Registrar combinación usada (legacy backup)
-            brolls_ids_str = ','.join(str(b) for b in video_info['broll_ids'])
+
+            # Registrar combinación completa (usada para unicidad)
+            brolls_ids_str = ','.join(str(b) for b in sorted(video_info['broll_ids']))
             self.cursor.execute("""
                 INSERT INTO combinaciones_usadas (
                     producto_id, hook_id, brolls_ids, audio_id,
@@ -472,19 +492,20 @@ class VideoGenerator:
                 logger.error("No hay hooks disponibles")
                 break
 
-            # 4. Seleccionar Variante
-            variante = self._select_variante(bof['id'], hook['id'])
-            if not variante:
-                logger.warning(f"No hay variantes para Hook {hook['filename']} + BOF {bof['id']}, intentando otro...")
-                continue
-            
-            # 5. Calcular brolls necesarios
+            # 4. Seleccionar Brolls (antes de variante para comprobar combo completa)
             num_brolls = self._calculate_num_brolls(audio['duracion'])
             hook_grupo = extract_broll_group(hook['filename']) if USE_BROLL_GROUPS else None
             brolls = self._select_brolls(num_brolls, hook_grupo)
-            
+
             if len(brolls) < num_brolls:
                 logger.warning(f"No hay suficientes brolls ({len(brolls)}/{num_brolls})")
+                continue
+
+            # 5. Seleccionar Variante (comprobando combo completa: hook+audio+brolls+variante)
+            brolls_ids_str = ','.join(str(b['id']) for b in sorted(brolls, key=lambda x: x['id']))
+            variante = self._select_variante(bof['id'], hook['id'], audio['id'], brolls_ids_str)
+            if not variante:
+                logger.warning(f"No hay variantes para Hook {hook['filename']} + BOF {bof['id']}, intentando otro...")
                 continue
             
             # 6. Generar video

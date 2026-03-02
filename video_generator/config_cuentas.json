@@ -22,8 +22,8 @@
     "max_mismo_hook_por_dia": 0,
     "max_mismo_producto_por_dia": 2,
     "horarios": {
-      "inicio": "08:00",
-      "fin": "23:50",
+      "inicio": "06:00",
+      "fin": "02:00",
       "zona_horaria": "Europe/Madrid"
     }
   },
@@ -36,8 +36,8 @@
     "max_mismo_hook_por_dia": 0,
     "max_mismo_producto_por_dia": 2,
     "horarios": {
-      "inicio": "08:00",
-      "fin": "23:50",
+      "inicio": "06:00",
+      "fin": "02:00",
       "zona_horaria": "Europe/Madrid"
     }
   }

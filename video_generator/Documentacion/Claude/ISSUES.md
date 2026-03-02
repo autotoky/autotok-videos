@@ -1,7 +1,22 @@
-# 🔧 ISSUES - AUTOTOK
+# ⚠️ DEPRECATED - ISSUES - AUTOTOK
 
-**Última actualización:** 2026-02-17
-**Versión:** 1.2
+> **ESTE DOCUMENTO ESTÁ DEPRECATED DESDE 2026-02-28.**
+> Todas las tareas, bugs, mejoras y pendientes se gestionan ahora en **Linear** bajo la iniciativa **Autotok**.
+>
+> **Acceso:** https://linear.app/quantica-dev
+>
+> **Proyectos en Linear:**
+> - Video Generator (QUA-33 a QUA-56)
+> - Video Scheduller (QUA-31, QUA-50, QUA-51, QUA-57)
+> - TikTok Autopost (QUA-39 a QUA-43)
+> - Content Creation (QUA-32)
+>
+> No se añadirán más issues a este documento. Se mantiene como referencia histórica.
+
+---
+
+**Última actualización:** 2026-02-27
+**Versión:** 1.4 (FINAL)
 
 ---
 
@@ -16,7 +31,69 @@
 
 ## 🔴 BUGS CRÍTICOS
 
-*Ninguno actualmente*
+### **FIX #010: Unicidad de combinaciones usaba solo hook+variante en vez de combo completa**
+
+**Módulo:** Generación de vídeos (`generator.py`)
+**Estado:** ✅ RESUELTO
+**Prioridad:** 🔴 ALTA — Bloqueaba generación de productos
+**Fecha reportado:** 2026-02-27
+**Fecha resuelto:** 2026-02-27
+
+**Problema:**
+`_select_variante()` comprobaba unicidad contra la tabla `hook_variante_usado` que solo registra `(hook_id, variante_id)`. Con 10 hooks × 6 variantes = 60 combinaciones máx, se agotaba rápidamente. Ignoraba audios y brolls, que multiplicarían las combinaciones a millones.
+
+**Impacto:**
+- Producto `bateria_power_bank_5000` bloqueado tras 60 vídeos, reportando "No hay variantes"
+- Solo 60 combinaciones posibles cuando debería haber ~18 millones
+
+**Solución aplicada:**
+- `_select_variante()` ahora recibe `audio_id` y `brolls_ids` y comprueba contra `combinaciones_usadas` (combo completa: hook + audio + brolls + variante)
+- Flujo reorganizado: brolls se seleccionan ANTES de variante para poder pasar `brolls_ids`
+- `brolls_ids` se ordenan al guardar y consultar para consistencia
+- Datos históricos corregidos (60 registros reordenados)
+
+**Archivos:** `generator.py`
+
+---
+
+### **FIX #011: INSERT en hook_variante_usado bloqueaba registro de vídeos generados**
+
+**Módulo:** Generación de vídeos (`generator.py`)
+**Estado:** ✅ RESUELTO
+**Prioridad:** 🔴 ALTA — Vídeos se generaban pero no se registraban en DB
+**Fecha reportado:** 2026-02-27
+**Fecha resuelto:** 2026-02-27
+
+**Problema:**
+Tras resolver FIX #010, `_register_video_in_db()` seguía insertando en `hook_variante_usado` que tenía constraint `UNIQUE(hook_id, variante_id)`. Al reusar combinaciones hook+variante (ahora válido porque el audio/brolls son distintos), el INSERT fallaba con `UNIQUE constraint failed`, hacía rollback y el vídeo no se registraba. Los archivos .mp4 se creaban en disco pero no quedaban en DB.
+
+**Impacto:**
+- 30 vídeos generados correctamente pero no registrados en DB (3 tandas de generación perdidas)
+- CLI mostraba 17 "Generado" en vez de 37
+
+**Solución aplicada:**
+- Eliminado INSERT en `hook_variante_usado` (ya no se usa para unicidad)
+- 20 vídeos huérfanos recuperados y registrados manualmente en DB parseando el log
+
+**Archivos:** `generator.py`
+
+---
+
+### **FIX #012: Proceso update lifecycle falla**
+
+**Módulo:** Lifecycle / mover_videos.py
+**Estado:** Pendiente de investigar
+**Prioridad:** 🔴 ALTA
+**Fecha reportado:** 2026-02-27
+
+**Problema:**
+El proceso de update lifecycle ha fallado. Arreglado manualmente en DB pero hay que investigar la causa raíz.
+
+**Impacto:**
+- Estados de vídeos no se actualizan correctamente
+- Requiere intervención manual en DB
+
+**Decisión:** Pendiente de investigación en próxima sesión
 
 ---
 
@@ -567,6 +644,28 @@ BOF 2 (deal_math: "2X1"):
 
 ### ✅ Completadas
 
+**Sistema de estabilidad v2 del programador** (Completado 2026-02-25)
+- Intervalos de 5 minutos para TikTok (`redondear_5min()`)
+- Validación de horas ocupadas en BD antes de generar horarios (`get_horas_ocupadas()`)
+- Simulación/dry run pre-programación
+- Validación de existencia de ficheros antes de programar
+- Retry + logging para escrituras en Sheet (`logs/sheet_writes.log`)
+- Auto-sync lifecycle + calendario antes de programar
+- Verificación post-programación y post-rollback
+- Tabla `historial_programacion` para tracking de acciones
+- Opción descartar vídeos generados (por producto, hook, overlay, individual)
+
+**Reorganización CLI v3** (Completado 2026-02-25)
+- Menú reorganizado en secciones lógicas: Preparar Material (1-3), Generar Vídeos (4-6), Programación (7-9), Estado y Control (10-14), Material IA (15-16), Sistema (17-18)
+- Flujo Opción 7: auto-sync → simulación → confirmación "SI" → programación real → verificación
+- Nueva opción 18: Limpiar Drive (borrar vídeos ya programados con verificación de backup local)
+
+**Limpieza automática de Drive** (Completado 2026-02-25)
+- `limpiar_videos_programados()` en `drive_sync.py`
+- Solo borra de Drive si existe backup local
+- Dry run preview antes de ejecutar
+- Limpia carpetas vacías tras borrado
+
 **Registro masivo de audios** (Completado)
 - Sistema ahora escanea y registra audios automáticamente
 - `scan_material.py --auto-bof` hace todo el proceso
@@ -587,6 +686,17 @@ BOF 2 (deal_math: "2X1"):
 - Límite línea 1: 20 caracteres
 - Límite línea 2: 30 caracteres
 - Validación en `bof_generator.py` (trunca) y `import_bof.py` (rechaza)
+
+---
+
+### 🟡 Prioridad Media — A valorar
+
+**Verificación post-programación: filtrar warnings de tandas anteriores**
+- La verificación post-programación revisa TODOS los vídeos con estado 'En Calendario'/'Programado', no solo los de la tanda actual
+- Esto genera warnings de horas duplicadas y archivos sin encontrar que corresponden a programaciones antiguas (ya publicadas/movidas)
+- Valorar si filtrar solo la tanda actual (`programado_at >= fecha_ejecución`) o mantener verificación global con sección separada "histórico"
+- **Fecha reportado:** 2026-02-27
+- **Decisión:** Pendiente de valorar
 
 ---
 
@@ -667,6 +777,47 @@ BOF 2 (deal_math: "2X1"):
 - Tiempo estimado: 2 horas
 - Script diario (cron/Task Scheduler)
 - Mantiene últimos 30 días
+
+---
+
+### 🔴 Prioridad Alta (Inmediato)
+
+**Automatización publicación TikTok (4 cuentas × 25 vídeos/día)**
+- Estado: **Prototipo v2 — selectores reales del video de operadoras**
+- Documento detallado: `analisis_automatizacion_tiktok.docx` (v2)
+- **Video walkthrough analizado:** `Documentacion/proceso_programar_manual.MOV` (4:18 min, Carol)
+- **Flujo real documentado (8 pasos):**
+  1. Consultar Sheet → datos del video
+  2. TikTok Studio (`tiktokstudio/upload?from=creator_center`)
+  3. Subir video (file dialog → carpeta por fecha en Desktop)
+  4. Description (contenteditable): deal_math + SEO text + hashtags con #
+  5. Add link → Products → Next → Showcase products → buscar → seleccionar → Product name (EDITABLE, max 50 chars, aquí va el título promo) → Add
+  6. Settings → Schedule radio → calendar picker (día) → time picker (h:m en dos columnas)
+  7. Clic botón "Schedule" (rojo)
+- **Hallazgos clave del video:**
+  - Perfil Chrome de Carol: "Carolina - Personal"
+  - Carpeta videos: Desktop/VIDEOS TIKTOK Ofertas Trendy/DD-MM-YYYY/
+  - El "título" NO es un campo separado — es el "Product name" del dialog de Add product links
+  - Los hashtags se escriben dentro del Description con # (TikTok autocompleta)
+  - El Sheet tiene columnas adicionales a la derecha con deal_math texto largo y descripción
+  - Productos del escaparate visibles: Magcubic, Relojes, ZNP AI, LONKOOM, MINISO MS180, LANDOT
+- **Archivos:**
+  - `tiktok_publisher.py` — v2 con selectores reales y flujo escaparate completo
+  - `config_publisher.json` — Con perfil Carol real, mapeo productos→búsqueda escaparate
+  - `scripts/setup_publisher.py` — Instalador de dependencias
+  - `cli.py` — Opciones 19 (ver pendientes) y 20 (publicar)
+- **Pendiente:**
+  - Testing real con cuenta de prueba → ajustar selectores exactos
+  - titulo_publicacion en variaciones JSON (por ahora usa titulo_default de config)
+  - Empaquetar como .exe (PyInstaller) para cada PC (Fase 2)
+  - Añadir API oficial para 15/25 vídeos sin riesgo (Fase 3)
+- **Reflexión estratégica:** ¿25 vídeos/cuenta es óptimo? Con 10 cuentas × 10 vídeos = mismo volumen, 100% automatizable vía API, sin riesgo shadowban
+
+**Mover recursos_videos a Synology NAS**
+- Estado: Pendiente de info de Mar
+- `recursos_videos` ocupa 2.3 GB en Google Drive, `material_programar` ocupa 3.74 GB
+- Info necesaria de Mar: IP/hostname NAS, carpeta compartida, protocolo (SMB), credenciales, letra de unidad mapeada, espacio disponible
+- Objetivo: acceso local rápido sin depender de sincronización Drive
 
 ---
 
@@ -878,19 +1029,19 @@ Con $300 de crédito: ~5.000-15.000 imágenes según modelo
 
 ## 📊 ESTADÍSTICAS
 
-**Total issues:** 11
+**Total issues:** 14
 **Por estado:**
-- 🔴 Críticos: 0 pendientes / 4 resueltos (FIX #005, #006, #007, #008)
+- 🔴 Críticos: 1 pendiente (FIX #012) / 6 resueltos (FIX #005, #006, #007, #008, #010, #011)
 - 🟡 Problemas: 2 pendientes (FIX #001, #004) / 2 resueltos (FIX #002, #003)
 - 🔵 Edge cases: 3 (2 solucionados, 1 pendiente testing)
 
 **Mejoras completadas:** 12 (5 previas + 5 auditoría + flexibilidad programador + lifecycle)
-**Mejoras pendientes:** 3 funcionales + 7 auditoría (refactoring, tests, versionado BD, type hints, etc.)
+**Mejoras pendientes:** 4 funcionales (incl. verificación post-programación) + 7 auditoría
 
 **Auditoría de código:** Completada 2026-02-14
 **Mejoras auditoría implementadas:** 5 de 12 (2026-02-16)
-**Issues críticos resueltos:** 4 (FIX #005, #006, #007 — 2026-02-16, FIX #008 — 2026-02-16)
-**Issues críticos pendientes:** 0
+**Issues críticos resueltos:** 6
+**Issues críticos pendientes:** 1 (FIX #012 — lifecycle)
 
 ---
 
@@ -903,4 +1054,4 @@ Con $300 de crédito: ~5.000-15.000 imágenes según modelo
 
 ---
 
-**Última actualización:** 2026-02-17
+**Última actualización:** 2026-02-27

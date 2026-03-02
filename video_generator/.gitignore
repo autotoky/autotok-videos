@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# DB
+autotok.db
+autotok_backup.db
+
+# Credentials y config sensible
+credentials.json
+config_publisher.json
+.env
+
+# Logs
+logs/
+output/logs/
+
+# Test files
+test_video.mp4
+
+# OS
+.DS_Store
+Thumbs.db

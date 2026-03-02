@@ -213,8 +213,118 @@ def redondear_5min(dt):
     return dt.replace(second=0, microsecond=0)
 
 
+def _parse_ventana_horaria(config, fecha):
+    """Parsea la ventana horaria de la config, con soporte para cruce de medianoche.
+
+    Returns:
+        tuple: (inicio_dt, fin_dt, minutos_totales)
+    """
+    inicio = config.get('horario_inicio', '08:00')
+    fin = config.get('horario_fin', '21:30')
+
+    inicio_dt = datetime.strptime(f"{fecha} {inicio}", "%Y-%m-%d %H:%M")
+    fin_dt = datetime.strptime(f"{fecha} {fin}", "%Y-%m-%d %H:%M")
+
+    if fin_dt <= inicio_dt:
+        fin_dt += timedelta(days=1)
+
+    minutos_totales = (fin_dt - inicio_dt).total_seconds() / 60
+    return inicio_dt, fin_dt, minutos_totales
+
+
+def _get_horas_ocupadas_dt(cuenta, fecha, inicio_dt):
+    """Obtiene horas ocupadas como datetimes, ajustando para cruce de medianoche."""
+    horas_ocupadas = []
+    if cuenta:
+        horas_str = get_horas_ocupadas(cuenta, fecha)
+        for h in horas_str:
+            try:
+                h_dt = datetime.strptime(f"{fecha} {h}", "%Y-%m-%d %H:%M")
+                if h_dt < inicio_dt:
+                    h_dt += timedelta(days=1)
+                horas_ocupadas.append(h_dt)
+            except ValueError:
+                continue
+    return horas_ocupadas
+
+
+def generar_horario_huecos(config, videos_nuevos, fecha, cuenta=None):
+    """Genera horarios buscando los N huecos más grandes del día.
+
+    Ideal para añadir videos de un producto específico: los separa lo máximo
+    posible entre sí y respecto a los videos existentes.
+
+    Args:
+        config: Configuración de la cuenta
+        videos_nuevos: Cuántos videos NUEVOS colocar
+        fecha: Fecha en formato YYYY-MM-DD
+        cuenta: Nombre de cuenta (para consultar horas ocupadas en BD)
+
+    Returns:
+        list[str]: Horarios en formato HH:MM
+    """
+    GAP_MINIMO_ABSOLUTO = 15
+
+    inicio_dt, fin_dt, minutos_totales = _parse_ventana_horaria(config, fecha)
+    horas_ocupadas = _get_horas_ocupadas_dt(cuenta, fecha, inicio_dt)
+
+    if horas_ocupadas:
+        print(f"  [INFO] {len(horas_ocupadas)} horas ya ocupadas")
+
+    if videos_nuevos <= 0:
+        return []
+
+    ocupados = sorted(horas_ocupadas)
+    horarios_finales = []
+
+    # Colocar videos uno a uno, siempre en el hueco más grande disponible
+    todos_puntos = sorted([inicio_dt] + ocupados + [fin_dt])
+
+    for _ in range(videos_nuevos):
+        # Calcular huecos entre puntos existentes
+        huecos = []
+        for j in range(len(todos_puntos) - 1):
+            hueco_min = (todos_puntos[j + 1] - todos_puntos[j]).total_seconds() / 60
+            if hueco_min >= GAP_MINIMO_ABSOLUTO * 2:
+                centro = todos_puntos[j] + timedelta(minutes=hueco_min / 2)
+                centro = redondear_5min(centro)
+                # Añadir variación aleatoria (±10 min en tramos de 5)
+                variacion = random.choice([-10, -5, 0, 5, 10])
+                candidato = redondear_5min(centro + timedelta(minutes=variacion))
+                # Verificar que sigue dentro del hueco y la ventana
+                if candidato <= todos_puntos[j] + timedelta(minutes=GAP_MINIMO_ABSOLUTO):
+                    candidato = centro  # volver al centro si la variación lo saca
+                if candidato >= todos_puntos[j + 1] - timedelta(minutes=GAP_MINIMO_ABSOLUTO):
+                    candidato = centro
+                if candidato < inicio_dt or candidato > fin_dt:
+                    candidato = centro
+                huecos.append((hueco_min, candidato))
+
+        if not huecos:
+            print(f"  [WARNING] No hay más huecos disponibles (colocados {len(horarios_finales)}/{videos_nuevos})")
+            break
+
+        # Ordenar por tamaño de hueco descendente, tomar el más grande
+        huecos.sort(key=lambda x: x[0], reverse=True)
+        _, mejor = huecos[0]
+
+        horarios_finales.append(mejor.strftime("%H:%M"))
+        todos_puntos.append(mejor)
+        todos_puntos.sort()
+
+    print(f"  [INFO] Ventana: {minutos_totales:.0f} min | Huecos usados: {len(horarios_finales)}/{videos_nuevos}")
+    return sorted(horarios_finales)
+
+
 def generar_horario(config, videos_nuevos, fecha, cuenta=None):
-    """Genera horarios para slots vacíos, respetando horas ya ocupadas y usando intervalos de 5 min.
+    """Genera horarios distribuidos uniformemente con variación aleatoria.
+
+    Lógica:
+    1. Calcula el gap ideal = minutos_disponibles / videos_totales
+    2. Distribuye videos uniformemente a lo largo de la ventana horaria
+    3. Añade variación aleatoria (±10 min en tramos de 5 min)
+    4. Garantiza separación mínima de 15 min entre cualquier par de videos
+    5. Todo en intervalos de 5 min (requisito TikTok)
 
     Args:
         config: Configuración de la cuenta
@@ -225,24 +335,10 @@ def generar_horario(config, videos_nuevos, fecha, cuenta=None):
     Returns:
         list[str]: Horarios en formato HH:MM, solo para los slots nuevos
     """
-    inicio = config.get('horario_inicio', '08:00')
-    fin = config.get('horario_fin', '21:30')
-    gap_minimo = config.get('gap_minimo_horas', 1.0)
+    GAP_MINIMO_ABSOLUTO = 15  # minutos — nunca menos que esto entre dos videos
 
-    inicio_dt = datetime.strptime(f"{fecha} {inicio}", "%Y-%m-%d %H:%M")
-    fin_dt = datetime.strptime(f"{fecha} {fin}", "%Y-%m-%d %H:%M")
-
-    gap_minimo_minutos = gap_minimo * 60
-
-    # Consultar horas ya ocupadas en BD para este día
-    horas_ocupadas = []
-    if cuenta:
-        horas_str = get_horas_ocupadas(cuenta, fecha)
-        for h in horas_str:
-            try:
-                horas_ocupadas.append(datetime.strptime(f"{fecha} {h}", "%Y-%m-%d %H:%M"))
-            except ValueError:
-                continue
+    inicio_dt, fin_dt, minutos_totales = _parse_ventana_horaria(config, fecha)
+    horas_ocupadas = _get_horas_ocupadas_dt(cuenta, fecha, inicio_dt)
 
     if horas_ocupadas:
         print(f"  [INFO] {len(horas_ocupadas)} horas ya ocupadas: {', '.join(sorted(h.strftime('%H:%M') for h in horas_ocupadas))}")
@@ -250,75 +346,116 @@ def generar_horario(config, videos_nuevos, fecha, cuenta=None):
     if videos_nuevos <= 0:
         return []
 
-    # Construir lista de todos los momentos ocupados (para respetar gap)
     ocupados = sorted(horas_ocupadas)
+    total_videos = len(ocupados) + videos_nuevos
 
-    # Generar slots nuevos evitando conflictos con los existentes
-    horarios_nuevos = []
-    current = redondear_5min(inicio_dt)
+    # Calcular gap ideal basado en el total de videos (ocupados + nuevos)
+    gap_ideal = minutos_totales / total_videos if total_videos > 0 else minutos_totales
 
-    intentos_max = 500  # safety limit
-    intentos = 0
+    if gap_ideal < GAP_MINIMO_ABSOLUTO:
+        max_posibles = int(minutos_totales / GAP_MINIMO_ABSOLUTO)
+        disponibles = max_posibles - len(ocupados)
+        if disponibles < videos_nuevos:
+            print(f"  [WARNING] Solo caben {disponibles} videos nuevos con gap mínimo de {GAP_MINIMO_ABSOLUTO} min (solicitados: {videos_nuevos})")
+            videos_nuevos = max(0, disponibles)
+            if videos_nuevos == 0:
+                return []
+        total_videos = len(ocupados) + videos_nuevos
+        gap_ideal = minutos_totales / total_videos
 
-    while len(horarios_nuevos) < videos_nuevos and intentos < intentos_max:
-        intentos += 1
+    print(f"  [INFO] Ventana: {minutos_totales:.0f} min | Videos totales: {total_videos} | Gap ideal: {gap_ideal:.0f} min")
 
-        if current > fin_dt:
-            # No queda espacio, intentar rellenar desde el inicio con gaps reducidos
+    # Calcular variación máxima: no más del 20% del gap ideal, en tramos de 5 min, máx ±10 min
+    variacion_max = min(10, int(gap_ideal * 0.2 / 5) * 5)
+    variacion_max = max(variacion_max, 5)  # al menos ±5 min
+    variaciones_posibles = list(range(-variacion_max, variacion_max + 1, 5))
+
+    # Estrategia: generar todos los puntos (ocupados + nuevos) distribuidos,
+    # quedarnos solo con los nuevos
+    todos_los_puntos = []
+
+    for i in range(total_videos):
+        offset_minutos = gap_ideal * i + gap_ideal / 2
+        base_dt = inicio_dt + timedelta(minutes=offset_minutos)
+        base_dt = redondear_5min(base_dt)
+
+        if base_dt > fin_dt:
+            base_dt = redondear_5min(fin_dt - timedelta(minutes=5))
+
+        todos_los_puntos.append(base_dt)
+
+    # Asignar cada punto: si coincide con un ocupado existente, lo marcamos como ocupado
+    ocupados_restantes = list(ocupados)
+    slots_nuevos_dt = []
+
+    for punto in todos_los_puntos:
+        matched = False
+        for oc in ocupados_restantes:
+            if abs((punto - oc).total_seconds()) / 60 < gap_ideal / 2:
+                ocupados_restantes.remove(oc)
+                matched = True
+                break
+        if not matched:
+            slots_nuevos_dt.append(punto)
+
+    # Añadir variación aleatoria a cada slot nuevo
+    horarios_finales = []
+    todos_definitivos = sorted(ocupados)
+
+    for slot in slots_nuevos_dt:
+        if len(horarios_finales) >= videos_nuevos:
             break
 
-        # Comprobar que no choca con ninguna hora ocupada (respetando gap)
-        conflicto = False
-        for ocup in ocupados:
-            distancia = abs((current - ocup).total_seconds()) / 60
-            if distancia < gap_minimo_minutos:
-                conflicto = True
-                # Saltar al siguiente slot libre después de esta hora ocupada
-                current = redondear_5min(ocup + timedelta(minutes=gap_minimo_minutos))
+        vars_shuffled = [v for v in variaciones_posibles if v != 0]
+        random.shuffle(vars_shuffled)
+        vars_shuffled.append(0)
+        colocado = False
+
+        for var in vars_shuffled:
+            candidato = redondear_5min(slot + timedelta(minutes=var))
+
+            if candidato < inicio_dt or candidato > fin_dt:
+                continue
+
+            ok = all(
+                abs((candidato - d).total_seconds()) / 60 >= GAP_MINIMO_ABSOLUTO
+                for d in todos_definitivos
+            )
+
+            if ok:
+                horarios_finales.append(candidato.strftime("%H:%M"))
+                todos_definitivos.append(candidato)
+                todos_definitivos.sort()
+                colocado = True
                 break
 
-        if conflicto:
-            continue
+        if not colocado:
+            puntos_ord = sorted([inicio_dt] + todos_definitivos + [fin_dt])
+            mejor_hueco = None
+            mejor_centro = None
+            for j in range(len(puntos_ord) - 1):
+                hueco = (puntos_ord[j + 1] - puntos_ord[j]).total_seconds() / 60
+                if hueco >= GAP_MINIMO_ABSOLUTO * 2:
+                    centro = puntos_ord[j] + timedelta(minutes=hueco / 2)
+                    centro = redondear_5min(centro)
+                    if mejor_hueco is None or hueco > mejor_hueco:
+                        mejor_hueco = hueco
+                        mejor_centro = centro
 
-        # Slot válido
-        horarios_nuevos.append(current.strftime("%H:%M"))
-        ocupados.append(current)
-        ocupados.sort()
+            if mejor_centro and inicio_dt <= mejor_centro <= fin_dt:
+                ok = all(
+                    abs((mejor_centro - d).total_seconds()) / 60 >= GAP_MINIMO_ABSOLUTO
+                    for d in todos_definitivos
+                )
+                if ok:
+                    horarios_finales.append(mejor_centro.strftime("%H:%M"))
+                    todos_definitivos.append(mejor_centro)
+                    todos_definitivos.sort()
 
-        # Avanzar al siguiente slot con gap + variación
-        variacion = random.choice([-5, 0, 5, 10])  # variación en múltiplos de 5 min
-        current = redondear_5min(current + timedelta(minutes=gap_minimo_minutos + variacion))
+    if len(horarios_finales) < videos_nuevos:
+        print(f"  [WARNING] Solo hay espacio para {len(horarios_finales)} videos nuevos de {videos_nuevos} solicitados")
 
-    if len(horarios_nuevos) < videos_nuevos:
-        faltantes = videos_nuevos - len(horarios_nuevos)
-        print(f"  [WARNING] Solo se pudieron generar {len(horarios_nuevos)}/{videos_nuevos} horarios (faltan {faltantes})")
-        print(f"   Intentando rellenar con gap reducido...")
-
-        # Segunda pasada: reducir gap para meter los que faltan
-        todos_ocupados = sorted(ocupados)
-        # Buscar huecos entre las horas existentes
-        puntos = [inicio_dt] + todos_ocupados + [fin_dt]
-        for i in range(len(puntos) - 1):
-            if len(horarios_nuevos) >= videos_nuevos:
-                break
-            hueco_inicio = redondear_5min(puntos[i] + timedelta(minutes=5))
-            hueco_fin = puntos[i + 1] - timedelta(minutes=5)
-            candidate = hueco_inicio
-            while candidate <= hueco_fin and len(horarios_nuevos) < videos_nuevos:
-                hora_str = candidate.strftime("%H:%M")
-                if hora_str not in horarios_nuevos and candidate not in horas_ocupadas:
-                    # Verificar distancia mínima de 5 min con cualquier ocupado
-                    ok = all(abs((candidate - o).total_seconds()) >= 300 for o in ocupados)
-                    if ok:
-                        horarios_nuevos.append(hora_str)
-                        ocupados.append(candidate)
-                        ocupados.sort()
-                candidate = redondear_5min(candidate + timedelta(minutes=5))
-
-    if len(horarios_nuevos) < videos_nuevos:
-        print(f"  [WARNING] Solo hay espacio para {len(horarios_nuevos)} videos nuevos de {videos_nuevos} solicitados")
-
-    return sorted(horarios_nuevos)
+    return sorted(horarios_finales)
 
 
 def cumple_distancia_hook(hook_id, posicion_calendario, videos_programados, distancia_minima):
@@ -539,7 +676,7 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
     print(f"   Videos/día: {videos_por_dia}")
     print(f"   Max mismo producto/día: {max_mismo_producto}")
     print(f"   Distancia mínima hook: {distancia_minima_hook} publicaciones")
-    print(f"   Gap mínimo: {config.get('gap_minimo_horas', 1.0)}h")
+    print(f"   Gap mínimo: 15 min (absoluto)")
     print(f"   Distribución: 🔥{pct_top}% ✅{pct_val}% 🧪{pct_test}%")
 
     # Fecha inicio
@@ -613,6 +750,12 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
 
     print(f"\n[INFO] Videos ya programados: {len(videos_programados)}")
 
+    # Calcular distancia SEO dinámica basada en la diversidad del pool
+    seos_unicos = set(v.get('seo_text', '') for v in cola_videos)
+    distancia_seo = max(1, len(seos_unicos) - 1)  # nunca más que los SEOs únicos - 1
+    distancia_seo = min(distancia_seo, distancia_minima_hook)  # nunca más que la distancia de hooks
+    print(f"[INFO] SEO texts únicos: {len(seos_unicos)} → distancia SEO: {distancia_seo}")
+
     # Conectar a Sheets (no necesario en dry_run)
     sheet = None
     if not dry_run:
@@ -642,6 +785,8 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
     # ── Programar día a día ──
     calendario = []
     videos_usados = set()  # IDs ya usados (para no repetir)
+    slots_fallidos = []  # Slots donde no hubo video que cumpliera restricciones
+    restricciones_relajadas = False  # Se activa si el usuario lo pide
 
     # Tracking de distribución por categoría (soft target)
     cat_programados = {'top_seller': 0, 'validated': 0, 'testing': 0}
@@ -672,14 +817,22 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
             print(f"  [INFO] Productos ya programados hoy: {videos_ya_hoy} videos")
 
         # Calcular cuántos videos NUEVOS necesitamos para este día
-        videos_nuevos_hoy = max(0, videos_por_dia - videos_ya_hoy)
-        if videos_nuevos_hoy == 0:
-            print(f"  [INFO] Día completo ({videos_ya_hoy}/{videos_por_dia}), saltando")
-            fecha_actual += timedelta(days=1)
-            continue
+        if producto_filter:
+            # Con filtro de producto: videos_por_dia = cuántos AÑADIR de este producto
+            videos_nuevos_hoy = videos_por_dia
+        else:
+            # Sin filtro: videos_por_dia = total deseado por día
+            videos_nuevos_hoy = max(0, videos_por_dia - videos_ya_hoy)
+            if videos_nuevos_hoy == 0:
+                print(f"  [INFO] Día completo ({videos_ya_hoy}/{videos_por_dia}), saltando")
+                fecha_actual += timedelta(days=1)
+                continue
 
-        # Generar horarios solo para los slots vacíos, respetando horas ya ocupadas
-        horarios = generar_horario(config, videos_nuevos_hoy, fecha_str, cuenta=cuenta)
+        # Generar horarios: huecos máximos si es producto específico, uniforme si es general
+        if producto_filter:
+            horarios = generar_horario_huecos(config, videos_nuevos_hoy, fecha_str, cuenta=cuenta)
+        else:
+            horarios = generar_horario(config, videos_nuevos_hoy, fecha_str, cuenta=cuenta)
 
         # Último producto programado (para anti-consecutivos)
         ultimo_producto_id = None
@@ -687,15 +840,17 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
         for horario in horarios:
             video_seleccionado = None
 
-            # Buscar en TODA la cola (pool completo de videos disponibles)
-            # Dos pasadas: 1ª respetando anti-consecutivos, 2ª relajando
-            for pasada in range(2):
+            # Buscar en TODA la cola con restricciones progresivas:
+            #   Pasada 0: todas las restricciones + anti-consecutivos
+            #   Pasada 1: todas las restricciones (sin anti-consecutivos)
+            #   Pasada 2: sin SEO (si restricciones_relajadas)
+            #   Pasada 3: sin hook ni SEO (si restricciones_relajadas)
+            max_pasadas = 4 if restricciones_relajadas else 2
+            for pasada in range(max_pasadas):
                 for video in cola_videos:
-                    # Ya usado en esta tanda?
                     if video['id'] in videos_usados:
                         continue
 
-                    # Ya en uso en BD? (anti-duplicados)
                     if video['video_id'] in videos_no_disponibles:
                         videos_usados.add(video['id'])
                         continue
@@ -703,25 +858,25 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
                     producto_id = video['producto_id']
                     hook_id = video['hook_id']
                     seo_text = video['seo_text']
-                    cat = video.get('estado_comercial') or 'testing'
 
-                    # Pasada 1: respetar anti-consecutivos
+                    # Pasada 0: anti-consecutivos
                     if pasada == 0 and ultimo_producto_id is not None and producto_id == ultimo_producto_id:
                         continue
 
-                    # Max producto/día (hard limit)
+                    # Max producto/día (hard limit, siempre aplica)
                     if productos_usados_hoy.get(producto_id, 0) >= max_mismo_producto:
                         continue
 
-                    # Distancia hook
-                    if not cumple_distancia_hook(hook_id, posicion_calendario, videos_programados, distancia_minima_hook):
-                        continue
+                    # Distancia hook (se salta en pasada 3)
+                    if pasada < 3:
+                        if not cumple_distancia_hook(hook_id, posicion_calendario, videos_programados, distancia_minima_hook):
+                            continue
 
-                    # Distancia SEO (misma lógica que hooks)
-                    if not cumple_distancia_seo(seo_text, posicion_calendario, videos_programados, distancia_minima_hook):
-                        continue
+                    # Distancia SEO (se salta en pasada 2+)
+                    if pasada < 2:
+                        if not cumple_distancia_seo(seo_text, posicion_calendario, videos_programados, distancia_seo):
+                            continue
 
-                    # Video válido!
                     video_seleccionado = video
                     break
 
@@ -729,6 +884,7 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
                     break
 
             if not video_seleccionado:
+                slots_fallidos.append({'fecha': fecha_str, 'hora': horario})
                 print(f"  [WARNING] {horario} - No hay videos que cumplan restricciones")
                 continue
 
@@ -766,6 +922,81 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
 
         # Siguiente día
         fecha_actual += timedelta(days=1)
+
+    # ── Pregunta interactiva si hay slots fallidos por restricciones ──
+    if slots_fallidos and not restricciones_relajadas:
+        videos_disponibles_restantes = sum(1 for v in cola_videos if v['id'] not in videos_usados and v['video_id'] not in videos_no_disponibles)
+        print(f"\n  [!] {len(slots_fallidos)} slots no pudieron llenarse por restricciones de hook/SEO")
+        print(f"      Videos disponibles sin usar: {videos_disponibles_restantes}")
+        respuesta = input("  ¿Relajar restricciones de hook/SEO para completar? (S/N): ").strip().upper()
+        if respuesta == 'S' and videos_disponibles_restantes > 0:
+            restricciones_relajadas = True
+            # Volver a intentar los slots fallidos
+            print(f"\n  [RETRY] Reintentando {len(slots_fallidos)} slots con restricciones relajadas...")
+            for slot_info in slots_fallidos:
+                sf_fecha = slot_info['fecha']
+                sf_hora = slot_info['hora']
+                video_seleccionado = None
+
+                # Recalcular productos usados hoy para esta fecha
+                productos_hoy_retry = {}
+                for item in calendario:
+                    if item['fecha'] == sf_fecha:
+                        pid = item['video']['producto_id']
+                        productos_hoy_retry[pid] = productos_hoy_retry.get(pid, 0) + 1
+
+                for pasada in range(4):  # 4 pasadas con relajación progresiva
+                    for video in cola_videos:
+                        if video['id'] in videos_usados:
+                            continue
+                        if video['video_id'] in videos_no_disponibles:
+                            videos_usados.add(video['id'])
+                            continue
+
+                        producto_id = video['producto_id']
+                        hook_id = video['hook_id']
+                        seo_text = video['seo_text']
+
+                        if productos_hoy_retry.get(producto_id, 0) >= max_mismo_producto:
+                            continue
+
+                        if pasada < 3:
+                            if not cumple_distancia_hook(hook_id, posicion_calendario, videos_programados, distancia_minima_hook):
+                                continue
+                        if pasada < 2:
+                            if not cumple_distancia_seo(seo_text, posicion_calendario, videos_programados, distancia_seo):
+                                continue
+
+                        video_seleccionado = video
+                        break
+
+                    if video_seleccionado:
+                        break
+
+                if video_seleccionado:
+                    calendario.append({
+                        'video': video_seleccionado,
+                        'fecha': sf_fecha,
+                        'hora': sf_hora
+                    })
+                    videos_usados.add(video_seleccionado['id'])
+                    productos_hoy_retry[video_seleccionado['producto_id']] = \
+                        productos_hoy_retry.get(video_seleccionado['producto_id'], 0) + 1
+
+                    videos_programados.append({
+                        'video_id': video_seleccionado['video_id'],
+                        'fecha': sf_fecha,
+                        'hook_id': video_seleccionado['hook_id'],
+                        'producto_id': video_seleccionado['producto_id'],
+                        'seo_text': video_seleccionado.get('seo_text', '')
+                    })
+                    posicion_calendario += 1
+
+                    estado_emoji = {'top_seller': '🔥', 'validated': '✅', 'testing': '🧪'}.get(
+                        video_seleccionado.get('estado_comercial', 'testing'), '?')
+                    print(f"  {estado_emoji} {sf_fecha} {sf_hora} - {video_seleccionado['producto'][:25]} - {video_seleccionado['hook'][:25]}...")
+                else:
+                    print(f"  [!] {sf_fecha} {sf_hora} - Sin candidatos incluso relajando")
 
     if not calendario:
         print(f"\n[ERROR] No se pudo programar ningún video")

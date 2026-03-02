@@ -76,6 +76,15 @@ def print_menu():
     print("  15.  🖼️   Generar fondos con IA (screenshot)")
     print("  16.  👁️   Revisar y aprobar material generado")
     print()
+    print("  📤  PUBLICACIÓN TIKTOK")
+    print("  ─────────────────────────────────────────────")
+    print("  19.  📋  Ver videos pendientes de publicar")
+    print("  20.  🚀  Publicar videos en TikTok Studio")
+    print()
+    print("  🔧  GESTION BOFs")
+    print("  ─────────────────────────────────────────────")
+    print("  21.  🔧  Gestionar BOFs (activar / desactivar)")
+    print()
     print("  💾  SISTEMA")
     print("  ─────────────────────────────────────────────")
     print("  17.  💾  Backup de base de datos")
@@ -676,13 +685,14 @@ def validar_material():
     input("\nPresiona Enter para continuar...")
 
 
-def _run_generation_with_progress(productos_list, cuentas, cantidad):
+def _run_generation_with_progress(productos_list, cuentas, cantidad, bof_id=None):
     """Ejecuta generacion con contador de progreso integrado.
 
     Args:
         productos_list: Lista de dicts con al menos 'nombre'
         cuentas: Lista de nombres de cuenta
         cantidad: Videos por producto por cuenta
+        bof_id: ID de BOF específico a usar (None = auto-selección)
     """
     from config import validate_config
     from generator import VideoGenerator
@@ -704,7 +714,7 @@ def _run_generation_with_progress(productos_list, cuentas, cantidad):
             tracker.set_context(nombre, cuenta, idx)
 
             try:
-                with VideoGenerator(nombre, cuenta=cuenta) as generator:
+                with VideoGenerator(nombre, cuenta=cuenta, bof_id=bof_id) as generator:
                     results = generator.generate_batch(
                         batch_size=cantidad,
                         progress_callback=tracker.on_video_progress
@@ -733,6 +743,53 @@ def generar_videos():
     if not producto:
         return
 
+    # Preguntar si quiere forzar un BOF concreto
+    bof_id = None
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT id FROM productos WHERE nombre = ?", (producto,))
+        row = cursor.fetchone()
+        if row:
+            producto_id = row['id']
+            cursor.execute("""
+                SELECT pb.id, pb.deal_math, pb.activo,
+                       (SELECT COUNT(*) FROM audios WHERE bof_id = pb.id) as num_audios
+                FROM producto_bofs pb
+                WHERE pb.producto_id = ?
+                ORDER BY pb.id
+            """, (producto_id,))
+            bofs = [dict(r) for r in cursor.fetchall()]
+
+            if len(bofs) > 1:
+                print("  BOFs disponibles:")
+                print()
+                for i, bof in enumerate(bofs, 1):
+                    estado = "ACTIVO" if bof['activo'] else "INACTIVO"
+                    print(f"    {i}. [ID:{bof['id']}] {bof['deal_math']} ({estado}, {bof['num_audios']} audios)")
+                print()
+                print("    Enter = auto (usa BOFs activos con audios)")
+                print()
+                sel = input("  Forzar un BOF concreto? (numero o Enter): ").strip()
+                if sel:
+                    try:
+                        idx = int(sel) - 1
+                        if 0 <= idx < len(bofs):
+                            bof_id = bofs[idx]['id']
+                            if not bofs[idx]['activo']:
+                                print(f"\n  [!] ATENCION: BOF {bof_id} esta INACTIVO")
+                                confirma = input("      Usar igualmente? (S/N): ").strip().upper()
+                                if confirma != "S":
+                                    bof_id = None
+                            if bof_id and bofs[idx]['num_audios'] == 0:
+                                print(f"\n  [!] ERROR: BOF {bof_id} no tiene audios, no se pueden generar videos")
+                                input("\nPresiona Enter para continuar...")
+                                return
+                            if bof_id:
+                                print(f"\n  Forzando BOF {bof_id}: {bofs[idx]['deal_math']}")
+                    except (ValueError, IndexError):
+                        print("  [!] Seleccion invalida, usando auto")
+                print()
+
     cuentas = seleccionar_cuentas()
     if not cuentas:
         return
@@ -750,11 +807,12 @@ def generar_videos():
         return
 
     print()
-    print(f"Generando {cantidad} videos de {producto}")
+    bof_msg = f" (BOF forzado: {bof_id})" if bof_id else " (auto)"
+    print(f"Generando {cantidad} videos de {producto}{bof_msg}")
     print(f"Cuentas: {', '.join(cuentas)}")
     print()
 
-    _run_generation_with_progress([{"nombre": producto}], cuentas, cantidad)
+    _run_generation_with_progress([{"nombre": producto}], cuentas, cantidad, bof_id=bof_id)
 
 
 def generar_videos_multiples():
@@ -2441,6 +2499,134 @@ def revisar_material_ia():
 
 
 # ═══════════════════════════════════════════════════════════
+# GESTIONAR BOFS (Activar/Desactivar)
+# ═══════════════════════════════════════════════════════════
+
+def gestionar_bofs():
+    """Gestiona BOFs de un producto: ver estado, activar/desactivar."""
+    clear_screen()
+    print_header()
+    print("GESTIONAR BOFs (Activar / Desactivar)")
+    print()
+
+    producto = seleccionar_producto()
+    if not producto:
+        return
+
+    with get_connection() as conn:
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT id FROM productos WHERE nombre = ?", (producto,))
+        row = cursor.fetchone()
+        if not row:
+            print(f"[!] Producto '{producto}' no encontrado en BD")
+            input("\nPresiona Enter para continuar...")
+            return
+        producto_id = row['id']
+
+        cursor.execute("""
+            SELECT pb.id, pb.deal_math, pb.activo, pb.veces_usado,
+                   (SELECT COUNT(*) FROM audios WHERE bof_id = pb.id) as num_audios,
+                   (SELECT COUNT(*) FROM variantes_overlay_seo WHERE bof_id = pb.id) as num_variantes,
+                   (SELECT COUNT(*) FROM videos WHERE bof_id = pb.id) as num_videos,
+                   (SELECT COUNT(*) FROM videos WHERE bof_id = pb.id AND estado = 'Generado') as videos_generados,
+                   (SELECT COUNT(*) FROM videos WHERE bof_id = pb.id AND estado = 'En Calendario') as videos_calendario
+            FROM producto_bofs pb
+            WHERE pb.producto_id = ?
+            ORDER BY pb.id
+        """, (producto_id,))
+        bofs = [dict(r) for r in cursor.fetchall()]
+
+    if not bofs:
+        print(f"[!] No hay BOFs para '{producto}'")
+        input("\nPresiona Enter para continuar...")
+        return
+
+    print(f"  BOFs de {producto}:")
+    print()
+    for i, bof in enumerate(bofs, 1):
+        estado = "ACTIVO" if bof['activo'] else "INACTIVO"
+        icono = "  " if bof['activo'] else "  "
+        print(f"  {icono} {i}. [ID:{bof['id']}] {bof['deal_math']}")
+        print(f"       Estado: {estado} | Audios: {bof['num_audios']} | Variantes: {bof['num_variantes']}")
+        print(f"       Videos totales: {bof['num_videos']} | Generados: {bof['videos_generados']} | En Calendario: {bof['videos_calendario']}")
+        print()
+
+    print("  Opciones:")
+    print("    D. Desactivar un BOF")
+    print("    A. Activar un BOF")
+    print("    0. Volver")
+    print()
+
+    opcion = input("  Opcion: ").strip().upper()
+
+    if opcion == "0":
+        return
+
+    if opcion not in ("D", "A"):
+        print("  [!] Opcion invalida")
+        input("\nPresiona Enter para continuar...")
+        return
+
+    accion = "desactivar" if opcion == "D" else "activar"
+    nuevo_valor = 0 if opcion == "D" else 1
+
+    sel = input(f"  Numero del BOF a {accion}: ").strip()
+    try:
+        idx = int(sel) - 1
+        if idx < 0 or idx >= len(bofs):
+            raise ValueError
+        bof_sel = bofs[idx]
+    except (ValueError, IndexError):
+        print("  [!] Seleccion invalida")
+        input("\nPresiona Enter para continuar...")
+        return
+
+    if bof_sel['activo'] == nuevo_valor:
+        print(f"\n  [!] El BOF {bof_sel['id']} ya esta {'activo' if nuevo_valor else 'inactivo'}")
+        input("\nPresiona Enter para continuar...")
+        return
+
+    # Avisos de seguridad al desactivar
+    if opcion == "D":
+        avisos = []
+        if bof_sel['videos_generados'] > 0:
+            avisos.append(f"Hay {bof_sel['videos_generados']} videos en estado 'Generado' con este BOF")
+        if bof_sel['videos_calendario'] > 0:
+            avisos.append(f"Hay {bof_sel['videos_calendario']} videos 'En Calendario' con este BOF")
+
+        if avisos:
+            print()
+            print("  ATENCION:")
+            for aviso in avisos:
+                print(f"    [!] {aviso}")
+            print()
+            print("  Desactivar el BOF evita que se generen NUEVOS videos con el,")
+            print("  pero los videos existentes no se tocan. Si quieres descartarlos,")
+            print("  usa la opcion 6 (Descartar videos) despues.")
+            print()
+
+    confirma = input(f"  Confirmar {accion} BOF {bof_sel['id']} ({bof_sel['deal_math']})? (S/N): ").strip().upper()
+    if confirma != "S":
+        print("  Cancelado")
+        input("\nPresiona Enter para continuar...")
+        return
+
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("UPDATE producto_bofs SET activo = ? WHERE id = ?", (nuevo_valor, bof_sel['id']))
+        conn.commit()
+
+    estado_str = "ACTIVO" if nuevo_valor else "INACTIVO"
+    print(f"\n  [OK] BOF {bof_sel['id']} ahora esta {estado_str}")
+
+    if opcion == "D" and bof_sel['videos_generados'] > 0:
+        print(f"\n  RECUERDA: Usa opcion 6 para descartar los {bof_sel['videos_generados']} videos 'Generado' de este BOF")
+
+    input("\nPresiona Enter para continuar...")
+
+
+# ═══════════════════════════════════════════════════════════
 # DESCARTAR VIDEOS GENERADOS (Cambio 3.4)
 # ═══════════════════════════════════════════════════════════
 
@@ -2767,11 +2953,137 @@ def limpiar_drive():
 
 
 # ═══════════════════════════════════════════════════════════
+# PUBLICACIÓN TIKTOK
+# ═══════════════════════════════════════════════════════════
+
+def ver_pendientes_publicar():
+    """Opción 19: Muestra videos pendientes de publicar en TikTok."""
+    print(f"\n{'='*60}")
+    print(f"  📋 VIDEOS PENDIENTES DE PUBLICAR")
+    print(f"{'='*60}\n")
+
+    try:
+        from tiktok_publisher import listar_pendientes
+    except ImportError as e:
+        print(f"[ERROR] No se puede importar tiktok_publisher: {e}")
+        print(f"[TIP] Ejecuta: python scripts/setup_publisher.py")
+        input("\nPresiona Enter para continuar...")
+        return
+
+    cuenta = input("  Cuenta (vacío = todas): ").strip() or None
+    dias = input("  Días hacia adelante [7]: ").strip()
+    dias = int(dias) if dias else 7
+
+    listar_pendientes(cuenta, dias)
+    input("\nPresiona Enter para continuar...")
+
+
+def publicar_tiktok():
+    """Opción 20: Publica videos en TikTok Studio con Playwright."""
+    print(f"\n{'='*60}")
+    print(f"  🚀 PUBLICAR VIDEOS EN TIKTOK STUDIO")
+    print(f"{'='*60}\n")
+
+    try:
+        from tiktok_publisher import TikTokPublisher, get_videos_para_publicar
+    except ImportError as e:
+        print(f"[ERROR] No se puede importar tiktok_publisher: {e}")
+        print(f"[TIP] Ejecuta: python scripts/setup_publisher.py")
+        input("\nPresiona Enter para continuar...")
+        return
+
+    # Seleccionar cuenta
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT DISTINCT nombre FROM cuentas_config WHERE activa = 1 ORDER BY nombre")
+    cuentas = [row['nombre'] for row in cursor.fetchall()]
+    conn.close()
+
+    if not cuentas:
+        print("[ERROR] No hay cuentas activas configuradas")
+        input("\nPresiona Enter para continuar...")
+        return
+
+    print("  Cuentas disponibles:")
+    for i, c in enumerate(cuentas, 1):
+        print(f"    {i}. {c}")
+
+    sel = input(f"\n  Selecciona cuenta (1-{len(cuentas)}): ").strip()
+    try:
+        cuenta = cuentas[int(sel) - 1]
+    except (ValueError, IndexError):
+        print("[ERROR] Selección inválida")
+        input("\nPresiona Enter para continuar...")
+        return
+
+    # Seleccionar fecha
+    manana = (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")
+    fecha = input(f"  Fecha a publicar [{manana}]: ").strip() or manana
+
+    # Verificar videos disponibles
+    videos = get_videos_para_publicar(cuenta, fecha)
+    if not videos:
+        print(f"\n  No hay videos programados para {cuenta} en {fecha}")
+        input("\nPresiona Enter para continuar...")
+        return
+
+    print(f"\n  {len(videos)} videos encontrados para {cuenta} — {fecha}:")
+    for v in videos:
+        exists = "✓" if os.path.exists(v['filepath']) else "✗"
+        print(f"    [{exists}] {v['hora_programada']} - {v['producto'][:25]} - {v['video_id']}")
+
+    # Modo
+    print(f"\n  Opciones:")
+    print(f"    1. 🧪 Dry run (simular sin publicar)")
+    print(f"    2. 🚀 Publicar en TikTok Studio")
+    print(f"    0. Cancelar")
+    modo = input(f"\n  Selecciona (1/2/0): ").strip()
+
+    if modo == "0" or not modo:
+        return
+
+    dry_run = modo == "1"
+
+    # Límite opcional
+    limite = input(f"  Límite de videos (vacío = todos): ").strip()
+    limite = int(limite) if limite else None
+
+    # Confirmar
+    mode_label = "DRY RUN" if dry_run else "PRODUCCIÓN"
+    print(f"\n  ⚠️  Se va a {'simular' if dry_run else 'publicar'} en modo {mode_label}")
+    print(f"  Cuenta: {cuenta}")
+    print(f"  Fecha:  {fecha}")
+    print(f"  Videos: {limite or len(videos)}")
+
+    if not dry_run:
+        print(f"\n  ⚠️  IMPORTANTE: Chrome debe estar CERRADO antes de continuar")
+
+    confirmar = input(f"\n  Confirmar? (s/n): ").strip().lower()
+    if confirmar != 's':
+        print("  Cancelado")
+        input("\nPresiona Enter para continuar...")
+        return
+
+    # Publicar
+    publisher = TikTokPublisher(cuenta, dry_run=dry_run)
+    stats = publisher.run(fecha, limite)
+
+    input("\nPresiona Enter para continuar...")
+
+
+# ═══════════════════════════════════════════════════════════
 # MAIN
 # ═══════════════════════════════════════════════════════════
 
 def main():
     """Loop principal del CLI"""
+
+    # Migraciones de BD
+    try:
+        from scripts.db_config import ensure_bof_activo_column
+        ensure_bof_activo_column()
+    except Exception:
+        pass  # Silencioso — si falla no bloquea el CLI
 
     while True:
         clear_screen()
@@ -2822,6 +3134,14 @@ def main():
             backup_base_datos()
         elif opcion == "18":
             limpiar_drive()
+        # PUBLICACIÓN TIKTOK
+        elif opcion == "19":
+            ver_pendientes_publicar()
+        elif opcion == "20":
+            publicar_tiktok()
+        # GESTION BOFs
+        elif opcion == "21":
+            gestionar_bofs()
         elif opcion == "0":
             print("\n  👋 Hasta luego!\n")
             break
