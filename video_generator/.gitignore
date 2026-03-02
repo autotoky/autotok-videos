@@ -19,6 +19,12 @@ output/logs/
 # Test files
 test_video.mp4
 
+# Videos generados (demasiado grandes para git)
+output/
+
+# Proceso manual (video pesado)
+Documentacion/proceso_programar_manual.MOV
+
 # OS
 .DS_Store
 Thumbs.db
