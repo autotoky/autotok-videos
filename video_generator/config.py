@@ -15,13 +15,17 @@ from pathlib import Path
 # para usar en diferentes equipos sin editar código
 GOOGLE_DRIVE_PATH = os.environ.get("AUTOTOK_DRIVE_PATH", r"G:\Mi unidad")
 RECURSOS_BASE = os.environ.get("AUTOTOK_RECURSOS_DIR", os.path.join(GOOGLE_DRIVE_PATH, "recursos_videos"))
-OUTPUT_DIR = os.environ.get("AUTOTOK_OUTPUT_DIR", "C:/Users/gasco/Videos/videos_generados_py")
 
-# Carpeta de Drive sincronizada para compartir con Carol
-# Los videos en calendario se copian aquí automáticamente
-# Estructura: DRIVE_SYNC_PATH/{cuenta}/calendario/{DD-MM-YYYY}/{video}.mp4
-# Las carpetas de cuenta en Drive deben coincidir con los nombres de cuenta en BD
-DRIVE_SYNC_PATH = os.environ.get("AUTOTOK_DRIVE_SYNC", os.path.join(GOOGLE_DRIVE_PATH, "material_programar"))
+# QUA-151: OUTPUT_DIR apunta directamente a Synology Drive
+# Los videos se generan en OUTPUT_DIR/{cuenta}/{video_id}.mp4 y NO se mueven.
+# El estado vive en la BD (Turso), no en el filesystem.
+# Synology RAID proporciona backup automático.
+OUTPUT_DIR = os.environ.get("AUTOTOK_OUTPUT_DIR", r"C:\Users\gasco\SynologyDrive")
+
+# DEPRECATED (QUA-151): DRIVE_SYNC_PATH ya no se usa.
+# Los videos se generan directamente en Synology, no hay doble copia.
+# Se mantiene por compatibilidad con imports legacy.
+DRIVE_SYNC_PATH = os.environ.get("AUTOTOK_DRIVE_SYNC", OUTPUT_DIR)
 
 # Producto por defecto si no se especifica --producto
 DEFAULT_PRODUCTO = "melatonina"
@@ -164,10 +168,10 @@ def validate_config():
     
     if GOOGLE_DRIVE_PATH == "CAMBIAR_ESTA_RUTA":
         errors.append("⚠️  Debes configurar GOOGLE_DRIVE_PATH en config.py")
-    
+
     if not os.path.exists(GOOGLE_DRIVE_PATH):
-        errors.append(f"❌ Ruta Google Drive no existe: {GOOGLE_DRIVE_PATH}")
-    
+        errors.append(f"⚠️  Ruta Google Drive no existe: {GOOGLE_DRIVE_PATH} (OK si usas Synology)")
+
     if not os.path.exists(RECURSOS_BASE):
         errors.append(f"❌ Carpeta recursos_videos no existe: {RECURSOS_BASE}")
     

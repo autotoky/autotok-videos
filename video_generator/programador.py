@@ -34,7 +34,6 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from scripts.db_config import get_connection
 from config import OUTPUT_DIR
-from drive_sync import copiar_a_drive, is_drive_configured
 
 
 # Google Sheets config
@@ -216,6 +215,9 @@ def redondear_5min(dt):
 def _parse_ventana_horaria(config, fecha):
     """Parsea la ventana horaria de la config, con soporte para cruce de medianoche.
 
+    Si la fecha es hoy, ajusta el inicio a "ahora + 15 min" para no asignar
+    horas en el pasado.
+
     Returns:
         tuple: (inicio_dt, fin_dt, minutos_totales)
     """
@@ -227,6 +229,20 @@ def _parse_ventana_horaria(config, fecha):
 
     if fin_dt <= inicio_dt:
         fin_dt += timedelta(days=1)
+
+    # Si es hoy, no programar en el pasado
+    ahora = datetime.now()
+    if inicio_dt.date() == ahora.date() and ahora > inicio_dt:
+        # Margen de 15 min desde ahora (redondeado a 5 min)
+        minimo = ahora + timedelta(minutes=15)
+        # Redondear al siguiente múltiplo de 5
+        minuto = minimo.minute
+        resto = minuto % 5
+        if resto:
+            minimo += timedelta(minutes=5 - resto)
+        minimo = minimo.replace(second=0, microsecond=0)
+        inicio_dt = minimo
+        print(f"  [INFO] Fecha es hoy — inicio ajustado a {inicio_dt.strftime('%H:%M')}")
 
     minutos_totales = (fin_dt - inicio_dt).total_seconds() / 60
     return inicio_dt, fin_dt, minutos_totales
@@ -756,7 +772,7 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
     distancia_seo = min(distancia_seo, distancia_minima_hook)  # nunca más que la distancia de hooks
     print(f"[INFO] SEO texts únicos: {len(seos_unicos)} → distancia SEO: {distancia_seo}")
 
-    # Conectar a Sheets (no necesario en dry_run)
+    # QUA-148: Sheet ya no es obligatoria — conexión opcional
     sheet = None
     if not dry_run:
         try:
@@ -766,8 +782,7 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
             sheet = client.open_by_url(sheet_url).sheet1
             print(f"[OK] Conectado a Google Sheets ({'TEST' if test_mode else 'PROD'})")
         except Exception as e:
-            print(f"[ERROR] No se pudo conectar a Sheets: {e}")
-            return False
+            print(f"[INFO] Google Sheets no disponible: {e} (continuando sin Sheet)")
 
     # ── Protección anti-duplicados: consultar BD (no Sheet) ──
     # Un video con estado != 'Generado' ya está en uso o descartado
@@ -817,16 +832,8 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
             print(f"  [INFO] Productos ya programados hoy: {videos_ya_hoy} videos")
 
         # Calcular cuántos videos NUEVOS necesitamos para este día
-        if producto_filter:
-            # Con filtro de producto: videos_por_dia = cuántos AÑADIR de este producto
-            videos_nuevos_hoy = videos_por_dia
-        else:
-            # Sin filtro: videos_por_dia = total deseado por día
-            videos_nuevos_hoy = max(0, videos_por_dia - videos_ya_hoy)
-            if videos_nuevos_hoy == 0:
-                print(f"  [INFO] Día completo ({videos_ya_hoy}/{videos_por_dia}), saltando")
-                fecha_actual += timedelta(days=1)
-                continue
+        # videos_por_dia siempre es cuántos AÑADIR (no total objetivo)
+        videos_nuevos_hoy = videos_por_dia
 
         # Generar horarios: huecos máximos si es producto específico, uniforme si es general
         if producto_filter:
@@ -1027,7 +1034,7 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
         status = "OK" if count_r >= videos_por_dia_config else f"INCOMPLETO ({videos_por_dia_config - count_r} faltan)"
         if count_r < videos_por_dia_config:
             dias_incompletos += 1
-        print(f"  {fecha_r}: {count_r}/{videos_por_dia_config} videos - {status}")
+        print(f"  {fecha_r}: +{count_r} videos añadidos (pedidos: {videos_por_dia_config}) - {status}")
 
     if dias_incompletos > 0:
         print(f"\n  [WARNING] {dias_incompletos} días incompletos")
@@ -1075,24 +1082,11 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
 
             videos_programados_ids.append(video['video_id'])
 
-            # Mover archivo físico
-            en_carpeta = False
-            origen = video['filepath']
-            cuenta_dir = os.path.join(OUTPUT_DIR, cuenta)
-            fecha_carpeta = datetime.strptime(fecha, "%Y-%m-%d").strftime("%d-%m-%Y")
-            destino_dir = os.path.join(cuenta_dir, 'calendario', fecha_carpeta)
-            os.makedirs(destino_dir, exist_ok=True)
-            destino = os.path.join(destino_dir, os.path.basename(origen))
+            # QUA-151: Ya no movemos archivos. El video se queda donde se generó.
+            # El filepath en BD no cambia. El estado se gestiona solo en BD/Turso.
 
-            try:
-                if os.path.exists(origen):
-                    os.rename(origen, destino)
-                    cursor.execute("UPDATE videos SET filepath = ? WHERE id = ?", (destino, video['id']))
-                    # Copiar a Drive
-                    drive_result = copiar_a_drive(destino, cuenta, fecha)
-                    en_carpeta = drive_result is not None
-            except Exception as e:
-                print(f"[WARNING] Error moviendo {video['video_id']}: {e}")
+            # Verificar que el archivo existe
+            en_carpeta = video['filepath'] and os.path.exists(video['filepath'])
 
             # Preparar row para Sheet (columna L = en_carpeta)
             rows_to_append.append([
@@ -1107,7 +1101,7 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
                 video['hashtags'],
                 video['url_producto'],
                 'En Calendario',
-                en_carpeta  # Columna L: "en carpeta" (TRUE/FALSE)
+                en_carpeta
             ])
 
         conn.commit()
@@ -1118,61 +1112,67 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
         conn.rollback()
         conn.close()
 
-        from rollback_calendario import rollback_calendario as do_rollback
-        do_rollback(
-            cuenta,
-            video_ids=videos_programados_ids,
-            test_mode=test_mode,
-            skip_sheet=True
-        )
-        print("[OK] Rollback completado. No se han perdido datos.")
+        try:
+            from rollback_calendario import rollback_calendario as do_rollback
+            do_rollback(
+                cuenta,
+                video_ids=videos_programados_ids,
+                test_mode=test_mode,
+                skip_sheet=True
+            )
+            print("[OK] Rollback completado. No se han perdido datos.")
+        except ImportError:
+            # QUA-148: rollback_calendario eliminado, revertir directamente en BD
+            with get_connection() as rconn:
+                rcur = rconn.cursor()
+                for vid in videos_programados_ids:
+                    rcur.execute("UPDATE videos SET estado='Generado', fecha_programada=NULL, hora_programada=NULL WHERE video_id=?", (vid,))
+                rconn.commit()
+            print(f"[OK] {len(videos_programados_ids)} videos revertidos a Generado.")
         return False
 
-    # Append a Sheet (batch) con retry
-    import time
-    import logging
+    # QUA-148: Sheet append opcional
+    if sheet is not None:
+        import time
+        import logging
 
-    log_dir = os.path.join(os.path.dirname(__file__), 'logs')
-    os.makedirs(log_dir, exist_ok=True)
-    sheet_logger = logging.getLogger('sheet_sync')
-    if not sheet_logger.handlers:
-        fh = logging.FileHandler(os.path.join(log_dir, 'sheet_writes.log'), encoding='utf-8')
-        fh.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] %(message)s'))
-        sheet_logger.addHandler(fh)
-        sheet_logger.setLevel(logging.INFO)
+        log_dir = os.path.join(os.path.dirname(__file__), 'logs')
+        os.makedirs(log_dir, exist_ok=True)
+        sheet_logger = logging.getLogger('sheet_sync')
+        if not sheet_logger.handlers:
+            fh = logging.FileHandler(os.path.join(log_dir, 'sheet_writes.log'), encoding='utf-8')
+            fh.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] %(message)s'))
+            sheet_logger.addHandler(fh)
+            sheet_logger.setLevel(logging.INFO)
 
-    max_reintentos = 3
-    sheet_ok = False
-    for intento in range(1, max_reintentos + 1):
-        try:
-            sheet.append_rows(rows_to_append, value_input_option='USER_ENTERED')
-            print(f"[OK] {len(rows_to_append)} filas añadidas a Google Sheets")
-            sheet_logger.info(f"OK: {len(rows_to_append)} filas escritas para {cuenta} (intento {intento})")
-            sheet_ok = True
-            break
-        except Exception as e:
-            sheet_logger.warning(f"FALLO intento {intento}/{max_reintentos} para {cuenta}: {e}")
-            print(f"[WARNING] Error escribiendo en Sheet (intento {intento}/{max_reintentos}): {e}")
-            if intento < max_reintentos:
-                wait_secs = intento * 5
-                print(f"  Reintentando en {wait_secs}s...")
-                time.sleep(wait_secs)
+        max_reintentos = 3
+        sheet_ok = False
+        for intento in range(1, max_reintentos + 1):
+            try:
+                sheet.append_rows(rows_to_append, value_input_option='USER_ENTERED')
+                print(f"[OK] {len(rows_to_append)} filas añadidas a Google Sheets")
+                sheet_logger.info(f"OK: {len(rows_to_append)} filas escritas para {cuenta} (intento {intento})")
+                sheet_ok = True
+                break
+            except Exception as e:
+                sheet_logger.warning(f"FALLO intento {intento}/{max_reintentos} para {cuenta}: {e}")
+                print(f"[WARNING] Error escribiendo en Sheet (intento {intento}/{max_reintentos}): {e}")
+                if intento < max_reintentos:
+                    wait_secs = intento * 5
+                    print(f"  Reintentando en {wait_secs}s...")
+                    time.sleep(wait_secs)
 
-    if not sheet_ok:
-        sheet_logger.error(f"FALLO DEFINITIVO: {len(rows_to_append)} filas NO escritas para {cuenta}")
-        print(f"[ERROR] No se pudieron escribir las filas en Sheet tras {max_reintentos} intentos")
-        print(f"[TIP] Ejecuta repair_sheet.py para reparar:")
-        print(f"  python repair_sheet.py --cuenta {cuenta}")
-        print(f"[TIP] O puedes deshacer con:")
-        print(f"  python rollback_calendario.py --cuenta {cuenta} --ultima")
+        if not sheet_ok:
+            sheet_logger.error(f"FALLO DEFINITIVO: {len(rows_to_append)} filas NO escritas para {cuenta}")
+            print(f"[WARNING] No se pudieron escribir las filas en Sheet (no crítico)")
+    else:
+        print(f"[INFO] Sheet no conectada — {len(rows_to_append)} filas solo en BD")
 
     print(f"\n{'='*60}")
     print(f"  CALENDARIO GENERADO")
     print(f"{'='*60}")
     print(f"\n[NEXT] Los videos están en:")
-    print(f"  videos_generados_py/{cuenta}/calendario/DD-MM-YYYY/")
-    print(f"\n[TIP] Para deshacer esta programación:")
-    print(f"  python rollback_calendario.py --cuenta {cuenta} --ultima\n")
+    print(f"  videos_generados_py/{cuenta}/calendario/DD-MM-YYYY/\n")
 
     # ── Registrar en historial (Cambio 3.8) ──
     try:
@@ -1189,6 +1189,25 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
         )
     except Exception as e:
         print(f"[WARNING] No se pudo registrar en historial: {e}")
+
+    # ── Auto-export JSON de lotes para operadoras (QUA-43) ──
+    try:
+        from scripts.lote_manager import exportar_lote, importar_resultados
+
+        # Primero importar resultados pendientes (garantía anti-desync)
+        importar_resultados(cuenta)
+
+        # Exportar un lote por cada fecha programada
+        fechas_programadas = sorted(set(item['fecha'] for item in calendario))
+        for fecha_export in fechas_programadas:
+            lote_file = exportar_lote(cuenta, fecha_export)
+            if lote_file:
+                print(f"[OK] Lote exportado: {cuenta}/{fecha_export} → {os.path.basename(lote_file)}")
+    except ImportError:
+        pass  # lote_manager no disponible (no afecta al flujo normal)
+    except Exception as e:
+        print(f"[WARNING] No se pudieron exportar lotes: {e}")
+        print(f"  (No afecta a la programación, solo al flujo de operadoras)")
 
     return True
 

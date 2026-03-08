@@ -342,60 +342,28 @@ def fix_cuenta(cuenta, errores):
       - ESTADO_MISMATCH_SHEET: Estado Sheet ≠ BD (usar sync para resolver)
       - BD_SIN_LOCAL: Video en BD cuyo archivo no existe
     """
-    from drive_sync import copiar_a_drive, is_drive_configured
-
+    # QUA-151: Ya no hay Drive separado ni carpetas por estado.
+    # Solo arreglamos inconsistencias de BD.
     fixed = 0
 
     for tipo, datos in errores:
 
-        # --- Actualizar BD para que coincida con la carpeta donde está el archivo ---
+        # --- Actualizar BD para que coincida con el estado real ---
         if tipo == "ESTADO_MISMATCH_LOCAL":
             conn = get_connection()
             cursor = conn.cursor()
             for vid, carpeta, esperado, estado_bd in datos:
-                # 'esperado' es el estado que corresponde a la carpeta donde ESTÁ el archivo
-                # 'estado_bd' es el estado actual en BD (incorrecto)
-                # → Actualizamos BD al estado de la carpeta (la carpeta manda)
-
-                # Buscar el path real del archivo
-                local_info = scan_local(cuenta).get(vid)
-                if not local_info:
-                    continue
-                real_path = local_info["path"]
-
-                # Para Descartado/Violation/Generado: limpiar fecha/hora programada
-                clear_fecha = esperado in ("Descartado", "Generado")
-
-                if clear_fecha:
-                    cursor.execute(
-                        """UPDATE videos
-                        SET estado = ?, filepath = ?, fecha_programada = NULL, hora_programada = NULL
-                        WHERE video_id = ? AND cuenta = ?""",
-                        (esperado, real_path, vid, cuenta),
-                    )
-                else:
-                    cursor.execute(
-                        "UPDATE videos SET estado = ?, filepath = ? WHERE video_id = ? AND cuenta = ?",
-                        (esperado, real_path, vid, cuenta),
-                    )
-                print(f"    [FIX] {vid}: BD {estado_bd} → {esperado}")
+                # QUA-151: Ya no inferimos estado desde carpeta.
+                # La BD (Turso) es la fuente de verdad.
+                print(f"    [SKIP] {vid}: ESTADO_MISMATCH_LOCAL ya no aplica (QUA-151)")
                 fixed += 1
 
             conn.commit()
             conn.close()
 
-        # --- Copiar a Drive los que faltan ---
-        elif tipo == "FALTA_DRIVE" and is_drive_configured():
-            for vid, info in datos.items():
-                fecha = info.get("fecha")
-                filepath = info.get("filepath")
-                if filepath and os.path.exists(filepath) and fecha:
-                    result = copiar_a_drive(filepath, cuenta, fecha)
-                    if result:
-                        print(f"    [FIX] {vid}: copiado a Drive")
-                        fixed += 1
-                    else:
-                        print(f"    [!] {vid}: no se pudo copiar a Drive")
+        # --- FALTA_DRIVE ya no aplica (QUA-151) ---
+        elif tipo == "FALTA_DRIVE":
+            print(f"    [SKIP] FALTA_DRIVE ya no aplica (QUA-151 - sin Drive separado)")
 
         # --- Borrar de Drive los sobrantes ---
         elif tipo == "DRIVE_SOBRANTE":

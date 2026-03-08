@@ -1,131 +1,121 @@
 #!/usr/bin/env python3
 """
-ROLLBACK_CALENDARIO.PY - Deshacer programacion de calendario
-Version: 1.0
-Fecha: 2026-02-16
+ROLLBACK_CALENDARIO.PY - Revertir programación de calendario
+Versión: 3.0 - QUA-151 (sin movimiento de archivos)
+Fecha: 2026-03-08
 
-Revierte las 3 acciones de una programacion:
-  1. DB: estado 'En Calendario' -> 'Generado', limpia fecha/hora
-  2. Ficheros: mueve de calendario/fecha/ de vuelta a raiz de cuenta
-  3. Google Sheet: borra las filas correspondientes
+Revierte videos programados: estado -> Generado, limpia fecha/hora.
+QUA-151: Los archivos ya no se mueven — el filepath no cambia.
 
-Uso:
-    # Deshacer por rango de fechas
-    python rollback_calendario.py --cuenta ofertastrendy20 --fecha-desde 2026-02-17
-
-    # Deshacer videos especificos
-    python rollback_calendario.py --cuenta ofertastrendy20 --video-ids "id1,id2,id3"
-
-    # Deshacer ultima programacion
-    python rollback_calendario.py --cuenta ofertastrendy20 --ultima
+Uso CLI:
+  python rollback_calendario.py lotopdevicky --video-ids vid1,vid2,vid3
+  python rollback_calendario.py ofertastrendy20 --ultima
+  python rollback_calendario.py ofertastrendy20 --fecha-desde 2026-03-10
 """
 
-import sys
 import os
+import sys
+import argparse
 from datetime import datetime
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+sys.path.insert(0, os.path.dirname(__file__))
 
 from scripts.db_config import get_connection
-from config import OUTPUT_DIR
-from drive_sync import limpiar_drive_calendario, is_drive_configured
 
+
+# ═══════════════════════════════════════════════════════════
+# CONSULTA: obtener videos en calendario
+# ═══════════════════════════════════════════════════════════
 
 def get_videos_en_calendario(cuenta, video_ids=None, fecha_desde=None, ultima=False):
     """Obtiene videos programados que se van a revertir.
 
     Incluye todos los estados post-generado (En Calendario, Descartado, Violation,
-    Borrador, Programado) para que el rollback revierta TODO lo de una tanda,
-    incluyendo videos que Carol ya movio a Descartado/Violation.
+    Borrador, Programado) para que el rollback revierta TODO lo de una sesión
+    de programación si hace falta.
 
     Args:
         cuenta: Nombre de la cuenta
-        video_ids: Lista de video_id especificos (opcional)
-        fecha_desde: Revertir desde esta fecha YYYY-MM-DD (opcional)
-        ultima: Si True, revierte la ultima tanda programada
+        video_ids: Lista de video_id específicos (opcional)
+        fecha_desde: Fecha desde la que revertir (YYYY-MM-DD)
+        ultima: Si True, selecciona la última tanda (por programado_at)
 
     Returns:
-        list[dict]: Videos a revertir con id, video_id, filepath, fecha_programada
+        list[dict]: Videos encontrados con id, video_id, estado, filepath, fecha_programada, hora_programada
     """
-    # Estados que se revierten (todo menos Generado, que ya esta "limpio")
-    ESTADOS_REVERTIR = ('En Calendario', 'Descartado', 'Violation', 'Borrador', 'Programado')
+    estados = "('En Calendario', 'Descartado', 'Violation', 'Borrador', 'Programado')"
 
-    conn = get_connection()
-    cursor = conn.cursor()
+    with get_connection() as conn:
+        cursor = conn.cursor()
 
-    if video_ids:
-        placeholders = ','.join('?' * len(video_ids))
-        cursor.execute(f"""
-            SELECT id, video_id, estado, filepath, fecha_programada, hora_programada
-            FROM videos
-            WHERE cuenta = ? AND estado IN {ESTADOS_REVERTIR}
-            AND video_id IN ({placeholders})
-            ORDER BY fecha_programada, hora_programada
-        """, [cuenta] + list(video_ids))
-
-    elif fecha_desde:
-        cursor.execute("""
-            SELECT id, video_id, estado, filepath, fecha_programada, hora_programada
-            FROM videos
-            WHERE cuenta = ? AND estado IN ('En Calendario', 'Descartado', 'Violation', 'Borrador', 'Programado')
-            AND fecha_programada >= ?
-            ORDER BY fecha_programada, hora_programada
-        """, (cuenta, fecha_desde))
-
-    elif ultima:
-        # "Ultima tanda" = sesión de programación más reciente (por programado_at)
-        # Permite elegir qué sesión deshacer si hay varias
-
-        # Verificar si la columna programado_at existe
-        cursor.execute("PRAGMA table_info(videos)")
-        columnas = {r['name'] for r in cursor.fetchall()}
-        tiene_programado_at = 'programado_at' in columnas
-
-        if tiene_programado_at:
-            cursor.execute("""
-                SELECT DISTINCT programado_at
-                FROM videos
-                WHERE cuenta = ? AND estado = 'En Calendario' AND programado_at IS NOT NULL
-                ORDER BY programado_at DESC
-            """, (cuenta,))
-            sesiones = [r['programado_at'] for r in cursor.fetchall()]
-        else:
-            sesiones = []
-
-        if sesiones:
-            print(f"\nSesiones de programación encontradas:")
-            for i, sesion in enumerate(sesiones[:5], 1):
-                cursor.execute("""
-                    SELECT COUNT(*) as cnt,
-                           MIN(fecha_programada) as desde,
-                           MAX(fecha_programada) as hasta
-                    FROM videos
-                    WHERE cuenta = ? AND estado = 'En Calendario' AND programado_at = ?
-                """, (cuenta, sesion))
-                info = cursor.fetchone()
-                rango = info['desde'] if info['desde'] == info['hasta'] else f"{info['desde']} a {info['hasta']}"
-                print(f"  {i}. {sesion} — {info['cnt']} videos ({rango})")
-
-            print(f"  0. Cancelar")
-            seleccion = input(f"\nQue sesion deshacer? (default: 1 = mas reciente): ").strip()
-
-            if seleccion == '0':
-                conn.close()
-                return []
-
-            idx = int(seleccion) - 1 if seleccion.isdigit() and int(seleccion) > 0 else 0
-            if idx >= len(sesiones):
-                idx = 0
-            sesion_elegida = sesiones[idx]
-
-            cursor.execute("""
+        if video_ids:
+            # Video IDs específicos
+            placeholders = ",".join("?" for _ in video_ids)
+            cursor.execute(f"""
                 SELECT id, video_id, estado, filepath, fecha_programada, hora_programada
                 FROM videos
-                WHERE cuenta = ? AND estado = 'En Calendario' AND programado_at = ?
+                WHERE cuenta = ? AND estado IN {estados}
+                AND video_id IN ({placeholders})
                 ORDER BY fecha_programada, hora_programada
-            """, (cuenta, sesion_elegida))
-        else:
-            # Fallback para BD sin programado_at: solo la fecha más reciente
+            """, [cuenta] + list(video_ids))
+            return [dict(row) for row in cursor.fetchall()]
+
+        if fecha_desde:
+            # Desde una fecha
+            cursor.execute(f"""
+                SELECT id, video_id, estado, filepath, fecha_programada, hora_programada
+                FROM videos
+                WHERE cuenta = ? AND estado IN {estados}
+                AND fecha_programada >= ?
+                ORDER BY fecha_programada, hora_programada
+            """, (cuenta, fecha_desde))
+            return [dict(row) for row in cursor.fetchall()]
+
+        if ultima:
+            # Última tanda: buscar por programado_at
+            cursor.execute("PRAGMA table_info(videos)")
+            columnas = {row['name'] for row in cursor.fetchall()}
+
+            if 'programado_at' in columnas:
+                cursor.execute("""
+                    SELECT DISTINCT programado_at
+                    FROM videos
+                    WHERE cuenta = ? AND estado = 'En Calendario' AND programado_at IS NOT NULL
+                    ORDER BY programado_at DESC
+                """, (cuenta,))
+                sesiones = cursor.fetchall()
+
+                if sesiones:
+                    print("\nSesiones de programación encontradas:")
+                    for i, s in enumerate(sesiones[:5], 1):
+                        cursor.execute("""
+                            SELECT COUNT(*) as cnt,
+                                   MIN(fecha_programada) as desde,
+                                   MAX(fecha_programada) as hasta
+                            FROM videos
+                            WHERE cuenta = ? AND estado = 'En Calendario' AND programado_at = ?
+                        """, (cuenta, s['programado_at']))
+                        info = cursor.fetchone()
+                        print(f"  {i}. {s['programado_at']} -> {info['cnt']} videos ({info['desde']} a {info['hasta']})")
+
+                    print("  0. Cancelar")
+                    opcion = input("\nQue sesion deshacer? (default: 1 = mas reciente): ").strip()
+                    if opcion == "0":
+                        return []
+                    idx = int(opcion) - 1 if opcion.isdigit() and int(opcion) > 0 else 0
+                    if idx >= len(sesiones):
+                        return []
+
+                    programado_at = sesiones[idx]['programado_at']
+                    cursor.execute("""
+                        SELECT id, video_id, estado, filepath, fecha_programada, hora_programada
+                        FROM videos
+                        WHERE cuenta = ? AND estado = 'En Calendario' AND programado_at = ?
+                        ORDER BY fecha_programada, hora_programada
+                    """, (cuenta, programado_at))
+                    return [dict(row) for row in cursor.fetchall()]
+
+            # Sin datos de sesión: usar fecha más reciente
             print("[INFO] Sin datos de sesión, usando fecha más reciente")
             cursor.execute("""
                 SELECT MAX(fecha_programada) as max_fecha
@@ -134,7 +124,6 @@ def get_videos_en_calendario(cuenta, video_ids=None, fecha_desde=None, ultima=Fa
             """, (cuenta,))
             row = cursor.fetchone()
             if not row or not row['max_fecha']:
-                conn.close()
                 return []
 
             cursor.execute("""
@@ -143,364 +132,251 @@ def get_videos_en_calendario(cuenta, video_ids=None, fecha_desde=None, ultima=Fa
                 WHERE cuenta = ? AND estado = 'En Calendario' AND fecha_programada = ?
                 ORDER BY hora_programada
             """, (cuenta, row['max_fecha']))
+            return [dict(row) for row in cursor.fetchall()]
 
-    else:
-        # Sin filtro: todos los post-generado
-        cursor.execute("""
+        # Sin filtro: TODOS los En Calendario
+        cursor.execute(f"""
             SELECT id, video_id, estado, filepath, fecha_programada, hora_programada
             FROM videos
-            WHERE cuenta = ? AND estado IN ('En Calendario', 'Descartado', 'Violation', 'Borrador', 'Programado')
+            WHERE cuenta = ? AND estado IN {estados}
             ORDER BY fecha_programada, hora_programada
         """, (cuenta,))
+        return [dict(row) for row in cursor.fetchall()]
 
-    videos = [dict(row) for row in cursor.fetchall()]
-    conn.close()
-    return videos
 
+# ═══════════════════════════════════════════════════════════
+# PASO 1: Revertir base de datos
+# ═══════════════════════════════════════════════════════════
 
 def rollback_db(cuenta, videos):
-    """Revierte videos en DB: estado -> Generado, limpia fecha/hora, restaura filepath.
+    """Revierte videos en DB: estado -> Generado, limpia fecha/hora.
+
+    QUA-151: El filepath NO se modifica — el archivo no se mueve.
 
     Args:
         cuenta: Nombre de la cuenta
         videos: Lista de dicts con al menos 'id' y 'video_id'
 
     Returns:
-        int: Numero de registros actualizados
+        int: Número de registros actualizados
     """
-    if not videos:
-        return 0
-
-    conn = get_connection()
-    cursor = conn.cursor()
-
-    cuenta_dir = os.path.join(OUTPUT_DIR, cuenta)
-    actualizados = 0
-
-    for video in videos:
-        # Restaurar filepath a la raiz de la cuenta
-        filepath_original = os.path.join(cuenta_dir, f"{video['video_id']}.mp4")
-
-        cursor.execute("""
-            UPDATE videos
-            SET estado = 'Generado',
-                fecha_programada = NULL,
-                hora_programada = NULL,
-                programado_at = NULL,
-                filepath = ?
-            WHERE id = ?
-        """, (filepath_original, video['id']))
-        actualizados += cursor.rowcount
-
-    conn.commit()
-    conn.close()
-    return actualizados
+    updated = 0
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        for v in videos:
+            cursor.execute("""
+                UPDATE videos
+                SET estado = 'Generado',
+                    fecha_programada = NULL,
+                    hora_programada = NULL,
+                    programado_at = NULL
+                WHERE id = ?
+            """, (v['id'],))
+            updated += cursor.rowcount
+        conn.commit()
+    return updated
 
 
-def rollback_ficheros(cuenta, videos):
-    """Mueve ficheros de calendario/ de vuelta a la raiz de la cuenta.
-
-    Args:
-        cuenta: Nombre de la cuenta
-        videos: Lista de dicts con 'video_id' y 'filepath'
-
-    Returns:
-        tuple: (movidos, no_encontrados)
-    """
-    cuenta_dir = os.path.join(OUTPUT_DIR, cuenta)
-    movidos = 0
-    no_encontrados = 0
-
-    for video in videos:
-        filepath_actual = video.get('filepath', '')
-        destino = os.path.join(cuenta_dir, f"{video['video_id']}.mp4")
-
-        # Si ya esta en la raiz, skip
-        if filepath_actual and os.path.normpath(filepath_actual) == os.path.normpath(destino):
-            continue
-
-        # Intentar mover desde la ubicacion actual
-        if filepath_actual and os.path.exists(filepath_actual):
-            try:
-                os.rename(filepath_actual, destino)
-                movidos += 1
-            except OSError as e:
-                print(f"  [!] Error moviendo {video['video_id']}: {e}")
-        else:
-            # Buscar en todas las subcarpetas posibles
-            encontrado = False
-            filename = f"{video['video_id']}.mp4"
-
-            # Calendario, borrador, programados (tienen subcarpetas de fecha)
-            for subdir in ['calendario', 'borrador', 'programados']:
-                subdir_path = os.path.join(cuenta_dir, subdir)
-                if not os.path.exists(subdir_path):
-                    continue
-                for fecha_dir in os.listdir(subdir_path):
-                    path_posible = os.path.join(subdir_path, fecha_dir, filename)
-                    if os.path.exists(path_posible):
-                        try:
-                            os.rename(path_posible, destino)
-                            movidos += 1
-                            encontrado = True
-                        except OSError as e:
-                            print(f"  [!] Error moviendo {video['video_id']}: {e}")
-                        break
-                if encontrado:
-                    break
-
-            # Descartados y violations (carpeta plana, sin fecha)
-            if not encontrado:
-                for flat_dir in ['descartados', 'violations']:
-                    flat_path = os.path.join(cuenta_dir, flat_dir, filename)
-                    if os.path.exists(flat_path):
-                        try:
-                            os.rename(flat_path, destino)
-                            movidos += 1
-                            encontrado = True
-                        except OSError as e:
-                            print(f"  [!] Error moviendo {video['video_id']}: {e}")
-                        break
-
-            if not encontrado:
-                no_encontrados += 1
-
-    return movidos, no_encontrados
-
-
-def rollback_sheet(cuenta, videos, test_mode=False):
-    """Borra filas de Google Sheet correspondientes a los videos.
-
-    Args:
-        cuenta: Nombre de la cuenta
-        videos: Lista de dicts con 'video_id'
-        test_mode: Si True usa Sheet TEST
-
-    Returns:
-        int: Filas borradas
-    """
-    try:
-        import gspread
-        from oauth2client.service_account import ServiceAccountCredentials
-    except ImportError:
-        print("  [!] gspread no disponible, no se puede limpiar Sheet")
-        print("      Tendras que borrar las filas manualmente")
-        return 0
-
-    SCOPES = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-    CREDENTIALS_FILE = 'credentials.json'
-    SHEET_URL_TEST = 'https://docs.google.com/spreadsheets/d/1NeepTinvfUrYDP0t9jIqzUe_d2wjfNYQpuxII22Mej8/'
-    SHEET_URL_PROD = 'https://docs.google.com/spreadsheets/d/1QCb4xYKoLJPaMrGaBW311VQIyDg2Xa08V5DmsD2H81g/'
-
-    try:
-        creds = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, SCOPES)
-        client = gspread.authorize(creds)
-        sheet_url = SHEET_URL_TEST if test_mode else SHEET_URL_PROD
-        sheet = client.open_by_url(sheet_url).sheet1
-    except Exception as e:
-        print(f"  [!] Error conectando a Sheet: {e}")
-        return 0
-
-    # Obtener todos los video_ids a borrar
-    video_ids_set = {v['video_id'] for v in videos}
-
-    # Leer toda la Sheet para encontrar indices de filas
-    all_rows = sheet.get_all_records()
-
-    # Encontrar filas a borrar (indice 1-based, +1 por header)
-    filas_a_borrar = []
-    for i, row in enumerate(all_rows):
-        video_id = row.get('Video', '').strip()
-        row_cuenta = row.get('Cuenta', '').strip()
-        if video_id in video_ids_set and row_cuenta == cuenta:
-            filas_a_borrar.append(i + 2)  # +2: 1-based + header
-
-    if not filas_a_borrar:
-        print("  No se encontraron filas en Sheet")
-        return 0
-
-    # Borrar de abajo a arriba para no desfasar indices
-    filas_a_borrar.sort(reverse=True)
-    borradas = 0
-    for fila in filas_a_borrar:
-        try:
-            sheet.delete_rows(fila)
-            borradas += 1
-        except Exception as e:
-            print(f"  [!] Error borrando fila {fila}: {e}")
-
-    return borradas
-
+# ═══════════════════════════════════════════════════════════
+# FUNCIÓN PRINCIPAL: rollback completo
+# ═══════════════════════════════════════════════════════════
 
 def rollback_calendario(cuenta, video_ids=None, fecha_desde=None, ultima=False,
                         test_mode=False, skip_sheet=False, skip_files=False):
     """Ejecuta rollback completo de una programacion de calendario.
 
+    QUA-151: Ya no mueve ficheros ni toca Drive. Solo revierte BD y opcionalmente Sheet.
+
     Args:
         cuenta: Nombre de la cuenta
         video_ids: Lista de video_id especificos (opcional)
-        fecha_desde: Fecha desde la que revertir YYYY-MM-DD (opcional)
-        ultima: Si True, revierte la ultima tanda
-        test_mode: Si True usa Sheet TEST
-        skip_sheet: Si True, no toca Google Sheet
-        skip_files: Si True, no mueve ficheros
+        fecha_desde: Fecha desde (YYYY-MM-DD)
+        ultima: Si True, revierte última tanda
+        test_mode: Si True, usa Sheet TEST
+        skip_sheet: Si True, no toca Sheet
+        skip_files: Ignorado (QUA-151: ya no se mueven ficheros)
 
     Returns:
-        dict: Resultado con contadores
+        dict: Resumen con videos_revertidos, db_actualizados, etc.
     """
     print()
     print("=" * 60)
     print(f"  ROLLBACK CALENDARIO - {cuenta}")
     print("=" * 60)
-    print()
 
-    # 1. Identificar videos a revertir
-    videos = get_videos_en_calendario(cuenta, video_ids, fecha_desde, ultima)
-
+    # Obtener videos
+    videos = get_videos_en_calendario(cuenta, video_ids=video_ids,
+                                       fecha_desde=fecha_desde, ultima=ultima)
     if not videos:
         print("[!] No se encontraron videos para revertir")
-        return {"total": 0, "db": 0, "ficheros": 0, "sheet": 0}
+        return {"videos_revertidos": 0}
 
     print(f"[INFO] Videos a revertir: {len(videos)}")
-    print()
 
-    # Mostrar resumen por fecha
-    fechas = {}
+    # Resumen por fecha
+    fechas_resumen = {}
     for v in videos:
-        f = v['fecha_programada'] or 'Sin fecha'
-        fechas[f] = fechas.get(f, 0) + 1
+        f = v.get('fecha_programada') or 'Sin fecha'
+        fechas_resumen[f] = fechas_resumen.get(f, 0) + 1
+    for f in sorted(fechas_resumen.keys()):
+        print(f"  {f}: {fechas_resumen[f]} videos")
 
-    for f in sorted(fechas.keys()):
-        print(f"  {f}: {fechas[f]} videos")
-    print()
+    result = {
+        "videos_revertidos": len(videos),
+        "db_actualizados": 0,
+        "filas_sheet": 0,
+    }
 
-    # 2. Revertir DB
-    print("[1/3] Revirtiendo base de datos...")
-    db_count = rollback_db(cuenta, videos)
-    print(f"  [OK] {db_count} registros actualizados")
+    # [1/2] Base de datos
+    print(f"\n[1/2] Revirtiendo base de datos...")
+    result["db_actualizados"] = rollback_db(cuenta, videos)
+    print(f"  {result['db_actualizados']} registros actualizados")
+    # QUA-151: Los archivos no se mueven — el filepath en BD se mantiene
+    print(f"  (QUA-151: archivos no se mueven, filepath sin cambios)")
 
-    # 3. Mover ficheros
-    ficheros_movidos = 0
-    if not skip_files:
-        print("[2/3] Moviendo ficheros de vuelta...")
-        movidos, no_encontrados = rollback_ficheros(cuenta, videos)
-        ficheros_movidos = movidos
-        print(f"  [OK] {movidos} movidos, {no_encontrados} no encontrados")
-    else:
-        print("[2/3] Ficheros: omitido (skip_files)")
-
-    # 4. Limpiar Sheet
-    sheet_count = 0
+    # [2/2] Sheet (legacy, opcional)
     if not skip_sheet:
-        print("[3/3] Limpiando Google Sheet...")
-        sheet_count = rollback_sheet(cuenta, videos, test_mode)
-        print(f"  [OK] {sheet_count} filas borradas")
+        print(f"\n[2/2] Limpiando Google Sheet...")
+        try:
+            filas = rollback_sheet(cuenta, videos, test_mode=test_mode)
+            result["filas_sheet"] = filas
+            print(f"  {filas} filas borradas")
+        except Exception as e:
+            print(f"  [!] Error limpiando Sheet: {e}")
     else:
-        print("[3/3] Sheet: omitido (skip_sheet)")
+        print(f"\n[2/2] Sheet: omitido (skip_sheet)")
 
-    # 5. Limpiar Drive
-    drive_count = 0
-    if is_drive_configured():
-        print("[4/4] Limpiando carpeta Drive...")
-        video_ids_list = [v['video_id'] for v in videos]
-        drive_result = limpiar_drive_calendario(cuenta, video_ids_list)
-        drive_count = drive_result['borrados']
-        print(f"  [OK] {drive_count} borrados de Drive, {drive_result['no_encontrados']} no encontrados")
-    else:
-        print("[4/4] Drive: no configurado, omitido")
-
-    # Resumen
+    # Resumen final
     print()
     print("=" * 60)
-    print("  [OK] ROLLBACK COMPLETADO")
+    print(f"  [OK] ROLLBACK COMPLETADO")
+    print(f"  Videos revertidos:   {result['videos_revertidos']}")
+    print(f"  DB actualizados:     {result['db_actualizados']}")
+    print(f"  Filas Sheet:         {result['filas_sheet']}")
     print("=" * 60)
-    print(f"  Videos revertidos:   {len(videos)}")
-    print(f"  DB actualizados:     {db_count}")
-    print(f"  Ficheros movidos:    {ficheros_movidos}")
-    print(f"  Filas Sheet:         {sheet_count}")
-    print(f"  Drive limpiados:     {drive_count}")
-    print("=" * 60)
-    print()
 
-    # ── Registrar en historial (Cambio 3.8) ──
+    # Registrar en historial
     try:
-        from scripts.db_config import registrar_historial
-        fechas = sorted(set(v['fecha_programada'] for v in videos if v.get('fecha_programada')))
-        registrar_historial(
-            accion='rollback',
-            cuenta=cuenta,
-            num_videos=len(videos),
-            fecha_inicio=fechas[0] if fechas else None,
-            fecha_fin=fechas[-1] if fechas else None,
-            detalles=f"db={db_count} files={ficheros_movidos} sheet={sheet_count} drive={drive_count}"
-        )
+        with get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='historial_rollbacks'")
+            if cursor.fetchone():
+                now = datetime.now().isoformat()
+                video_ids_str = ",".join(v['video_id'] for v in videos)
+                cursor.execute("""
+                    INSERT INTO historial_rollbacks (cuenta, fecha, video_ids, num_videos)
+                    VALUES (?, ?, ?, ?)
+                """, (cuenta, now, video_ids_str, len(videos)))
+                conn.commit()
     except Exception as e:
         print(f"[WARNING] No se pudo registrar en historial: {e}")
 
-    return {
-        "total": len(videos),
-        "db": db_count,
-        "ficheros": ficheros_movidos,
-        "sheet": sheet_count,
-        "drive": drive_count
-    }
+    return result
 
+
+def rollback_sheet(cuenta, videos, test_mode=False):
+    """Borra filas de Google Sheet correspondientes a los videos."""
+    try:
+        import gspread
+        from google.oauth2.service_account import Credentials
+    except ImportError:
+        print("  [!] gspread no disponible, no se puede limpiar Sheet")
+        return 0
+
+    SCOPES = [
+        "https://spreadsheets.google.com/feeds",
+        "https://www.googleapis.com/auth/drive"
+    ]
+
+    try:
+        creds = Credentials.from_service_account_file("credentials.json", scopes=SCOPES)
+        client = gspread.authorize(creds)
+
+        if test_mode:
+            sheet_url = "https://docs.google.com/spreadsheets/d/1QCb4xYKoLJPaMrGaBW311VQIyDg2Xa08V5DmsD2H81g/"
+        else:
+            sheet_url = "https://docs.google.com/spreadsheets/d/1NeepTinvfUrYDP0t9jIqzUe_d2wjfNYQpuxII22Mej8/"
+
+        spreadsheet = client.open_by_url(sheet_url)
+        worksheet = spreadsheet.worksheet(cuenta)
+    except Exception as e:
+        print(f"  [!] Error conectando a Sheet: {e}")
+        return 0
+
+    video_ids_set = {v['video_id'] for v in videos}
+    all_values = worksheet.get_all_values()
+    rows_to_delete = []
+
+    for i, row in enumerate(all_values):
+        if len(row) > 4 and row[4] in video_ids_set:
+            rows_to_delete.append(i + 1)
+
+    if not rows_to_delete:
+        print("  No se encontraron filas en Sheet")
+        return 0
+
+    borradas = 0
+    for row_num in reversed(rows_to_delete):
+        try:
+            worksheet.delete_rows(row_num)
+            borradas += 1
+        except Exception as e:
+            print(f"  [!] Error borrando fila {row_num}: {e}")
+
+    return borradas
+
+
+# ═══════════════════════════════════════════════════════════
+# CLI
+# ═══════════════════════════════════════════════════════════
 
 def main():
-    import argparse
-
-    parser = argparse.ArgumentParser(description='Deshacer programacion de calendario')
-    parser.add_argument('--cuenta', required=True, help='Nombre de la cuenta')
-    parser.add_argument('--fecha-desde', help='Revertir desde fecha (YYYY-MM-DD)')
-    parser.add_argument('--video-ids', help='Video IDs separados por coma')
-    parser.add_argument('--ultima', action='store_true', help='Revertir ultima tanda programada')
-    parser.add_argument('--test', action='store_true', help='Usar Sheet TEST')
-    parser.add_argument('--skip-sheet', action='store_true', help='No tocar Google Sheet')
-    parser.add_argument('--skip-files', action='store_true', help='No mover ficheros')
-    parser.add_argument('--si', action='store_true', help='Confirmar sin preguntar')
+    parser = argparse.ArgumentParser(description="Deshacer programacion de calendario")
+    parser.add_argument("cuenta", help="Nombre de la cuenta")
+    parser.add_argument("--fecha-desde", help="Revertir desde fecha (YYYY-MM-DD)")
+    parser.add_argument("--video-ids", help="Video IDs separados por coma")
+    parser.add_argument("--ultima", action="store_true", help="Revertir ultima tanda programada")
+    parser.add_argument("--test", action="store_true", help="Usar Sheet TEST")
+    parser.add_argument("--skip-sheet", action="store_true", help="No tocar Google Sheet")
+    parser.add_argument("--si", action="store_true", help="Confirmar sin preguntar")
 
     args = parser.parse_args()
 
-    # Parsear video_ids si se proporcionaron
-    video_ids = None
-    if args.video_ids:
-        video_ids = [v.strip() for v in args.video_ids.split(',')]
+    video_ids = args.video_ids.split(",") if args.video_ids else None
 
-    # Verificar que se dio al menos un criterio de seleccion
-    if not args.fecha_desde and not args.video_ids and not args.ultima:
+    if not args.fecha_desde and not video_ids and not args.ultima:
         print("[!] Especifica al menos uno: --fecha-desde, --video-ids, o --ultima")
-        return 1
+        sys.exit(1)
 
     # Preview
-    videos = get_videos_en_calendario(args.cuenta, video_ids, args.fecha_desde, args.ultima)
+    videos = get_videos_en_calendario(args.cuenta, video_ids=video_ids,
+                                       fecha_desde=args.fecha_desde, ultima=args.ultima)
+
     if not videos:
         print(f"[!] No hay videos En Calendario para {args.cuenta} con esos criterios")
-        return 1
+        sys.exit(1)
 
     print(f"\nSe van a revertir {len(videos)} videos de {args.cuenta}:")
-    for v in videos[:5]:
-        print(f"  {v['fecha_programada']} {v['hora_programada']}  {v['video_id'][:50]}")
-    if len(videos) > 5:
-        print(f"  ... y {len(videos) - 5} mas")
+    for v in videos:
+        f = v.get('fecha_programada') or '?'
+        h = v.get('hora_programada') or '?'
+        print(f"  {f} {h}  {v['video_id']}  [{v['estado']}]")
 
     if not args.si:
         confirmacion = input("\nContinuar? (SI para confirmar): ").strip()
         if confirmacion != "SI":
-            print("[!] Rollback cancelado")
-            return 1
+            print("\n[!] Rollback cancelado")
+            sys.exit(0)
 
-    result = rollback_calendario(
+    rollback_calendario(
         args.cuenta,
         video_ids=video_ids,
         fecha_desde=args.fecha_desde,
         ultima=args.ultima,
         test_mode=args.test,
         skip_sheet=args.skip_sheet,
-        skip_files=args.skip_files
     )
-
-    return 0 if result['total'] > 0 else 1
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

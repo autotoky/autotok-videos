@@ -10,7 +10,6 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from scripts.db_config import get_connection
-from drive_sync import copiar_a_drive, is_drive_configured
 
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
@@ -102,19 +101,9 @@ def repair(cuenta, fecha=None, test_mode=False):
     for v in faltantes:
         fecha_sheet = datetime.strptime(v['fecha_programada'], "%Y-%m-%d").strftime("%d-%m-%Y")
 
-        # Verificar si está en Drive
-        en_carpeta = False
-        if is_drive_configured():
-            filepath = v.get('filepath', '')
-            if filepath and os.path.exists(filepath):
-                drive_result = copiar_a_drive(filepath, cuenta, v['fecha_programada'])
-                en_carpeta = drive_result is not None
-                if en_carpeta:
-                    print(f"  [Drive] Copiado: {v['video_id'][:40]}")
-                else:
-                    print(f"  [Drive] Error copiando: {v['video_id'][:40]}")
-            else:
-                print(f"  [Drive] Archivo no encontrado: {filepath}")
+        # QUA-151: Verificar que el archivo existe (ya no hay Drive separado)
+        filepath = v.get('filepath', '')
+        en_carpeta = filepath and os.path.exists(filepath)
 
         rows_to_append.append([
             cuenta,

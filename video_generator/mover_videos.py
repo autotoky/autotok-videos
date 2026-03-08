@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 """
-MOVER_VIDEOS.PY - Sincronización videos con Google Sheets
-Versión: 3.5 - Compatible con DB v3.5
-Fecha: 2026-02-12
+MOVER_VIDEOS.PY - DEPRECATED (QUA-151)
+
+Antes: Sincronizaba videos con Google Sheets y movía archivos entre carpetas.
+Ahora: Los estados se gestionan desde el dashboard (Turso). Los archivos no se mueven.
+
+Este archivo se mantiene por si algún import legacy lo necesita, pero no debe usarse.
+Versión original: 3.5 - Compatible con DB v3.5
 """
 
 import sys
@@ -171,18 +175,24 @@ class SincronizadorVideos:
         
         # La fecha ya viene en formato DD-MM-YYYY desde Sheet (sin barras)
         # Convertir solo para DB: DD-MM-YYYY → YYYY-MM-DD
+        # QUA-91: Usar strptime para validar formato y evitar errores con fechas ambiguas
+        fecha_carpeta = None
+        fecha_db = None
         if fecha and '-' in fecha:
             try:
-                parts = fecha.split('-')
-                fecha_carpeta = fecha  # DD-MM-YYYY (ya viene así)
-                fecha_db = f"{parts[2]}-{parts[1]}-{parts[0]}"  # YYYY-MM-DD para DB
-            except (IndexError, ValueError) as e:
-                print(f"[WARNING] Formato de fecha inválido '{fecha}': {e}")
-                fecha_carpeta = None
-                fecha_db = None
-        else:
-            fecha_carpeta = None
-            fecha_db = None
+                fecha_dt = datetime.strptime(fecha, "%d-%m-%Y")
+                fecha_carpeta = fecha  # DD-MM-YYYY (ya viene así de la Sheet)
+                fecha_db = fecha_dt.strftime("%Y-%m-%d")  # YYYY-MM-DD para DB
+            except ValueError:
+                # Intentar formato YYYY-MM-DD por si viene de BD en vez de Sheet
+                try:
+                    fecha_dt = datetime.strptime(fecha, "%Y-%m-%d")
+                    fecha_carpeta = fecha_dt.strftime("%d-%m-%Y")
+                    fecha_db = fecha
+                except ValueError:
+                    print(f"[WARNING] Formato de fecha inválido '{fecha}' — esperado DD-MM-YYYY o YYYY-MM-DD")
+                    fecha_carpeta = None
+                    fecha_db = None
 
         if estado == 'En Calendario':
             if not fecha_carpeta:
@@ -279,13 +289,18 @@ class SincronizadorVideos:
                 continue
 
             # Convertir fecha DD-MM-YYYY → YYYY-MM-DD para DB
+            # QUA-91: Usar strptime para validar formato y evitar errores con fechas ambiguas
             fecha_db = None
             if fecha and '-' in fecha:
                 try:
-                    parts = fecha.split('-')
-                    fecha_db = f"{parts[2]}-{parts[1]}-{parts[0]}"  # YYYY-MM-DD
-                except (IndexError, ValueError) as e:
-                    print(f"[WARNING] Formato de fecha inválido '{fecha}' para {video_id}: {e}")
+                    fecha_dt = datetime.strptime(fecha, "%d-%m-%Y")
+                    fecha_db = fecha_dt.strftime("%Y-%m-%d")
+                except ValueError:
+                    try:
+                        fecha_dt = datetime.strptime(fecha, "%Y-%m-%d")
+                        fecha_db = fecha  # Ya es YYYY-MM-DD
+                    except ValueError:
+                        print(f"[WARNING] Formato de fecha inválido '{fecha}' para {video_id} — esperado DD-MM-YYYY")
 
             # Buscar video en DB
             self.cursor.execute("""

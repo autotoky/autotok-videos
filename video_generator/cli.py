@@ -10,6 +10,7 @@ Uso:
 
 import sys
 import os
+import json
 import time
 from pathlib import Path
 from datetime import datetime, timedelta
@@ -61,7 +62,7 @@ def print_menu():
     print("  ─────────────────────────────────────────────")
     print("   7.  📆  Programar calendario (auto-sync + simulación)")
     print("   8.  ↩️   Deshacer programacion")
-    print("   9.  🔄  Sincronizar desde Sheet (manual)")
+    print("   9.  🔄  Sincronizar desde Sheet (deprecated - QUA-151)")
     print()
     print("  📊  ESTADO Y CONTROL")
     print("  ─────────────────────────────────────────────")
@@ -88,7 +89,7 @@ def print_menu():
     print("  💾  SISTEMA")
     print("  ─────────────────────────────────────────────")
     print("  17.  💾  Backup de base de datos")
-    print("  18.  🧹  Limpiar Drive (borrar videos ya programados)")
+    print("  18.  🧹  Limpiar Drive (deprecated - QUA-151)")
     print()
     print("   0.  🚪  Salir")
     print()
@@ -221,14 +222,29 @@ def seleccionar_o_crear_producto():
             print("[!] Introduce un numero valido o N")
 
 
+def _cargar_cuentas_activas():
+    """Carga cuentas activas desde config_cuentas.json."""
+    config_path = os.path.join(os.path.dirname(__file__), 'config_cuentas.json')
+    try:
+        with open(config_path, 'r', encoding='utf-8') as f:
+            config = json.load(f)
+        return [k for k, v in config.items() if v.get('activa', False)]
+    except Exception:
+        # Fallback hardcodeado por si falla la lectura
+        return ["ofertastrendy20", "lotopdevicky"]
+
+
 def seleccionar_cuentas():
     """Menu comun de seleccion de cuentas. Retorna lista de cuentas o None."""
+    cuentas = _cargar_cuentas_activas()
+
     print()
     print("CUENTAS DISPONIBLES:")
     print()
-    print("  1. ofertastrendy20")
-    print("  2. lotopdevicky")
-    print("  3. Ambas cuentas")
+    for i, cuenta in enumerate(cuentas, 1):
+        print(f"  {i}. {cuenta}")
+    if len(cuentas) > 1:
+        print(f"  {len(cuentas) + 1}. Todas las cuentas")
     print("  0. Cancelar")
     print()
 
@@ -236,15 +252,18 @@ def seleccionar_cuentas():
 
     if opcion == "0":
         return None
-    elif opcion == "1":
-        return ["ofertastrendy20"]
-    elif opcion == "2":
-        return ["lotopdevicky"]
-    elif opcion == "3":
-        return ["ofertastrendy20", "lotopdevicky"]
-    else:
-        print("[!] Opcion invalida")
-        return None
+
+    try:
+        idx = int(opcion)
+        if 1 <= idx <= len(cuentas):
+            return [cuentas[idx - 1]]
+        elif idx == len(cuentas) + 1 and len(cuentas) > 1:
+            return cuentas
+    except ValueError:
+        pass
+
+    print("[!] Opcion invalida")
+    return None
 
 
 # ═══════════════════════════════════════════════════════════
@@ -402,7 +421,7 @@ def escanear_material():
     print(f"Ejecutando: {cmd}")
     print("-" * 60)
 
-    result = subprocess.run(cmd, shell=True)
+    result = subprocess.run(cmd, shell=True, encoding='utf-8', errors='replace')
 
     print("-" * 60)
 
@@ -685,13 +704,14 @@ def validar_material():
     input("\nPresiona Enter para continuar...")
 
 
-def _run_generation_with_progress(productos_list, cuentas, cantidad, bof_id=None):
+def _run_generation_with_progress(productos_list, cuentas, cantidad, bof_id=None, es_ia=False):
     """Ejecuta generacion con contador de progreso integrado.
 
     Args:
         productos_list: Lista de dicts con al menos 'nombre'
         cuentas: Lista de nombres de cuenta
         cantidad: Videos por producto por cuenta
+        es_ia: Si True, marca los videos como contenido generado por IA
         bof_id: ID de BOF específico a usar (None = auto-selección)
     """
     from config import validate_config
@@ -714,7 +734,7 @@ def _run_generation_with_progress(productos_list, cuentas, cantidad, bof_id=None
             tracker.set_context(nombre, cuenta, idx)
 
             try:
-                with VideoGenerator(nombre, cuenta=cuenta, bof_id=bof_id) as generator:
+                with VideoGenerator(nombre, cuenta=cuenta, bof_id=bof_id, es_ia=es_ia) as generator:
                     results = generator.generate_batch(
                         batch_size=cantidad,
                         progress_callback=tracker.on_video_progress
@@ -806,13 +826,19 @@ def generar_videos():
         input("\nPresiona Enter para continuar...")
         return
 
+    # Preguntar si los videos contienen IA (QUA-39)
+    print()
+    ia_input = input("Contienen contenido generado por IA? (S/N, default N): ").strip().upper()
+    es_ia = ia_input == 'S'
+
     print()
     bof_msg = f" (BOF forzado: {bof_id})" if bof_id else " (auto)"
-    print(f"Generando {cantidad} videos de {producto}{bof_msg}")
+    ia_msg = " [IA]" if es_ia else ""
+    print(f"Generando {cantidad} videos de {producto}{bof_msg}{ia_msg}")
     print(f"Cuentas: {', '.join(cuentas)}")
     print()
 
-    _run_generation_with_progress([{"nombre": producto}], cuentas, cantidad, bof_id=bof_id)
+    _run_generation_with_progress([{"nombre": producto}], cuentas, cantidad, bof_id=bof_id, es_ia=es_ia)
 
 
 def generar_videos_multiples():
@@ -916,6 +942,13 @@ def generar_videos_multiples():
     print("=" * 60)
     print()
 
+    # Preguntar si los videos contienen IA (QUA-39)
+    ia_input = input("Contienen contenido generado por IA? (S/N, default N): ").strip().upper()
+    es_ia = ia_input == 'S'
+    if es_ia:
+        print("  [IA] Videos se marcarán como contenido generado por IA")
+    print()
+
     confirmacion = input("Continuar? (SI para confirmar): ").strip()
 
     if confirmacion != "SI":
@@ -923,7 +956,7 @@ def generar_videos_multiples():
         input("\nPresiona Enter para continuar...")
         return
 
-    _run_generation_with_progress(productos_seleccionados, cuentas, cantidad)
+    _run_generation_with_progress(productos_seleccionados, cuentas, cantidad, es_ia=es_ia)
 
 
 def ver_estado_productos():
@@ -1030,13 +1063,9 @@ def _auto_sync_lifecycle():
 
 
 def _auto_sync_calendario(cuenta):
-    """Sync calendario silencioso: actualiza estados desde Sheet sin reemplazar."""
-    try:
-        from mover_videos import SincronizadorVideos
-        with SincronizadorVideos(cuenta, test_mode=False) as sincronizador:
-            sincronizador.sincronizar(skip_reemplazo=True)
-    except Exception as e:
-        raise e
+    """DEPRECATED (QUA-151): Ya no se sincroniza con Sheet/filesystem.
+    Los estados se gestionan desde el dashboard (Turso) directamente."""
+    pass
 
 
 def _verificar_post_programacion(cuentas):
@@ -1228,7 +1257,7 @@ def programar_calendario():
         if videos_dia_num:
             cmd += f' --videos-dia {videos_dia_num}'
 
-        result = subprocess.run(cmd, shell=True)
+        result = subprocess.run(cmd, shell=True, encoding='utf-8', errors='replace')
         if result.returncode != 0:
             simulacion_ok = False
 
@@ -1265,7 +1294,7 @@ def programar_calendario():
         print(f"Ejecutando: {cmd}")
         print("-" * 60)
 
-        subprocess.run(cmd, shell=True)
+        subprocess.run(cmd, shell=True, encoding='utf-8', errors='replace')
 
         print("-" * 60)
 
@@ -1311,7 +1340,8 @@ def verificar_integridad():
         cmd.append(fix_flag)
 
     print()
-    result = subprocess.run(cmd, cwd=os.path.dirname(__file__))
+    result = subprocess.run(cmd, cwd=os.path.dirname(__file__),
+                           encoding='utf-8', errors='replace')
 
     print()
     input("Presiona Enter para continuar...")
@@ -1337,8 +1367,8 @@ def ver_dashboard():
         print(f"  DASHBOARD AUTOTOK                                {now.strftime('%d/%m/%Y %H:%M')}")
         print("=" * 80)
 
-        # ── Stats por cuenta (dos columnas) ──
-        cuentas = ["ofertastrendy20", "lotopdevicky"]
+        # ── Stats por cuenta ──
+        cuentas = _cargar_cuentas_activas()
         stats = {}
 
         for cuenta in cuentas:
@@ -1456,9 +1486,10 @@ def ver_dashboard():
             if s == "Sin programar":
                 return s
             try:
+                # QUA-91: Formato explícito YYYY-MM-DD HH:MM → DD/MM HH:MM
                 parts = s.split(" ")
-                ymd = parts[0].split("-")
-                return f"{ymd[2]}/{ymd[1]} {parts[1]}"
+                fecha_dt = datetime.strptime(parts[0], "%Y-%m-%d")
+                return f"{fecha_dt.strftime('%d/%m')} {parts[1]}"
             except Exception:
                 return s
 
@@ -1676,7 +1707,12 @@ def deshacer_programacion():
     if opcion == "0":
         return
 
-    from rollback_calendario import rollback_calendario, get_videos_en_calendario
+    try:
+        from rollback_calendario import rollback_calendario, get_videos_en_calendario
+    except ImportError:
+        print("[!] rollback_calendario eliminado (QUA-148). Usa BD directamente.")
+        input("\nPresiona Enter para continuar...")
+        return
 
     if opcion == "1":
         videos = get_videos_en_calendario(cuenta, ultima=True)
@@ -1910,68 +1946,16 @@ def gestionar_productos():
 # ═══════════════════════════════════════════════════════════
 
 def sincronizar_sheet():
-    """Sincroniza estados de videos desde Google Sheet"""
+    """DEPRECATED (QUA-151): Ya no se sincronizan estados desde Sheet."""
     clear_screen()
     print_header()
     print("SINCRONIZAR DESDE GOOGLE SHEET")
     print()
-    print("Lee la Google Sheet y para cada video:")
-    print("  - Mueve el fichero a la carpeta correspondiente al estado")
-    print("  - Actualiza el estado en la base de datos")
+    print("  [INFO] Esta opción ya no es necesaria (QUA-151).")
+    print("  Los estados se gestionan desde el dashboard de Vercel (Turso).")
+    print("  Los archivos ya no se mueven entre carpetas.")
     print()
-
-    cuentas = seleccionar_cuentas()
-    if not cuentas:
-        return
-
-    # Filtro de producto para reemplazos
-    print()
-    print("  Si hay descartados, reemplazar con:")
-    print("    Enter = cualquier producto disponible (auto)")
-    print("    P     = seleccionar producto concreto")
-    print("    N     = no reemplazar (solo sincronizar)")
-    print()
-    filtro = input("  Opcion: ").strip().upper()
-
-    producto_filter = None
-    skip_reemplazo = False
-    if filtro == "P":
-        producto_filter = seleccionar_producto()
-        if not producto_filter:
-            return
-        print(f"\n  Reemplazos solo con: {producto_filter}")
-    elif filtro == "N":
-        skip_reemplazo = True
-        print("\n  Reemplazos desactivados (solo sync)")
-
-    print()
-    confirmacion = input("Ejecutar sincronizacion? (SI para confirmar): ").strip()
-    if confirmacion != "SI":
-        print("\n[!] Sincronizacion cancelada")
-        input("\nPresiona Enter para continuar...")
-        return
-
-    try:
-        from mover_videos import SincronizadorVideos
-    except ImportError as e:
-        print(f"\n[!] Error importando mover_videos: {e}")
-        print("   Asegurate de que mover_videos.py esta en el directorio")
-        input("\nPresiona Enter para continuar...")
-        return
-
-    for cuenta in cuentas:
-        try:
-            with SincronizadorVideos(cuenta, test_mode=False) as sincronizador:
-                sincronizador.sincronizar(
-                    producto_filter=producto_filter,
-                    skip_reemplazo=skip_reemplazo
-                )
-        except Exception as e:
-            print(f"\n[ERROR] Error sincronizando {cuenta}: {e}")
-            import traceback
-            traceback.print_exc()
-
-    input("\nPresiona Enter para continuar...")
+    input("Presiona Enter para continuar...")
 
 
 # ═══════════════════════════════════════════════════════════
@@ -2878,78 +2862,16 @@ def descartar_videos():
 # ═══════════════════════════════════════════════════════════
 
 def limpiar_drive():
-    """Limpia videos ya programados de Google Drive para liberar espacio."""
+    """DEPRECATED (QUA-151): Ya no hay Drive separado. Videos están en Synology."""
     clear_screen()
     print_header()
-    print("🧹  LIMPIAR DRIVE (LIBERAR ESPACIO)")
+    print("🧹  LIMPIAR DRIVE")
     print()
-    print("  Borra de Drive los videos que ya están programados en TikTok")
-    print("  o cuya fecha ya ha pasado. Solo borra si existe backup local.")
+    print("  [INFO] Esta opción ya no es necesaria (QUA-151).")
+    print("  Los videos se generan directamente en Synology Drive.")
+    print("  No hay copia separada que limpiar.")
     print()
-
-    from drive_sync import is_drive_configured, limpiar_videos_programados
-
-    if not is_drive_configured():
-        print("[!] Drive no está configurado o no es accesible")
-        input("\nPresiona Enter para continuar...")
-        return
-
-    cuentas = ["ofertastrendy20", "lotopdevicky"]
-
-    # Primero dry run para mostrar qué se borraría
-    print("=" * 60)
-    print("  ANÁLISIS (sin borrar nada)")
-    print("=" * 60)
-
-    total_videos = 0
-    total_mb = 0
-
-    for cuenta in cuentas:
-        print(f"\n  {cuenta}:")
-        stats = limpiar_videos_programados(cuenta, dry_run=True)
-        total_videos += stats['borrados']
-        total_mb += stats['espacio_liberado_mb']
-        if stats['sin_backup']:
-            print(f"  [!] {stats['sin_backup']} videos sin backup local (no se tocarán)")
-
-    print(f"\n{'='*60}")
-    print(f"  TOTAL: {total_videos} videos / {total_mb:.1f} MB a liberar")
-    print(f"{'='*60}")
-
-    if total_videos == 0:
-        print("\n  No hay nada que limpiar.")
-        input("\nPresiona Enter para continuar...")
-        return
-
-    print()
-    confirmacion = input("  ¿Borrar estos videos de Drive? (SI para confirmar): ").strip()
-    if confirmacion != "SI":
-        print("\n[!] Limpieza cancelada")
-        input("\nPresiona Enter para continuar...")
-        return
-
-    # Ejecutar limpieza real
-    print()
-    print("=" * 60)
-    print("  LIMPIANDO...")
-    print("=" * 60)
-
-    total_borrados = 0
-    total_liberado = 0
-
-    for cuenta in cuentas:
-        print(f"\n  {cuenta}:")
-        stats = limpiar_videos_programados(cuenta, dry_run=False)
-        total_borrados += stats['borrados']
-        total_liberado += stats['espacio_liberado_mb']
-        if stats['errores']:
-            print(f"  [WARNING] {stats['errores']} errores")
-
-    print(f"\n{'='*60}")
-    print(f"  [OK] {total_borrados} videos borrados / {total_liberado:.1f} MB liberados")
-    print(f"{'='*60}")
-
-    input("\nPresiona Enter para continuar...")
+    input("Presiona Enter para continuar...")
 
 
 # ═══════════════════════════════════════════════════════════
@@ -3082,8 +3004,8 @@ def main():
     try:
         from scripts.db_config import ensure_bof_activo_column
         ensure_bof_activo_column()
-    except Exception:
-        pass  # Silencioso — si falla no bloquea el CLI
+    except Exception as e:
+        logging.debug(f"Migración BD falló (no bloquea CLI): {e}")
 
     while True:
         clear_screen()
