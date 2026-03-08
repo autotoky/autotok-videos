@@ -1,14 +1,14 @@
 {
-  "autotoky": {
-    "nombre": "Autotoky",
+  "totokydeals": {
+    "nombre": "Totoky Deals",
     "overlay_style": "blanco_amarillo",
     "descripcion": "Texto blanco + amarillo con bordes negros",
-    "activa": false,
-    "videos_por_dia": 0,
-    "max_mismo_hook_por_dia": 1,
-    "max_mismo_producto_por_dia": 0,
+    "activa": true,
+    "videos_por_dia": 3,
+    "max_mismo_hook_por_dia": 0,
+    "max_mismo_producto_por_dia": 1,
     "horarios": {
-      "inicio": "15:00",
+      "inicio": "08:00",
       "fin": "23:50",
       "zona_horaria": "Europe/Madrid"
     }

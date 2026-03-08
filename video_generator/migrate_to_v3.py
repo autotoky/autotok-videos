@@ -28,7 +28,7 @@ OUTPUT_DIR = "C:/Users/gasco/Videos/videos_generados_py"
 DEPRECATED_DIR = "deprecated"
 LEGACY_DATE = "pre_12_02_2026"
 
-CUENTAS = ['lotopdevicky', 'autotoky', 'ofertastrendy20']
+CUENTAS = ['lotopdevicky', 'totokydeals', 'ofertastrendy20']
 PRODUCTOS_LEGACY = ['melatonina', 'aceite_oregano', 'anillo', 'botella', 'arrancador']
 
 
