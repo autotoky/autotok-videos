@@ -40,7 +40,14 @@ AutoTok es un sistema Python que automatiza la creacion y publicacion de videos 
 3. **Tickets Linear:** Actualizar el estado de los tickets cuando se complete trabajo relevante
 4. **Documentacion:** Si se hacen cambios significativos (nuevos archivos, nuevas funcionalidades, cambios de arquitectura), actualizar la documentacion correspondiente
 5. **Log de sesion continuo:** Actualizar `Documentacion/Claude/SESION_YYYY-MM-DD.md` cada vez que pase algo relevante (bug fix, test, decision). NO dejar la actualizacion para el final. Asi, si la conversacion se compacta, el archivo ya esta al dia y el resumen puede referenciarlo.
-6. **Sync a Synology:** La carpeta de produccion para las operadoras se distribuye via Synology Drive (carpeta "Kevin" en Synology). Cuando se modifiquen archivos que afecten a las operadoras (INSTALAR.bat, PUBLICAR.bat, publicar_facil.py, setup_operadora.py, config_publisher.json, o cualquier archivo que las chicas usen), avisar a Sara para que los copie a Synology. Listar los archivos tocados al final de cada bloque de cambios.
+6. **Sync a Kevin (Synology):** CRITICO. Hay DOS carpetas:
+   - **Proyecto:** `C:\Users\gasco\Documents\PROYECTOS_WEB\autotok-videos` (montada en `/mnt/autotok-videos`) — codigo completo, git, docs
+   - **Kevin:** `C:\Users\gasco\SynologyDrive\kevin` (montada en `/mnt/SynologyDrive/kevin`) — subset para operadoras (INSTALAR.bat, PUBLICAR.bat, publisher)
+   - **Videos:** `C:\Users\gasco\SynologyDrive\{cuenta}\{video_id}.mp4` — almacenamiento plano de videos
+
+   Kevin NO es una copia del proyecto — es un subset curado. Cuando se modifique CUALQUIER archivo que este en kevin, **copiar SIEMPRE de proyecto → kevin despues de cada cambio**. Archivos de kevin: `tiktok_publisher.py, config.py, api_client.py, publicar_facil.py, logger.py, drive_sync.py, config_publisher.json, config_operadora.json, VERSION, INSTALAR.bat, PUBLICAR.bat, scripts/db_config.py, scripts/setup_operadora.py, scripts/sheet_sync.py, scripts/email_notifier.py, scripts/lote_manager.py`.
+
+   Si la carpeta SynologyDrive no esta montada, pedir a Sara que la monte antes de hacer cambios. Script de referencia: `copiar_kevin_a_synology.py`.
 
 ### Al final de cada sesion
 
