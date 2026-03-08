@@ -1,0 +1,6 @@
+turso_config.json
+autotok_replica.db
+autotok_replica.db-*
+credentials.json
+*.pyc
+__pycache__/
