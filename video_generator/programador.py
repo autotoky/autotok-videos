@@ -782,7 +782,7 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
             sheet = client.open_by_url(sheet_url).sheet1
             print(f"[OK] Conectado a Google Sheets ({'TEST' if test_mode else 'PROD'})")
         except Exception as e:
-            print(f"[INFO] Google Sheets no disponible: {e} (continuando sin Sheet)")
+            print(f"[INFO] Google Sheets no disponible (legacy, no afecta): {e}")
 
     # ── Protección anti-duplicados: consultar BD (no Sheet) ──
     # Un video con estado != 'Generado' ya está en uso o descartado
@@ -1166,13 +1166,14 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
             sheet_logger.error(f"FALLO DEFINITIVO: {len(rows_to_append)} filas NO escritas para {cuenta}")
             print(f"[WARNING] No se pudieron escribir las filas en Sheet (no crítico)")
     else:
-        print(f"[INFO] Sheet no conectada — {len(rows_to_append)} filas solo en BD")
+        print(f"[INFO] {len(rows_to_append)} videos guardados en Turso (Sheet legacy no conectada)")
 
     print(f"\n{'='*60}")
     print(f"  CALENDARIO GENERADO")
     print(f"{'='*60}")
-    print(f"\n[NEXT] Los videos están en:")
-    print(f"  videos_generados_py/{cuenta}/calendario/DD-MM-YYYY/\n")
+    print(f"\n[NEXT] Los videos están en Synology Drive:")
+    print(f"  SynologyDrive/{cuenta}/{{video_id}}.mp4")
+    print(f"  (almacenamiento plano — los archivos NO se mueven)\n")
 
     # ── Registrar en historial (Cambio 3.8) ──
     try:

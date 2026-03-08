@@ -1216,30 +1216,29 @@ def programar_calendario():
 
     import subprocess
 
-    # ── AUTO-SYNC PRE-PROGRAMACIÓN (Cambio 3.3) ──
+    # ── PRE-PROGRAMACIÓN: verificación rápida ──
+    # NOTA QUA-155: Turso es la fuente de verdad. Sheet sync es legacy/opcional.
     print()
     print("=" * 60)
-    print("  AUTO-SYNC PRE-PROGRAMACIÓN")
+    print("  PRE-PROGRAMACIÓN")
     print("=" * 60)
 
-    # 1. Sync lifecycle desde Sheet (actualizar estado_comercial de productos)
-    print("\n[1/2] Sincronizando lifecycle desde Sheet de Productos...")
+    # 1. Sync lifecycle desde Sheet (opcional — legacy)
+    print("\n[1/2] Sync lifecycle desde Sheet (legacy, opcional)...")
     try:
         _auto_sync_lifecycle()
         print("  [OK] Lifecycle sincronizado")
     except Exception as e:
-        print(f"  [WARNING] Error en sync lifecycle: {e}")
-        print("  Continuando con programación...")
+        print(f"  [INFO] Sheet no disponible (no afecta — Turso es fuente de verdad)")
 
-    # 2. Sync calendario desde Sheet (actualizar estados de videos)
-    print("\n[2/2] Sincronizando estados desde Sheet de Calendario...")
+    # 2. Sync calendario desde Sheet (opcional — legacy)
+    print("\n[2/2] Sync calendario desde Sheet (legacy, opcional)...")
     for cuenta in cuentas:
         try:
             _auto_sync_calendario(cuenta)
             print(f"  [OK] Calendario sincronizado para {cuenta}")
         except Exception as e:
-            print(f"  [WARNING] Error sincronizando {cuenta}: {e}")
-            print("  Continuando con programación...")
+            print(f"  [INFO] Sheet no disponible para {cuenta} (no afecta)")
 
     # ── SIMULACIÓN / DRY RUN (Cambio 3.1) ──
     print()
@@ -1319,7 +1318,7 @@ def verificar_integridad():
     print_header()
     print("🔍  VERIFICACIÓN DE INTEGRIDAD")
     print()
-    print("  Comprueba que BD, archivos locales, Sheet y Drive están sincronizados.")
+    print("  Comprueba que BD Turso, archivos en Synology y Dashboard están sincronizados.")
     print()
     print("  1. Solo verificar (mostrar problemas)")
     print("  2. Verificar y REPARAR automáticamente")
