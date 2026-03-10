@@ -364,11 +364,14 @@ Sara definió migrar toda la gestión posible al panel web. Primera fase: **Form
 - `ALTER TABLE producto_bofs ADD COLUMN precio TEXT`
 - `ALTER TABLE productos ADD COLUMN marca TEXT`
 
-### Implementación en curso:
-- [ ] `/api/formatos.py` — CRUD + auto-generación overlay/SEO/hashtags
-- [ ] Extensión UI `/productos` con gestión inline de formatos
-- [ ] Dropdown de audios registrados
-- [ ] Migración materiales a Synology + script registro
+### Implementado:
+- [x] `/api/formatos.py` — CRUD + auto-generación overlay/SEO/hashtags (commit `80bd190`)
+- [x] Extensión UI `/productos` con gestión inline de formatos + variantes editables
+- [x] Dropdown de audios registrados + campo marca en productos
+
+### Pendiente:
+- [ ] Migración materiales de Google Drive a Synology + script registro
+- [ ] Testing por Sara: crear formato nuevo, editar variantes, verificar auto-generación
 
 ---
 
