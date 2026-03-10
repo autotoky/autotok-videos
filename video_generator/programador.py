@@ -1191,6 +1191,26 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
     except Exception as e:
         print(f"[WARNING] No se pudo registrar en historial: {e}")
 
+    # ── QUA-189: Limpiar resultados viejos de videos recién programados ──
+    # Si un video fue publicado en una tanda anterior y se re-programa,
+    # su resultado viejo en la tabla `resultados` de Turso haría que
+    # `importar_resultados` lo pase a 'Programado' de vuelta (falso positivo).
+    # Borramos esos resultados antes de importar.
+    if videos_programados_ids:
+        try:
+            clean_conn = get_connection()
+            clean_cur = clean_conn.cursor()
+            for vid in videos_programados_ids:
+                clean_cur.execute(
+                    "DELETE FROM resultados WHERE video_id = ?", (vid,)
+                )
+            clean_conn.commit()
+            clean_conn.close()
+            print(f"[OK] Limpiados resultados previos de {len(videos_programados_ids)} videos (QUA-189)")
+        except Exception as e:
+            # No es crítico — la tabla puede no existir en SQLite local
+            print(f"[INFO] No se pudieron limpiar resultados previos: {e}")
+
     # ── Auto-export JSON de lotes para operadoras (QUA-43) ──
     try:
         from scripts.lote_manager import exportar_lote, importar_resultados
