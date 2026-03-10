@@ -1,12 +1,90 @@
-# 📊 ESTADO ACTUAL EJECUTIVO - AUTOTOK v4.2
+# 📊 ESTADO ACTUAL EJECUTIVO - AUTOTOK v4.5
 
-**Fecha:** 2026-03-08
-**Versión:** 4.2
-**Estado:** Sistema completo con almacenamiento Synology, BD Turso unificada, publicación automática, y flujo para operadoras
+**Fecha:** 2026-03-10
+**Versión:** 4.5
+**Estado:** Sistema completo con config per-PC y búsqueda híbrida de lotes
 
 ---
 
-## 🎉 **ÚLTIMOS LOGROS (2026-03-08)**
+## 🎉 **ÚLTIMOS LOGROS (2026-03-10 — sesión 2)**
+
+### **QUA-189 — Video fantasma con estado Programado en nueva programación:**
+- ✅ Root cause: `importar_resultados()` aplicaba resultados viejos de tabla `resultados` a videos recién programados
+- ✅ Fix: DELETE FROM resultados para video_ids antes de importar (commit `a62e1dd`)
+
+### **QUA-190 — Diferencias entre lotes y panel (3 capas de bug):**
+- ✅ **Capa 1 (API):** `/api/lotes` no consultaba tabla `videos` → añadido cross-check (commit `2d851c6`)
+- ✅ **Capa 2 (local):** PUBLICAR.bat en PCs sin API caía a archivos JSON obsoletos → cross-check directo con Turso via `db_config.py` (commit `c51bb63`). Copiado `turso_config.json` a Kevin
+- ✅ **Capa 3 (filtro):** `Programado` se consideraba "publicable" pero = ya publicado → `necesita_publicar()` solo True para `En Calendario` y `Error` (commit `e6a6438`)
+- ✅ Verificado por Sara en PC de Carol
+
+### **QUA-192 — Navegación unificada + rediseño visual del panel:**
+- ✅ Nav consistente en las 3 páginas (estado, productos, stats)
+- ✅ Rediseño visual: DM Sans, paleta indigo, CSS custom properties, shell bar unificado
+
+### **QUA-193 — Viabilidad programar desde dashboard web:**
+- ✅ Análisis completado: viable. Pendiente diseño UX por Sara
+
+---
+
+## 🎉 **LOGROS ANTERIORES (2026-03-10 — sesión 1)**
+
+### **QUA-36 Fase 2 — Dashboard de Estadísticas v2.0 + Scraper diario:**
+- ✅ **Dashboard stats v2.0** (`api/stats.py`): filtro por rango de fechas, dropdown con fecha+SEO title+cuenta, pestaña evolución temporal, ventas por día
+- ✅ **Tabla `video_sales`** (Turso): ventas por video+fecha (UNIQUE) — Sara copia datos diarios de TikTok tal cual
+- ✅ **Endpoint `/api/scrape`**: scraping manual desde API (para uso puntual)
+- ✅ **Scraper diario 00:00**: `SCRAPER_DIARIO_AUTO.bat /apagar` via Task Scheduler — scrapea engagement + apaga PC
+- ✅ **Auth POST por cookie**: formulario de ventas funciona desde dashboard sin API key
+- ⏳ **Pendiente**: Sara configura Task Scheduler + primer scrape completo esta noche
+
+### **QUA-183 — Import histórico TikTok Studio (completado lotop + trendy):**
+- ✅ **lotopdevicky**: 239 videos con post_id en BD (antes: 61). 92 pendientes documentados (3 pre-sistema + 82 manuales + 6 SEO huérfanos + 1 BD)
+- ✅ **ofertastrendy20**: 405 videos con post_id en BD (368 aplicados via Turso HTTP API, 6 colisiones resueltas). 589 pendientes documentados
+- ✅ **3-pass matching strategy**: SEO prefix → brand keywords → revisión manual por Sara
+- ✅ **Archivos de pendientes** creados: `pendientes_lotopdevicky.txt` y `pendientes_ofertastrendy20.txt` con categorización detallada
+- ✅ **QUA-187**: ticket actualizado con datos de huérfanos, archivos adjuntos
+- ⏳ **Pendiente**: captura totokydeals
+
+### **QUA-184 — Config operadora per-PC (fix definitivo):**
+- ✅ **Config en LOCALAPPDATA**: `config_operadora.json` ahora vive en `%LOCALAPPDATA%\AutoTok\` (per-PC, fuera de Synology). Fallback a kevin/ para backward compat
+- ✅ **`_find_config_operadora()`** en publicar_facil.py y tiktok_publisher.py: busca LOCALAPPDATA → kevin/
+- ✅ **`_load_config_operadora()`** en tiktok_publisher.py: carga única (antes se leía 3 veces por video)
+- ✅ **Búsqueda híbrida API+local**: `buscar_todos_lotes_pendientes()` busca en AMBAS fuentes, merge por fecha
+- ✅ **setup_operadora.py**: guarda config en LOCALAPPDATA + kevin/ backup
+- ⏳ **Pendiente testing** en PC operadora
+
+---
+
+## 🎉 **LOGROS ANTERIORES (2026-03-09)**
+
+### **QUA-36 Fase 1 — Dashboard de Estadísticas:**
+- ✅ **Stats scraper** (`stats_scraper.py`): extrae engagement de páginas públicas TikTok (views, likes, comments, shares, saves)
+- ✅ **Dashboard /api/stats**: KPIs, vistas por producto, por deal math, lista de videos, ventas manuales
+- ✅ **Tablas BD**: `video_stats` + `video_stats_history` en Turso
+- ✅ Primer run: 54 videos scrapeados, 40,539 views totales
+
+### **QUA-183 — Import histórico TikTok Studio (lotop+trendy completados):**
+- ✅ **scroll_capture_tiktok.js v2.0**: script de consola para captura de videos con virtual scrolling
+- ✅ **intercept_tiktok.js**: network interceptor para API interna TikTok Studio (supera virtual rendering)
+- ✅ **import_studio_html.py v5.0**: parser JSON + 3-pass matching (SEO prefix, brand keywords, revisión manual)
+- ✅ totokydeals completo (43 videos), lotopdevicky 239 con post_id, ofertastrendy20 405 con post_id
+
+### **QUA-184 — Fixes multi-PC para publicación (workarounds):**
+- ✅ **`_find_chrome()` auto-detección** en `tiktok_publisher.py`: busca Chrome en Program Files, Program Files (x86), LOCALAPPDATA
+- ✅ **Fallback filepath por filename**: si ruta relativa falla, busca solo el nombre del .mp4 en `drive_path/cuenta/`
+- ✅ **Publicación exitosa**: 23 videos trendy día 10 desde PC Sara-Yeast
+
+---
+
+## 🎉 **LOGROS ANTERIORES (2026-03-08 noche)**
+
+### **TEST END-TO-END COMPLETADO — Nuevo sistema validado en PC operadora (Mar):**
+- ✅ **Flujo completo probado:** instalación → programación → publicación → dashboard
+- ✅ **Multi-lote en PUBLICAR.bat:** operadora ve todos los lotes pendientes (A, B, C...), elige cuáles publicar, se ejecutan sin interrupción
+- ✅ **Filepath adaptation cross-PC:** publisher adapta rutas absolutas de otros PCs automáticamente
+- ✅ **Retry de errores:** API busca 7 días atrás y reintenta videos con estado Error
+
+## 🎉 **LOGROS ANTERIORES (2026-03-08 día)**
 
 ### **QUA-151 COMPLETADO — Consolidar videos en Synology (estructura plana):**
 - ✅ **Videos ya NO se mueven entre carpetas.** El estado vive SOLO en la BD (Turso). Un video se genera en `SynologyDrive/{cuenta}/{video_id}.mp4` y permanece ahí para siempre.
@@ -125,7 +203,7 @@
 - ✅ **BD Turso cloud** — fuente de verdad única (QUA-155)
 - ✅ **Almacenamiento Synology** — estructura plana, sin movimiento de archivos (QUA-151)
 - ✅ **Publicación automática en TikTok Studio** (tiktok_publisher.py)
-- ✅ **Flujo operadoras** (lotes JSON + PUBLICAR.bat) — sin BD en PC operadora
+- ✅ **Flujo operadoras multi-lote** (PUBLICAR.bat con selección A/B/C) — sin BD en PC operadora
 - ✅ **Auto-export/import** de lotes en programador
 - ✅ **Dashboard HTML v2.0** (QUA-92) — reemplaza Sheet como vista operativa
 - ✅ Reemplazo automático de Descartado/Violation
@@ -255,7 +333,7 @@ Sara: programador.py → auto-import resultados de API → BD actualizada
 
 ---
 
-**Última actualización:** 2026-02-15 10:00 CET
+**Última actualización:** 2026-03-10
 
 
 ---
@@ -270,14 +348,46 @@ Todos con datos reales del documento de ejemplos:
 
 ---
 
-## 🔮 **PRÓXIMOS PASOS**
+## 🚧 **EN CURSO — Panel de Formatos (QUA-70/185/186)**
 
-1. ⏳ **QUA-173**: Dashboard: permitir devolver video a estado Generado
-2. ⏳ **QUA-102**: Migrar get_connection() legacy calls
-3. ⏳ **QUA-135/136/137/138**: Sub-tickets de QUA-70 (soporte multi-formato, estadísticas, importar videos externos)
-4. ⏳ **Eliminar Google Sheet del flujo principal**: Dashboard HTML ya la reemplaza como vista operativa
-5. ⏳ **Verificar migración completa**: Confirmar que Sara eliminó la carpeta antigua `C:\Users\gasco\Videos\videos_generados_py` para liberar espacio
+### Cambio estratégico: todo al panel web
+Sara definió migrar toda la gestión posible al panel web. Primera fase: **Formatos + Variantes + Multi-link**.
+
+### Decisiones clave:
+- BOF → **Formato** (UI), BD mantiene `producto_bofs` para compat
+- Cada URL = cada formato (resuelve multi-link QUA-186 sin tabla extra)
+- `bof_generator.py` descartado como módulo. Solo se portan: overlay (6 vars), SEO (12 templates), hashtags (max 7)
+- Guion audio = input manual. Audios = dropdown de BD (solo voz humana)
+- Materiales: migrar de Google Drive a Synology
+
+### DB ya aplicado:
+- `ALTER TABLE producto_bofs ADD COLUMN precio TEXT`
+- `ALTER TABLE productos ADD COLUMN marca TEXT`
+
+### Implementación en curso:
+- [ ] `/api/formatos.py` — CRUD + auto-generación overlay/SEO/hashtags
+- [ ] Extensión UI `/productos` con gestión inline de formatos
+- [ ] Dropdown de audios registrados
+- [ ] Migración materiales a Synology + script registro
 
 ---
 
-**Última actualización:** 2026-03-08
+## 🔮 **PRÓXIMOS PASOS**
+
+1. ✅ **QUA-189**: Fix video fantasma en programación (commit a62e1dd)
+2. ✅ **QUA-190**: Fix diferencias lotes/panel — 3 capas (commits 2d851c6, c51bb63, e6a6438)
+3. ✅ **QUA-192**: Navegación unificada + rediseño visual (commits a28ac4d, 23d0814)
+4. ✅ **QUA-193**: Análisis viabilidad programar desde web (pendiente UX por Sara)
+5. ✅ **QUA-184 fix definitivo**: Implementado. Pendiente testing en PC operadora
+6. ✅ **QUA-183 lotop+trendy**: Import completado. Pendiente: captura totokydeals, import de pendientes restantes
+7. ✅ **QUA-36 Fase 2**: Dashboard stats v2.0 + scraper diario implementados. Pendiente: Task Scheduler + primer scrape
+8. 🚧 **QUA-70/185/186**: Gestión de Formatos en panel — EN CURSO
+9. ⏳ **QUA-193**: Programar desde dashboard (coexistir con CLI)
+10. ⏳ **QUA-36 Fase 3**: Gráficos de tendencia, exportar datos
+11. ⏳ **QUA-175**: TikTok requiere 15-20 min de antelación para programar (valorar solución)
+12. ⏳ **QUA-173**: Dashboard: permitir devolver video a estado Generado
+13. ⏳ **Materiales**: Migrar de Google Drive a Synology + gestión desde panel
+
+---
+
+**Última actualización:** 2026-03-10
