@@ -191,41 +191,48 @@ def buscar_todos_lotes_pendientes(cuenta, drive_path):
 
             if all_video_ids:
                 # Consultar estados actuales en la BD
-                # (Turso HTTP soporta placeholders, SQLite también)
                 ph = ",".join(["?" for _ in all_video_ids])
                 cur.execute(
-                    f"SELECT video_id, estado FROM videos WHERE video_id IN ({ph})",
+                    f"SELECT video_id, estado, tiktok_post_id FROM videos WHERE video_id IN ({ph})",
                     all_video_ids
                 )
-                estados_bd = {row['video_id']: row['estado'] for row in cur.fetchall()}
+                rows_bd = {row['video_id']: row for row in cur.fetchall()}
                 conn.close()
 
-                ESTADOS_PUBLICABLES = ('En Calendario', 'Borrador', 'Programado')
+                # Un video necesita que PUBLICAR.bat actúe si:
+                # - estado = 'En Calendario' (pendiente de subir a TikTok)
+                # - estado = 'Error' (fallo previo, reintentar)
+                # NO necesita acción si:
+                # - estado = 'Programado' (ya publicado en TikTok)
+                # - estado = 'Generado' (quitado del calendario)
+                # - estado = 'Descartado', 'Violation', etc.
+                def necesita_publicar(video_id):
+                    row = rows_bd.get(video_id)
+                    if not row:
+                        return False  # Video no existe en BD
+                    estado = row['estado']
+                    if estado == 'En Calendario':
+                        return True
+                    if estado == 'Error':
+                        return True
+                    return False
 
-                # Filtrar videos no publicables de cada lote
+                # Filtrar videos de cada lote
                 fechas_a_borrar = []
                 for fecha, lote_info in lotes_por_fecha.items():
                     lote_data = lote_info['lote_data']
                     videos_orig = lote_data.get('videos', [])
 
-                    # Solo mantener videos en estado publicable
+                    # Solo mantener videos que realmente necesitan publicación
                     videos_filtrados = [
                         v for v in videos_orig
-                        if estados_bd.get(v['video_id']) in ESTADOS_PUBLICABLES
+                        if necesita_publicar(v['video_id'])
                     ]
                     lote_data['videos'] = videos_filtrados
                     lote_data['total_videos'] = len(videos_filtrados)
 
-                    # Recalcular pendientes
-                    resultados = lote_data.get('resultados', {})
-                    pendientes = [
-                        v for v in videos_filtrados
-                        if v['video_id'] not in resultados
-                        or resultados[v['video_id']].get('estado') == 'Error'
-                    ]
-
-                    if pendientes:
-                        lote_info['n_pendientes'] = len(pendientes)
+                    if videos_filtrados:
+                        lote_info['n_pendientes'] = len(videos_filtrados)
                         lote_info['total_videos'] = len(videos_filtrados)
                     else:
                         fechas_a_borrar.append(fecha)
