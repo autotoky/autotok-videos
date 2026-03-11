@@ -45,11 +45,63 @@ from scripts.db_config import get_connection, db_connection
 # ═══════════════════════════════════════════════════════════
 
 # Ruta al ejecutable de Chrome del sistema
-# En Windows: típicamente "C:/Program Files/Google/Chrome/Application/chrome.exe"
-CHROME_PATH = os.environ.get(
-    "AUTOTOK_CHROME_PATH",
-    r"C:\Program Files\Google\Chrome\Application\chrome.exe"
-)
+# Se auto-detecta buscando en rutas comunes de Windows
+def _find_chrome():
+    env = os.environ.get("AUTOTOK_CHROME_PATH")
+    if env and os.path.exists(env):
+        return env
+    candidates = [
+        r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+        r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
+        os.path.expandvars(r"%LOCALAPPDATA%\Google\Chrome\Application\chrome.exe"),
+    ]
+    for path in candidates:
+        if os.path.exists(path):
+            return path
+    return candidates[0]  # fallback
+
+CHROME_PATH = _find_chrome()
+
+
+def _find_config_operadora(lote_path=None):
+    """Encuentra config_operadora.json con prioridad LOCALAPPDATA (QUA-184).
+    Search order:
+      1. %LOCALAPPDATA%/AutoTok/config_operadora.json (per-PC, fuera de Synology)
+      2. kevin/config_operadora.json (legacy, relativo al lote_path)
+      3. kevin/config_operadora.json (legacy, relativo a __file__)
+    Returns: path string or None
+    """
+    # 1. LOCALAPPDATA (per-PC)
+    localappdata = os.environ.get('LOCALAPPDATA', '')
+    if localappdata:
+        local_path = os.path.join(localappdata, 'AutoTok', 'config_operadora.json')
+        if os.path.exists(local_path):
+            return local_path
+
+    # 2. Relativo al lote (../../config_operadora.json)
+    if lote_path:
+        rel_path = os.path.join(os.path.dirname(lote_path), '..', '..', 'config_operadora.json')
+        if os.path.exists(rel_path):
+            return os.path.abspath(rel_path)
+
+    # 3. Junto a este script (kevin/config_operadora.json)
+    script_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'config_operadora.json')
+    if os.path.exists(script_path):
+        return script_path
+
+    return None
+
+
+def _load_config_operadora(lote_path=None):
+    """Carga config_operadora.json usando _find_config_operadora() (QUA-184).
+    Returns: dict or None
+    """
+    path = _find_config_operadora(lote_path)
+    if path and os.path.exists(path):
+        with open(path, 'r', encoding='utf-8') as cf:
+            return json.load(cf)
+    return None
+
 
 # Directorio del perfil de Chrome del usuario
 # Cada operadora tiene su propio perfil con cookies de TikTok
@@ -149,8 +201,10 @@ def get_cuenta_config(cuenta):
     config = load_publisher_config()
     cuenta_config = config.get('cuentas', {}).get(cuenta, {})
 
-    # Chrome path global o por defecto
+    # Chrome path: verificar que existe, si no auto-detectar
     chrome_path = config.get('chrome_path', CHROME_PATH)
+    if not os.path.exists(chrome_path):
+        chrome_path = _find_chrome()
 
     return {
         'chrome_path': chrome_path,
@@ -276,16 +330,15 @@ def get_videos_desde_lote(lote_path, limite=None):
         filepath_rel = v.get('filepath', '')
         filepath = ''
 
+        # Cargar config_operadora una sola vez (QUA-184: prioridad LOCALAPPDATA)
+        config_op = _load_config_operadora(lote_path)
+        drive_base = ''
+        if config_op:
+            drive_base = os.path.join(config_op.get('drive_path', ''), cuenta)
+
         if filepath_rel and not os.path.isabs(filepath_rel):
             # Intentar con config_operadora (drive_path/cuenta/)
-            config_op_path = os.path.join(os.path.dirname(lote_path), '..', '..', 'config_operadora.json')
-            if not os.path.exists(config_op_path):
-                config_op_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'config_operadora.json')
-
-            if os.path.exists(config_op_path):
-                with open(config_op_path, 'r', encoding='utf-8') as cf:
-                    config_op = json.load(cf)
-                drive_base = os.path.join(config_op.get('drive_path', ''), cuenta)
+            if drive_base:
                 candidato = os.path.join(drive_base, filepath_rel)
                 if os.path.exists(candidato):
                     filepath = os.path.abspath(candidato)
@@ -296,7 +349,29 @@ def get_videos_desde_lote(lote_path, limite=None):
                 if os.path.exists(candidato):
                     filepath = os.path.abspath(candidato)
 
-        # Último fallback: ruta absoluta original (solo PC de Sara)
+            # Fallback: buscar solo por nombre de archivo en drive_path/cuenta/
+            if not filepath and drive_base:
+                filename = os.path.basename(filepath_rel)
+                candidato = os.path.join(drive_base, filename)
+                if os.path.exists(candidato):
+                    filepath = os.path.abspath(candidato)
+                    log.debug(f"  Ruta adaptada (filename): {filepath_rel} → {filepath}")
+
+        # Ruta absoluta: intentar adaptar al PC local via config_operadora
+        # (la BD guarda C:\Users\gasco\... pero en el PC de Mar es C:\Users\marlp\...)
+        if not filepath and filepath_rel and os.path.isabs(filepath_rel):
+            # Si la ruta absoluta existe, usarla directamente
+            if os.path.exists(filepath_rel):
+                filepath = filepath_rel
+            elif drive_base:
+                # Reconstruir con drive_path local + cuenta + nombre archivo
+                filename = os.path.basename(filepath_rel)
+                candidato = os.path.join(drive_base, filename)
+                if os.path.exists(candidato):
+                    filepath = os.path.abspath(candidato)
+                    log.debug(f"  Ruta adaptada: {filepath_rel} → {filepath}")
+
+        # Último fallback: usar ruta tal cual (puede fallar si es de otro PC)
         if not filepath:
             filepath = v.get('filepath_original', filepath_rel)
 
@@ -377,6 +452,7 @@ def marcar_estado_video(video_id, estado, error=None):
     """Cambia el estado de un video en la BD.
 
     QUA-85: Usa context manager para garantizar commit/rollback/close.
+    QUA-199: Ahora también actualiza last_error para evitar ghost states.
 
     Estados posibles:
         'En Calendario' — Listo para publicar (o fallo, se deja para reintentar)
@@ -395,9 +471,14 @@ def marcar_estado_video(video_id, estado, error=None):
 
         with db_connection() as conn:
             cursor = conn.cursor()
-            cursor.execute("""
-                UPDATE videos SET estado = ? WHERE video_id = ?
-            """, (estado, video_id))
+            if error:
+                cursor.execute("""
+                    UPDATE videos SET estado = ?, last_error = ? WHERE video_id = ?
+                """, (estado, error[:500] if error else None, video_id))
+            else:
+                cursor.execute("""
+                    UPDATE videos SET estado = ? WHERE video_id = ?
+                """, (estado, video_id))
     except Exception as e:
         log.error(f"Error cambiando estado de {video_id} a '{estado}': {e}")
 
@@ -1072,7 +1153,9 @@ class TikTokPublisher:
                 log.error("  ❌ ABORTANDO — No se pudo añadir producto del escaparate")
                 log.error("  💡 Comprueba que el producto está correctamente añadido al escaparate de TikTok Shop")
                 self._descartar_video_actual()
-                self._marcar_estado(video_id, 'En Calendario',
+                # QUA-199: Marcar como Error (no En Calendario) para evitar ghost state
+                # donde el video se reprograma pero no se puede publicar
+                self._marcar_estado(video_id, 'Error',
                                    error='Escaparate falló — comprueba que el producto está correctamente añadido al escaparate')
                 self._registrar_intento(video_id, 'error', 'escaparate_failed',
                                         'Escaparate falló — comprueba que el producto está correctamente añadido al escaparate')
