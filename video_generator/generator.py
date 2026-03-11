@@ -32,34 +32,56 @@ def sanitize_filename(name):
         str: Nombre seguro para usar en rutas de archivo
     """
     replacements = {
+        # Acentos y diacríticos
         'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u',
         'Á': 'A', 'É': 'E', 'Í': 'I', 'Ó': 'O', 'Ú': 'U',
         'ñ': 'n', 'Ñ': 'N',
         'ü': 'u', 'Ü': 'U',
+        'à': 'a', 'è': 'e', 'ì': 'i', 'ò': 'o', 'ù': 'u',
+        'â': 'a', 'ê': 'e', 'î': 'i', 'ô': 'o', 'û': 'u',
+        'ä': 'a', 'ë': 'e', 'ï': 'i', 'ö': 'o',
+        'ç': 'c', 'Ç': 'C',
+        # Símbolos con equivalente semántico
         '×': 'x', '·': '_', ' ': '_',
-        '¿': '', '¡': '',
+        '&': '_y_', '+': '_plus_',
+        '€': 'EUR', '$': 'USD', '£': 'GBP',
+        '%': 'pct', '°': 'deg',
+        # Guiones y dashes
+        '—': '_', '–': '_', '―': '_',
+        # Puntuación que se descarta
+        '¿': '', '¡': '', '(': '', ')': '',
+        '[': '', ']': '', '{': '', '}': '',
+        '"': '', "'": '', '«': '', '»': '',
+        '"': '', '"': '', ''': '', ''': '',
+        ',': '', ';': '', ':': '', '…': '',
     }
     for old, new in replacements.items():
         name = name.replace(old, new)
-    # Eliminar cualquier carácter no ASCII restante
+    # Eliminar cualquier carácter no alfanumérico restante (excepto _ y -)
     name = re.sub(r'[^\w\-]', '', name)
+    # Colapsar guiones bajos múltiples
+    name = re.sub(r'_{2,}', '_', name)
+    # Limpiar inicio/final
+    name = name.strip('_-')
     return name
 
 
 class VideoGenerator:
     """Generador de videos TikTok con sistema de variantes por BOF"""
     
-    def __init__(self, producto=None, cuenta=None, bof_id=None):
+    def __init__(self, producto=None, cuenta=None, bof_id=None, es_ia=False):
         """
         Args:
             producto: Nombre del producto
             cuenta: Nombre de la cuenta TikTok
             bof_id: ID de BOF específico a usar (None = auto-selección de BOFs activos)
+            es_ia: Si True, marca los videos como contenido generado por IA
         """
         self.paths = get_producto_paths(producto)
         self.producto = self.paths["producto"]
         self.cuenta = cuenta
         self.force_bof_id = bof_id
+        self.es_ia = es_ia
         self.temp_dir = None
         
         # Conectar a DB
@@ -126,14 +148,14 @@ class VideoGenerator:
 
         if self.force_bof_id:
             self.cursor.execute(f"""
-                SELECT id, deal_math, guion_audio, hashtags, url_producto, veces_usado
+                SELECT id, deal_math, gancho, guion_audio, hashtags, url_producto, veces_usado
                 FROM producto_bofs
                 {bof_filter}
                 ORDER BY veces_usado ASC, RANDOM()
             """, (self.producto_id, self.force_bof_id))
         else:
             self.cursor.execute(f"""
-                SELECT id, deal_math, guion_audio, hashtags, url_producto, veces_usado
+                SELECT id, deal_math, gancho, guion_audio, hashtags, url_producto, veces_usado
                 FROM producto_bofs
                 {bof_filter}
                 ORDER BY veces_usado ASC, RANDOM()
@@ -385,8 +407,8 @@ class VideoGenerator:
                 INSERT INTO videos (
                     video_id, producto_id, cuenta, bof_id, variante_id,
                     hook_id, audio_id, estado, filepath, duracion,
-                    filesize_mb, batch_number
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, 'Generado', ?, ?, ?, ?)
+                    filesize_mb, batch_number, es_ia
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, 'Generado', ?, ?, ?, ?, ?)
             """, (
                 video_id,
                 self.producto_id,
@@ -398,7 +420,8 @@ class VideoGenerator:
                 video_info['output_path'],
                 video_info['duracion'],
                 video_info['filesize_mb'],
-                batch_number
+                batch_number,
+                1 if self.es_ia else 0
             ))
             
             new_video_id = self.cursor.lastrowid

@@ -108,6 +108,7 @@ def get_videos_disponibles(cuenta, producto_filter=None):
             h.filename as hook,
             h.id as hook_id,
             b.deal_math,
+            b.gancho,
             var.seo_text,
             b.hashtags,
             b.url_producto
@@ -124,7 +125,7 @@ def get_videos_disponibles(cuenta, producto_filter=None):
         query += " AND p.nombre = ?"
         params.append(producto_filter)
 
-    query += " ORDER BY v.created_at ASC"
+    query += " ORDER BY v.created_at ASC LIMIT 200"
 
     cursor.execute(query, params)
 
