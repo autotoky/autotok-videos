@@ -1,0 +1,123 @@
+==========================================================================================
+PENDIENTES lotopdevicky — Generado: 2026-03-10
+Datos para importar stats retroactivamente en el futuro
+==========================================================================================
+
+RESUMEN:
+  TK posts pre-sistema (antes feb 2026): 3
+  TK posts manuales (fuera del sistema): 82
+  TK posts sin video en BD ese día:      6
+  BD Programado sin post_id:              1
+  TOTAL PENDIENTES:                       92
+
+------------------------------------------------------------------------------------------
+§1 — TK POSTS PRE-SISTEMA (3)
+Posts publicados antes de que el sistema empezara a funcionar
+------------------------------------------------------------------------------------------
+[ANTIGUO ] 2026-01-27 16:39 | 7600066523855686934 | Chimenea Bioetanol. Sin olores. Sin humo
+[ANTIGUO ] 2026-01-28 09:42 | 7600329968639298838 | Decoración de salon. Estilo nòrdico sin
+[ANTIGUO ] 2026-01-29 18:14 | 7600832982944894230 | Si estás cansado de tanta lluvia y frio,
+
+------------------------------------------------------------------------------------------
+§2 — TK POSTS MANUALES (82)
+Videos publicados manualmente, no están en la BD
+------------------------------------------------------------------------------------------
+[PREKEVIN] 2026-02-09 08:50 | 7604547368133987606 | Pack ahorro con rebaja visible desde el
+[PREKEVIN] 2026-02-09 14:30 | 7604547118447004950 | Cápsulas fáciles de tomar y con envío gr
+[PREKEVIN] 2026-02-09 15:00 | 7604542757595516182 | Oferta escondida: el anillo baja de prec
+[PREKEVIN] 2026-02-10 08:10 | 7604546734286556438 | TikTok activa descuento del 30 % automát
+[PREKEVIN] 2026-02-10 08:20 | 7604962975744675094 | Botella termo con pastillero incluido y
+[PREKEVIN] 2026-02-10 12:31 | 7605197705266072854 | Terraza superior con césped artificial d
+[PREKEVIN] 2026-02-10 13:30 | 7605205178794446102 | TikTok activa descuento del 30 % automát
+[PREKEVIN] 2026-02-10 22:00 | 7605204005718887702 | Botella térmica para gimnasio, oficina o
+[PREKEVIN] 2026-02-11 08:00 | 7605295144379665667 | Ideal para emergencias, este arrancador
+[PREKEVIN] 2026-02-11 10:35 | 7605203271086525699 | TikTok Shop aplica automáticamente el cu
+[PREKEVIN] 2026-02-11 13:35 | 7605292188854930710 | Pack de cápsulas de orégano con rebaja v
+[PREKEVIN] 2026-02-11 16:00 | 7605294029365939478 | Pack de cápsulas de orégano con rebaja v
+[PREKEVIN] 2026-02-12 08:30 | 7605296805252713750 | Aceite de orégano en formato cápsula, pr
+[PREKEVIN] 2026-02-12 10:40 | 7605297385421458710 | TikTok aplica descuento secreto sin códi
+[PREKEVIN] 2026-02-12 12:30 | 7605298564444523798 | Diseño bonito y funcionalidad real. La b
+[PREKEVIN] 2026-02-12 14:35 | 7605928969292041494 | Rebaja activa. Botella térmica cactus de
+[PREKEVIN] 2026-02-12 17:40 | 7605298080174411030 | Talla + color activan rebaja oculta. Tik
+[PREKEVIN] 2026-02-12 20:15 | 7605299011460893974 | Oferta activa en TikTok Shop: aceite de
+[PREKEVIN] 2026-02-13 09:15 | 7605884516585966870 | ¡Si te obsesiona hacer un seguimiento de
+[PREKEVIN] 2026-02-13 11:05 | 7605885157849025814 | Talla + color activan rebaja oculta. Tik
+[PREKEVIN] 2026-02-13 13:10 | 7605886650526338327 | ¡Este es uno de los mejores arrancadores
+[PREKEVIN] 2026-02-13 14:40 | 7605887062444739862 | Booster 12V para gasolina y diésel, hast
+[PREKEVIN] 2026-02-13 16:15 | 7605888762606046486 | ¡Me encanta esta botella! Es genial por
+[PREKEVIN] 2026-02-14 08:20 | 7605889236901858562 | Precio oculto activado por TikTok Shop s
+[PREKEVIN] 2026-02-14 11:50 | 7605890285213617430 | ¿Buscas una alternativa asequible a los
+[PREKEVIN] 2026-02-14 14:40 | 7605891027550899478 | Mejor precio del mercado: este modelo cu
+[PREKEVIN] 2026-02-14 20:37 | 7606807337713650966 | Batidora portátil top en ventas de TikTo
+[PREKEVIN] 2026-02-14 22:00 | 7606809699815623958 | Taza inteligente Producto top ventas! Tu
+[PREKEVIN] 2026-02-15 08:30 | 7605892729012374806 | Precio reducido al seleccionar ciertas t
+[PREKEVIN] 2026-02-15 10:40 | 7605893000119684354 | Elige la talla adecuada y activa el desc
+[PREKEVIN] 2026-02-15 12:35 | 7605893324653759766 | TikTok Shop lo tiene con mejor precio qu
+[PREKEVIN] 2026-02-15 15:10 | 7606808405772143894 | Licuadora batidora portatil  Perfecto pa
+[PREKEVIN] 2026-02-15 18:24 | 7606811727396834583 | #NovoDoveCabelos  Súper taza de café int
+[PREKEVIN] 2026-02-15 20:38 | 7606815344019115286 | Aceite de orégano vivonu  Suplemento nat
+[PREKEVIN] 2026-02-16 10:20 | 7605895751880740118 | Diseñado para el uso diario, mejorando l
+[PREKEVIN] 2026-02-16 11:31 | 7606813488962407702 | Paraguas automático con asa especial par
+[PREKEVIN] 2026-02-16 12:50 | 7605896612132474134 | Ideal para amantes de la tecnología.Mezc
+[PREKEVIN] 2026-02-16 15:20 | 7605897375156079894 | Cosas que necesitas para tu coche, arran
+[PREKEVIN] 2026-02-17 08:40 | 7605898063164525827 | TikTok aplica descuento secreto sin códi
+[PREKEVIN] 2026-02-17 10:15 | 7605898387845598486 | Arrancador de batería de coche 6000A con
+[PREKEVIN] 2026-02-17 12:35 | 7605901125576838422 | Botella de agua de diseño en TikTok Shop
+[PREKEVIN] 2026-02-17 14:35 | 7605900322313211158 | ¿Sabias que puedes tener los mismo benef
+[PREKEVIN] 2026-02-17 18:40 | 7605898858211626262 | ¡Más barato que Amazon! Casi 20€ menos m
+[PREKEVIN] 2026-02-17 19:30 | 7607898057954348310 | Por menos de 5€ hoy en Taza automática
+[PREKEVIN] 2026-02-17 20:30 | 7607898515011849494 | Por menos de 5€ en Taza de café intelige
+[PREKEVIN] 2026-02-17 23:05 | 7607900950338063638 | 40% menos en Anillo Inteligente Fitness
+[PREKEVIN] 2026-02-17 23:55 | 7607901436638252310 | OFERTA: 40% de descuento en Anillo Intel
+[PREKEVIN] 2026-02-18 08:00 | 7607903675318635798 | Por menos de 5€ en Taza de café intelige
+[PREKEVIN] 2026-02-18 09:10 | 7605901669775232259 | Encontre el arrancador más vendido en Am
+[PREKEVIN] 2026-02-18 10:00 | 7607904359862717699 | Por menos de 5€ hoy en Taza automática
+[PREKEVIN] 2026-02-18 11:15 | 7605902500000025878 | Botella térmica para gimnasio, oficina o
+[PREKEVIN] 2026-02-18 13:20 | 7605902889185217814 | Cápsulas de aceite de orégano disponible
+[PREKEVIN] 2026-02-18 15:40 | 7607906491202276630 | 40% menos en Anillo Inteligente Fitness
+[PREKEVIN] 2026-02-18 17:30 | 7605902204247035158 | ¡De locos! Lo tienes en TikTok Shop casi
+[PREKEVIN] 2026-02-18 18:25 | 7607906876201782550 | 40% menos hoy en Anillo Inteligente SIMS
+[PREKEVIN] 2026-02-18 20:20 | 7605903323597638934 | anillo_simson_hookK_batch002_004Un smart
+[PREKEVIN] 2026-02-19 08:00 | 7607921104111406358 | Taza de café automática por menos de 5€
+[PREKEVIN] 2026-02-19 10:45 | 7607922148367240470 | Taza de café automática por menos de 5€
+[PREKEVIN] 2026-02-19 13:05 | 7607923021310938390 | 40% menos en Anillo Inteligente Fitness
+[PREKEVIN] 2026-02-19 16:00 | 7607924172735679767 | Anillo Inteligente Fitness Tracker SIMSO
+[PREKEVIN] 2026-02-19 20:39 | 7608663320110959894 | Nutralie magnesio  Promoción doble solo
+[PREKEVIN] 2026-02-19 22:09 | 7608686504382188822 | Cepillo eléctrico Landot. Pelo rizado?
+[PREKEVIN] 2026-02-20 08:00 | 7608697951212424470 | ¿Tiene dificultades para dormir? ¡Este p
+[PREKEVIN] 2026-02-20 09:10 | 7608702577118563606 | Es perfecto para quienes viajan con frec
+[PREKEVIN] 2026-02-20 10:45 | 7608708100266200342 | Anillo SIMSON LAB recargable para hombre
+[PREKEVIN] 2026-02-20 13:31 | 7608924046813662486 | Como dice el refrán: “En Abril aguas mil
+[PREKEVIN] 2026-02-20 15:30 | 7608928420076064022 | Batería MagSafe de 5000 mAH. Carga rápid
+[PREKEVIN] 2026-02-22 13:10 | 7609327839850040598 | Producto natural con semilla negra. Anti
+[PREKEVIN] 2026-02-22 14:20 | 7609328494211829014 | ¿Problemas para conciliar el sueño?. Aqu
+[PREKEVIN] 2026-02-23 17:54 | 7610105006062079254 | Paraguas para la lluvia. Resistente y co
+[PREKEVIN] 2026-02-23 19:30 | 7610110142524181782 | ¡Este es uno de los mejores **suplemento
+[PREKEVIN] 2026-02-23 20:00 | 7610123298189479190 | Batería MagSafe! Carga inalámbrica para
+[PREKEVIN] 2026-02-24 12:10 | 7609605173329087766 | melatonina_aldous_500_lotopdevicky_batch
+[PREKEVIN] 2026-02-24 15:45 | 7610427131587202326 | Este producto contiene una amplia varied
+[PREKEVIN] 2026-02-25 09:00 | 7609968905074773250 | ¿Problemas para conciliar el sueño? Mela
+[PREKEVIN] 2026-02-25 10:30 | 7609969303537847554 | Powerbank magsafe ligera para tus viajes
+[PREKEVIN] 2026-02-25 12:00 | 7609969822213967126 | Botella termo.Mantiene tus bebidas calie
+[PREKEVIN] 2026-02-25 13:30 | 7609970624747932950 | Auriculares bluetooth con cancelacion de
+[PREKEVIN] 2026-02-25 15:00 | 7609971234746551574 | Botella BOTTLE BOTTLE con dos sistemas d
+[PREKEVIN] 2026-02-25 16:00 | 7609972283741981974 | Aceite de orégano Vivonu favorece la sal
+[PREKEVIN] 2026-02-28 08:00 | 7611257705055178006 | bateria_power_bank_5000_lotopdevicky_bat
+[PREKEVIN] 2026-03-02 13:20 | 7611844148877970710 | anilloNo llega a 15€ el Anillo Simson 🔥
+
+------------------------------------------------------------------------------------------
+§3 — TK POSTS SIN VIDEO EN BD ESE DÍA (6)
+El producto se identifica por SEO pero no hay video de ese producto en BD esa fecha
+------------------------------------------------------------------------------------------
+[SEO OK  ] 2026-02-25 07:30 | 7609968260779379990 | OFERTA: Por menos de 7€ en Power Bank Ma
+[SEO OK  ] 2026-02-26 08:00 | 7610457607790152982 | Se queda por debajo de 25€ la Botella Bo
+[SEO OK  ] 2026-02-26 12:05 | 7610461185477020950 | 10€ menos hoy en Arrancador EIGOTRAV 🔥
+[SEO OK  ] 2026-02-26 15:20 | 7610463795932171543 | No llega a 40€ el Proyector Magcubic 🔥
+[SEO OK  ] 2026-02-26 16:20 | 7610464361823440151 | 10€ menos hoy en Arrancador EIGOTRAV 🔥
+[SEO OK  ] 2026-02-26 18:40 | 7610465212386331926 | No llega a 40€ el Proyector Magcubic 🔥
+
+------------------------------------------------------------------------------------------
+§4 — BD PROGRAMADO SIN POST_ID (1)
+Videos en BD con estado Programado que no tienen post de TikTok asignado
+------------------------------------------------------------------------------------------
+  BD 445 | 2026-02-10 15:25 | anillo_simson

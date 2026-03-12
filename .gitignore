@@ -1,6 +1,33 @@
+# Credentials & secrets
 turso_config.json
-autotok_replica.db
-autotok_replica.db-*
 credentials.json
+.env
+.env.*
+
+# Database files
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+*.db-info
+
+# Python
 *.pyc
 __pycache__/
+
+# OS / temp
+.fuse_hidden*
+.DS_Store
+Thumbs.db
+
+# Logs
+output/logs/
+
+# Test databases
+autotok_test.db
+autotok_replica.db
+autotok_replica.db-*
+test_turso.db*
+
+# autotok-api tiene su propio repo
+autotok-api/

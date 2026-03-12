@@ -1,0 +1,75 @@
+VIDEOS EN BD SIN POST_ID (Programado/Violation/EnCalendario/Borrador) — lotopdevicky
+Total: 68 videos
+
+  Programado: 68
+
+FECHA      HORA   ESTADO        PRODUCTO                             SEO TEXT
+============================================================================================================================================
+2026-02-07 21:30  Programado    anillo_simson                        No llega a 15€ el Anillo Simson 🔥
+2026-02-09 08:54  Programado    aceite_oregano_vivonu                Pack de 3 con 1 gratis en Aceite de Orégano VivoNu 🔥
+2026-02-09 14:33  Programado    aceite_oregano_vivonu                Pack de 3 con 1 gratis en Aceite de Orégano VivoNu 🔥
+2026-02-09 15:00  Programado    anillo_simson                        No llega a 15€ el Anillo Simson 🔥
+2026-02-10 08:14  Programado    aceite_oregano_vivonu                Pack de 3 con 1 gratis en Aceite de Orégano VivoNu 🔥
+2026-02-10 08:22  Programado    botella_bottle_bottle                No llega a 25€ la Botella Bottle Bottle 🔥
+2026-02-10 13:31  Programado    aceite_oregano_vivonu                Pack de 3 con 1 gratis en Aceite de Orégano VivoNu 🔥
+2026-02-10 15:25  Programado    anillo_simson                        No llega a 15€ el Anillo Simson 🔥
+2026-02-10 21:14  Programado    botella_bottle_bottle                No llega a 25€ la Botella Bottle Bottle 🔥
+2026-02-11 08:00  Programado    arrancador_coche_EIGOTRAV            10€ de cupón en Arrancador de Batería EIGOTRAV 🔥
+2026-02-11 10:35  Programado    aceite_oregano_vivonu                Pack de 3 con 1 gratis en Aceite de Orégano VivoNu 🔥
+2026-02-11 13:35  Programado    aceite_oregano_vivonu                Pack de 3 con 1 gratis en Aceite de Orégano VivoNu 🔥
+2026-02-11 16:00  Programado    anillo_simson                        No llega a 15€ el Anillo Simson 🔥
+2026-02-11 20:15  Programado    botella_bottle_bottle                No llega a 25€ la Botella Bottle Bottle 🔥
+2026-02-12 08:32  Programado    aceite_oregano_vivonu                Pack de 3 con 1 gratis en Aceite de Orégano VivoNu 🔥
+2026-02-12 10:32  Programado    anillo_simson                        No llega a 15€ el Anillo Simson 🔥
+2026-02-12 12:23  Programado    botella_bottle_bottle                No llega a 25€ la Botella Bottle Bottle 🔥
+2026-02-12 17:41  Programado    anillo_simson                        No llega a 15€ el Anillo Simson 🔥
+2026-02-12 20:14  Programado    aceite_oregano_vivonu                Pack de 3 con 1 gratis en Aceite de Orégano VivoNu 🔥
+2026-02-13 09:15  Programado    anillo_simson                        No llega a 15€ el Anillo Simson 🔥
+2026-02-13 11:00  Programado    anillo_simson                        No llega a 15€ el Anillo Simson 🔥
+2026-02-13 13:20  Programado    arrancador_coche_EIGOTRAV            10€ de cupón en Arrancador de Batería EIGOTRAV 🔥
+2026-02-13 14:40  Programado    arrancador_coche_EIGOTRAV            10€ de cupón en Arrancador de Batería EIGOTRAV 🔥
+2026-02-13 16:10  Programado    botella_bottle_bottle                No llega a 25€ la Botella Bottle Bottle 🔥
+2026-02-14 08:24  Programado    anillo_simson                        No llega a 15€ el Anillo Simson 🔥
+2026-02-14 11:50  Programado    anillo_simson                        No llega a 15€ el Anillo Simson 🔥
+2026-02-14 14:15  Programado    arrancador_coche_EIGOTRAV            10€ de cupón en Arrancador de Batería EIGOTRAV 🔥
+2026-02-15 08:30  Programado    anillo_simson                        No llega a 15€ el Anillo Simson 🔥
+2026-02-15 10:39  Programado    anillo_simson                        No llega a 15€ el Anillo Simson 🔥
+2026-02-15 12:15  Programado    arrancador_coche_EIGOTRAV            10€ de cupón en Arrancador de Batería EIGOTRAV 🔥
+2026-02-16 10:23  Programado    anillo_simson                        No llega a 15€ el Anillo Simson 🔥
+2026-02-16 12:53  Programado    anillo_simson                        No llega a 15€ el Anillo Simson 🔥
+2026-02-16 15:20  Programado    arrancador_coche_EIGOTRAV            10€ de cupón en Arrancador de Batería EIGOTRAV 🔥
+2026-02-17 08:00  Programado    Taza_cafe_inteligente_tapa           Por menos de 10€ en Taza de café inteligente con tapa 🔥
+2026-02-17 08:43  Programado    anillo_simson                        No llega a 15€ el Anillo Simson 🔥
+2026-02-17 09:42  Programado    Taza_cafe_inteligente_tapa           Por menos de 10€ en Taza de café inteligente con tapa 🔥
+2026-02-17 10:15  Programado    arrancador_coche_EIGOTRAV            10€ de cupón en Arrancador de Batería EIGOTRAV 🔥
+2026-02-17 12:24  Programado    anillo_simson                        No llega a 15€ el Anillo Simson 🔥
+2026-02-17 12:35  Programado    botella_bottle_bottle                No llega a 25€ la Botella Bottle Bottle 🔥
+2026-02-17 13:18  Programado    anillo_simson                        No llega a 15€ el Anillo Simson 🔥
+2026-02-17 14:26  Programado    aceite_oregano_vivonu                Pack de 3 con 1 gratis en Aceite de Orégano VivoNu 🔥
+2026-02-17 18:42  Programado    arrancador_coche_EIGOTRAV            10€ de cupón en Arrancador de Batería EIGOTRAV 🔥
+2026-02-18 08:00  Programado    Taza_cafe_inteligente_tapa           Por menos de 10€ en Taza de café inteligente con tapa 🔥
+2026-02-18 09:10  Programado    arrancador_coche_EIGOTRAV            10€ de cupón en Arrancador de Batería EIGOTRAV 🔥
+2026-02-18 10:00  Programado    Taza_cafe_inteligente_tapa           Por menos de 10€ en Taza de café inteligente con tapa 🔥
+2026-02-18 11:15  Programado    botella_bottle_bottle                No llega a 25€ la Botella Bottle Bottle 🔥
+2026-02-18 12:40  Programado    anillo_simson                        No llega a 15€ el Anillo Simson 🔥
+2026-02-18 13:20  Programado    aceite_oregano_vivonu                Pack de 3 con 1 gratis en Aceite de Orégano VivoNu 🔥
+2026-02-18 13:46  Programado    anillo_simson                        No llega a 15€ el Anillo Simson 🔥
+2026-02-18 17:30  Programado    arrancador_coche_EIGOTRAV            10€ de cupón en Arrancador de Batería EIGOTRAV 🔥
+2026-02-18 20:20  Programado    anillo_simson                        No llega a 15€ el Anillo Simson 🔥
+2026-02-19 08:00  Programado    Taza_cafe_inteligente_tapa           Por menos de 10€ en Taza de café inteligente con tapa 🔥
+2026-02-19 09:33  Programado    Taza_cafe_inteligente_tapa           Por menos de 10€ en Taza de café inteligente con tapa 🔥
+2026-02-19 13:02  Programado    anillo_simson                        No llega a 15€ el Anillo Simson 🔥
+2026-02-19 13:56  Programado    anillo_simson                        No llega a 15€ el Anillo Simson 🔥
+2026-02-20 22:57  Programado    anillo_simson                        No llega a 15€ el Anillo Simson 🔥
+2026-02-22 13:10  Programado    aceite_oregano_vivonu                7 céntimos por cápsula hoy en Aceite de Orégano VivoNu 🔥
+2026-02-22 14:20  Programado    melatonina_aldous_500                500 noches por menos de 22€ en Melatonina Aldous Bio 🔥
+2026-02-24 12:11  Programado    melatonina_aldous_500                500 noches por menos de 22€ en Melatonina Aldous Bio 🔥
+2026-02-25 08:00  Programado    bateria_power_bank_5000              No llega a 7€ el Power Bank Magnético 5000mAh 🔥
+2026-02-25 09:40  Programado    botella_bottle_bottle                No llega a 25€ la Botella Bottle Bottle 🔥
+2026-02-25 10:37  Programado    bateria_power_bank_5000              POR MENOS DE 7€ en Power Bank Magnético 5000mAh 🔥
+2026-02-25 11:31  Programado    melatonina_aldous_500                Cada comprimido por solo 4 céntimos en Melatonina Aldous Bio 500 
+2026-02-25 12:31  Programado    botella_bottle_bottle                Se queda por debajo de 25€ la Botella Bottle Bottle 🔥
+2026-02-25 13:16  Programado    MINISO_MS180_Auriculares_Bluetooth   Por debajo de 18€ hoy en Auriculares Bluetooth MS180 MINISO 🔥
+2026-02-25 14:11  Programado    aceite_oregano_vivonu                7 céntimos por cápsula en Aceite de Orégano VivoNu (300 cápsulas)
+2026-02-28 08:00  Programado    bateria_power_bank_5000              Power Bank Magnético 5000mAh por debajo de 7€ 🔥
+2026-03-02 13:20  Programado    anillo_simson                        No llega a 15€ el Anillo Simson 🔥

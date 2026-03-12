@@ -1,0 +1,292 @@
+🔍 AutoTok Extractor v2.0 — Iniciando...
+VM1538:93    Contenedor: DIV css-snthx edss2sz11
+VM1538:94    scrollHeight: 26410 clientHeight: 528
+VM1538:97    Videos iniciales: 8
+Promise {<pending>}
+VM1538:119    📦 16 videos (scroll #1)
+VM1538:119    📦 54 videos (scroll #20)
+VM1538:119    📦 94 videos (scroll #40)
+VM1538:119    📦 134 videos (scroll #60)
+VM1538:119    📦 174 videos (scroll #80)
+VM1538:119    📦 206 videos (scroll #100)
+VM1538:119    📦 246 videos (scroll #120)
+VM1538:133    ⏳ Fondo #1 (263 videos). Esperando lazy load...
+VM1538:133    ⏳ Fondo #2 (263 videos). Esperando lazy load...
+VM1538:133    ⏳ Fondo #3 (263 videos). Esperando lazy load...
+VM1538:133    ⏳ Fondo #4 (263 videos). Esperando lazy load...
+VM1538:133    ⏳ Fondo #5 (263 videos). Esperando lazy load...
+VM1538:133    ⏳ Fondo #6 (263 videos). Esperando lazy load...
+VM1538:133    ⏳ Fondo #7 (263 videos). Esperando lazy load...
+VM1538:133    ⏳ Fondo #8 (263 videos). Esperando lazy load...
+VM1538:161    🛑 8 intentos en el fondo sin más datos. Parando.
+VM1538:170 
+✅ ¡LISTO! 263 videos de @lotopdevicky
+VM1538:171    Scrolls: 137
+VM1538:172 
+📊 Lista completa:
+VM1538:176    1. 7608924046813662486 | 20 feb, 13:31   |        0 views | Como dice el refrán: “En Abril aguas mil
+VM1538:176    2. 7608708100266200342 | 20 feb, 10:45   |        0 views | Anillo SIMSON LAB recargable para hombre
+VM1538:176    3. 7608702577118563606 | 20 feb, 09:10   |        0 views | Es perfecto para quienes viajan con frec
+VM1538:176    4. 7608697951212424470 | 20 feb, 08:00   |        0 views | ¿Tiene dificultades para dormir? ¡Este p
+VM1538:176    5. 7608686504382188822 | 19 feb, 22:09   |        0 views | Cepillo eléctrico Landot. Pelo rizado?  
+VM1538:176    6. 7608663320110959894 | 19 feb, 20:39   |        0 views | Nutralie magnesio  Promoción doble solo 
+VM1538:176    7. 7607924172735679767 | 19 feb, 16:00   |        0 views | Anillo Inteligente Fitness Tracker SIMSO
+VM1538:176    8. 7607923573071678742 | 19 feb, 14:50   |        0 views | OFERTA: Por menos de 18€ los Auriculares
+VM1538:176    9. 7614591323949092118 | 11 mar, 21:10   |        0 views | No llega a 22€ la Manta Eléctrica NIKLOK
+VM1538:176    10. 7614590673861233942 | 11 mar, 19:10   |        0 views | No llega a 40€ hoy el Proyector Magcubic
+VM1538:176    11. 7614590045541960982 | 11 mar, 16:50   |        0 views | Cupón de 10€ hoy en Arrancador EIGOTRAV 
+VM1538:176    12. 7614589366589246742 | 11 mar, 14:50   |        0 views | 34€ y pico no: Cepillo Eléctrico Alisado
+VM1538:176    13. 7614588809077935382 | 11 mar, 13:10   |        0 views | OFERTA: Por menos de 9€ en Power Bank Ma
+VM1538:176    14. 7614588233472593174 | 11 mar, 11:05   |        0 views | No llega a 40€ el Proyector Magcubic 🔥 
+VM1538:176    15. 7614805212439629078 | 11 mar, 08:50   |        0 views | 10€ de descuento en Arrancador EIGOTRAV 
+VM1538:176    16. 7614586918847663382 | 11 mar, 07:05   |        0 views | Hoy no llega a 34€ el Cepillo Alisador L
+VM1538:176    17. 7614586295305669910 | 11 mar, 01:05   |        0 views | Por menos de 9€ hoy en Power Bank Magnét
+VM1538:176    18. 7614235021611666710 | 10 mar, 21:50   |        0 views | Power Bank Magnético 5000mAh por debajo 
+VM1538:176    19. 7614234426762874134 | 10 mar, 19:55   |        0 views | Por debajo de 9€ hoy en Power Bank Magné
+VM1538:176    20. 7614233174943616278 | 10 mar, 17:40   |        0 views | 10€ de cupón en Arrancador de Batería EI
+VM1538:176    21. 7614232494480641302 | 10 mar, 16:30   |        0 views | Se queda por debajo de 40€ el Proyector 
+VM1538:176    22. 7614231888726740246 | 10 mar, 14:25   |        0 views | 15€ y pico no, se queda por debajo el An
+VM1538:176    23. 7614231310457933078 | 10 mar, 13:15   |        0 views | Envío gratis + Landot Cepillo Eléctrico 
+VM1538:176    24. 7614230751306910998 | 10 mar, 12:15   |        0 views | No llega a 40€ hoy el Proyector Magcubic
+VM1538:176    25. 7614229555779276054 | 10 mar, 09:00   |        0 views | Hoy no llega a 34€ el Cepillo Alisador L
+VM1538:176    26. 7614228984376708355 | 10 mar, 08:00   |        0 views | Te ahorras 10€ en Arrancador EIGOTRAV 🔥
+VM1538:176    27. 7614804139305880854 | 10 mar, 00:00   |        0 views | Taza automática por menos de 10€ hoy 🔥 
+VM1538:176    28. 7614217811090492694 | 9 mar, 23:40    |        0 views | Se queda por debajo de 22€ la Manta Eléc
+VM1538:176    29. 7614217226236824854 | 9 mar, 22:05    |        0 views | Por menos de 9€ hoy en Power Bank Magnét
+VM1538:176    30. 7614216629773225238 | 9 mar, 19:55    |        0 views | OFERTA: Por menos de 9€ en Power Bank Ma
+VM1538:176    31. 7614216062996892950 | 9 mar, 17:50    |        0 views | No llega a 15€ el Anillo Simson 🔥 Toca 
+VM1538:176    32. 7614214796619074838 | 9 mar, 15:45    |        0 views | 10€ de cupón en Arrancador de Batería EI
+VM1538:176    33. 7614214200730225943 | 9 mar, 14:35    |        0 views | No llega a 34€ solo hoy el Cepillo Alisa
+VM1538:176    34. 7614213622079687958 | 9 mar, 13:35    |        0 views | No llega a 40€ el Proyector Magcubic 🔥 
+VM1538:176    35. 7614212963838414083 | 9 mar, 12:35    |        0 views | 15€ y pico no, se queda por debajo el An
+VM1538:176    36. 7614212345207835926 | 9 mar, 10:15    |        0 views | Se queda por debajo de 40€ el Proyector 
+VM1538:176    37. 7614211744067505430 | 9 mar, 08:00    |        0 views | Landot Cepillo Eléctrico Alisador no lle
+VM1538:176    38. 7614211094034337046 | 9 mar, 07:00    |        0 views | Cupón de 10€ hoy en Arrancador EIGOTRAV 
+VM1538:176    39. 7614201344223857942 | 8 mar, 21:50    |        0 views | Por menos de 9€ hoy en Power Bank Magnét
+VM1538:176    40. 7614200729657527574 | 8 mar, 19:50    |        0 views | Por debajo de 9€ hoy en Power Bank Magné
+VM1538:176    41. 7614200133751819542 | 8 mar, 16:25    |        0 views | Te ahorras 10€ en Arrancador EIGOTRAV 🔥
+VM1538:176    42. 7614199485287238934 | 8 mar, 15:25    |        0 views | Menos de 15€ en Anillo Simson 🔥 Últimas
+VM1538:176    43. 7614198912286559510 | 8 mar, 14:20    |        0 views | Hoy no llega a 34€ el Cepillo Alisador L
+VM1538:176    44. 7614198348219698454 | 8 mar, 13:15    |        0 views | 40€ y pico no, se queda por debajo el Pr
+VM1538:176    45. 7614197717463502102 | 8 mar, 10:00    |        0 views | 15€ y pico no, se queda por debajo el An
+VM1538:176    46. 7614197132907515159 | 8 mar, 08:50    |        0 views | No llega a 40€ hoy el Proyector Magcubic
+VM1538:176    47. 7614196536540712195 | 8 mar, 08:00    |        0 views | 34€ y pico no: Cepillo Eléctrico Alisado
+VM1538:176    48. 7614195914638363926 | 8 mar, 06:55    |        0 views | Te ahorras 10€ en Arrancador EIGOTRAV 🔥
+VM1538:176    49. 7614194350951566614 | 7 mar, 21:55    |        0 views | Por debajo de 9€ hoy en Power Bank Magné
+VM1538:176    50. 7614193765053484310 | 7 mar, 19:30    |        0 views | OFERTA: Por menos de 9€ en Power Bank Ma
+VM1538:176    51. 7614193148369194262 | 7 mar, 16:25    |        0 views | Se queda por debajo de 40€ el Proyector 
+VM1538:176    52. 7614192505436884246 | 7 mar, 14:20    |        0 views | Te ahorras 10€ en Arrancador EIGOTRAV 🔥
+VM1538:176    53. 7614191848952712470 | 7 mar, 13:15    |        0 views | Landot Cepillo Eléctrico Alisador no lle
+VM1538:176    54. 7614191247028260118 | 7 mar, 12:15    |        0 views | Menos de 15€ en Anillo Simson 🔥 Últimas
+VM1538:176    55. 7614190633766456598 | 7 mar, 10:05    |        0 views | Cupón de 10€ hoy en Arrancador EIGOTRAV 
+VM1538:176    56. 7614190030843661590 | 7 mar, 08:50    |        0 views | No llega a 40€ el Proyector Magcubic 🔥 
+VM1538:176    57. 7614189371905871126 | 7 mar, 08:00    |        0 views | No llega a 15€ hoy el Anillo Simson 🔥 N
+VM1538:176    58. 7614188768307776790 | 7 mar, 06:50    |        0 views | Se queda por debajo de 34€ el Cepillo Al
+VM1538:176    59. 7614177050064080150 | 6 mar, 22:45    |        0 views | Menos de 40€ en Proyector Magcubic 🔥#Bl
+VM1538:176    60. 7613712502001585430 | 6 mar, 21:55    |        0 views | Por debajo de 9€ hoy en Power Bank Magné
+VM1538:176    61. 7613711916459986198 | 6 mar, 19:55    |        0 views | POR MENOS DE 9€ en Power Bank Magnético 
+VM1538:176    62. 7614177321725005078 | 6 mar, 17:16    |        0 views | 40€ y pico no, se queda por debajo el Pr
+VM1538:176    63. 7613710568133840150 | 6 mar, 16:25    |        0 views | POR MENOS DE 18€ en Auriculares Bluetoot
+VM1538:176    64. 7613707608481991958 | 6 mar, 14:15    |        0 views | No llega a 18€ los Auriculares Bluetooth
+VM1538:176    65. 7613707020474043670 | 6 mar, 13:10    |        0 views | Por debajo de 15€ el Anillo Simson 🔥 Ap
+VM1538:176    66. 7613706431463705878 | 6 mar, 12:05    |        0 views | Te ahorras 10€ en Arrancador EIGOTRAV 🔥
+VM1538:176    67. 7613698667588996355 | 6 mar, 11:05    |        0 views | Landot Cepillo Eléctrico Alisador no lle
+VM1538:176    68. 7613697696221744406 | 6 mar, 09:05    |        0 views | 10€ de descuento en Arrancador EIGOTRAV 
+VM1538:176    69. 7613448181241613570 | 6 mar, 08:00    |        0 views | No llega a 15€ hoy el Anillo Simson 🔥 A
+VM1538:176    70. 7613010935413804310 | 5 mar, 15:35    |        0 views | No llega a 40€ el Proyector Magcubic 🔥 
+VM1538:176    71. 7613010510417530134 | 5 mar, 14:30    |        0 views | No llega a 15€ hoy el Anillo Simson 🔥 N
+VM1538:176    72. 7613010120842300694 | 5 mar, 13:20    |        0 views | Se queda por debajo de 34€ el Cepillo Al
+VM1538:176    73. 7613009822375480598 | 5 mar, 12:15    |        0 views | Menos de 40€ en Proyector Magcubic 🔥 Bl
+VM1538:176    74. 7613009389863161110 | 5 mar, 11:10    |        0 views | No llega a 18€ los Auriculares Bluetooth
+VM1538:176    75. 7613008599643704598 | 5 mar, 09:05    |        0 views | Landot Cepillo Eléctrico Alisador no lle
+VM1538:176    76. 7613008233246051606 | 5 mar, 08:00    |        0 views | Aplica el cupón de 10€ en Arrancador EIG
+VM1538:176    77. 7613007745050086678 | 4 mar, 16:20    |        0 views | No llega a 40€ hoy el Proyector Magcubic
+VM1538:176    78. 7613006774165130518 | 4 mar, 14:25    |        0 views | No llega a 15€ hoy el Anillo Simson 🔥 A
+VM1538:176    79. 7613007227393297686 | 4 mar, 13:55    |        0 views | Por menos de 18€ hoy los Auriculares Blu
+VM1538:176    80. 7613006395348356375 | 4 mar, 13:20    |        0 views | Te ahorras 10€ en Arrancador EIGOTRAV 🔥
+VM1538:176    81. 7613005925913332994 | 4 mar, 12:15    |        0 views | Envío gratis + Landot Cepillo Eléctrico 
+VM1538:176    82. 7613005450732211478 | 4 mar, 11:15    |        0 views | No llega a 40€ el Proyector Magcubic 🔥 
+VM1538:176    83. 7613005094996610326 | 4 mar, 10:05    |        0 views | No llega a 18€ los Auriculares Bluetooth
+VM1538:176    84. 7613004697317674262 | 4 mar, 09:05    |        0 views | No llega a 15€ el Anillo Simson 🔥 Toca 
+VM1538:176    85. 7613003945425800470 | 4 mar, 08:00    |        0 views | 10€ de descuento en Arrancador EIGOTRAV 
+VM1538:176    86. 7612219255391653142 | 3 mar, 16:40    |        0 views | 40€ y pico no, se queda por debajo el Pr
+VM1538:176    87. 7612218664628129046 | 3 mar, 15:40    |        0 views | 34€ y pico no: Cepillo Eléctrico Alisado
+VM1538:176    88. 7612218347521838358 | 3 mar, 14:35    |        0 views | Auriculares Bluetooth MS180 MINISO por d
+VM1538:176    89. 7612217971309579522 | 3 mar, 13:25    |        0 views | Menos de 15€ en Anillo Simson 🔥 Últimas
+VM1538:176    90. 7612217262497418518 | 3 mar, 12:25    |        0 views | Aplica el cupón de 10€ en Arrancador EIG
+VM1538:176    91. 7612216185215536406 | 3 mar, 10:05    |        0 views | Menos de 40€ en Proyector Magcubic 🔥 Bl
+VM1538:176    92. 7612215711263411478 | 3 mar, 09:00    |        0 views | OFERTA: Por menos de 18€ los Auriculares
+VM1538:176    93. 7612215345394273558 | 3 mar, 08:00    |        0 views | No llega a 15€ hoy el Anillo Simson 🔥 N
+VM1538:176    94. 7611846059488300310 | 2 mar, 17:15    |        0 views | Por menos de 7€ hoy en Power Bank Magnét
+VM1538:176    95. 7611845522088889622 | 2 mar, 16:30    |        0 views | Se queda por debajo de 34€ el Cepillo Al
+VM1538:176    96. 7611845030537383190 | 2 mar, 15:20    |        0 views | 40€ y pico no, se queda por debajo el Pr
+VM1538:176    97. 7611844578420821270 | 2 mar, 14:20    |        0 views | Por debajo de 18€ hoy en Auriculares Blu
+VM1538:176    98. 7611844148877970710 | 2 mar, 13:20    |        0 views | anilloNo llega a 15€ el Anillo Simson 🔥
+VM1538:176    99. 7611843639257419030 | 2 mar, 12:10    |        0 views | No llega a 7€ el Power Bank Magnético 50
+VM1538:176    100. 7611843090021764374 | 2 mar, 11:05    |        0 views | No llega a 40€ hoy el Proyector Magcubic
+VM1538:176    101. 7611842559719132438 | 2 mar, 10:05    |        0 views | Aplica el cupón de 10€ en Arrancador EIG
+VM1538:176    102. 7611841982150757654 | 2 mar, 08:45    |        0 views | Hoy no llega a 34€ el Cepillo Alisador L
+VM1538:176    103. 7611841472840600854 | 2 mar, 07:45    |        0 views | Auriculares Bluetooth MS180 MINISO por d
+VM1538:176    104. 7611840898770439446 | 1 mar, 17:25    |        0 views | DR.DENT 42 tiras = 1,19€ por aplicación 
+VM1538:176    105. 7611840315728645398 | 1 mar, 16:40    |        0 views | No llega a 25€ y el envío es gratis el S
+VM1538:176    106. 7611839511969959190 | 1 mar, 15:45    |        0 views | LONKOOM 24K 100ml no llega a 16€ 🔥 Toca
+VM1538:176    107. 7611839033592778006 | 1 mar, 14:15    |        0 views | No llega a 25€ hoy la Botella Bottle Bot
+VM1538:176    108. 7611838408968654102 | 1 mar, 13:00    |        0 views | Por menos de 22€ en Manta Eléctrica NIKL
+VM1538:176    109. 7611837611644062998 | 1 mar, 11:25    |        0 views | No llega a 55€ la Plancha de Asar Eléctr
+VM1538:176    110. 7612216659402689814 | 1 mar, 11:15    |        0 views | No llega a 34€ solo hoy el Cepillo Alisa
+VM1538:176    111. 7611836715040312598 | 1 mar, 10:15    |        0 views | 10€ menos hoy en Arrancador EIGOTRAV 🔥 
+VM1538:176    112. 7611836145281895702 | 1 mar, 09:30    |        0 views | OFERTA: Por menos de 7€ en Power Bank Ma
+VM1538:176    113. 7611835745833192726 | 1 mar, 08:15    |        0 views | No llega a 40€ el Proyector Magcubic 🔥 
+VM1538:176    114. 7611835181162319126 | 1 mar, 07:30    |        0 views | No llega a 7€ el Power Bank Magnético 50
+VM1538:176    115. 7611261725010169110 | 28 feb, 17:55   |        0 views | Por menos de 10€ en Taza de café intelig
+VM1538:176    116. 7611261228660493591 | 28 feb, 17:05   |        0 views | No llega a 25€ la Botella Bottle Bottle 
+VM1538:176    117. 7611260813596183830 | 28 feb, 16:05   |        0 views | Por debajo de 18€ hoy en Auriculares Blu
+VM1538:176    118. 7611260291657059606 | 28 feb, 14:50   |        0 views | Cupón de 10€ hoy en Arrancador EIGOTRAV 
+VM1538:176    119. 7611259822201244950 | 28 feb, 13:55   |        0 views | Se queda por debajo de 40€ el Proyector 
+VM1538:176    120. 7611259397230152963 | 28 feb, 13:00   |        0 views | No llega a 25€ hoy la Botella Bottle Bot
+VM1538:176    121. 7611259061463518486 | 28 feb, 11:50   |        0 views | Te ahorras 10€ en Arrancador EIGOTRAV 🔥
+VM1538:176    122. 7611258504686390550 | 28 feb, 10:55   |        0 views | Por menos de 7€ hoy en Power Bank Magnét
+VM1538:176    123. 7611258069292551446 | 28 feb, 09:45   |        0 views | No llega a 40€ hoy el Proyector Magcubic
+VM1538:176    124. 7611257705055178006 | 28 feb, 08:00   |        0 views | bateria_power_bank_5000_lotopdevicky_bat
+VM1538:176    125. 7610882553028807958 | 27 feb, 17:15   |        0 views | Landot Cepillo Eléctrico Alisador no lle
+VM1538:176    126. 7610882074102287638 | 27 feb, 16:20   |        0 views | Menos de 25€ en Botella Bottle Bottle 🔥
+VM1538:176    127. 7610881712708504854 | 27 feb, 15:10   |        0 views | DR.DENT 42 tiras = 1,19€ por aplicación 
+VM1538:176    128. 7610880528622947586 | 27 feb, 14:10   |        0 views | No llega a 25€ la Botella Bottle Bottle 
+VM1538:176    129. 7610880176817278230 | 27 feb, 13:25   |        0 views | 40€ y pico no, se queda por debajo el Pr
+VM1538:176    130. 7610879799715745027 | 27 feb, 12:30   |        0 views | Aplica el cupón de 10€ en Arrancador EIG
+VM1538:176    131. 7610878945969343766 | 27 feb, 11:30   |        0 views | Se queda por debajo de 40€ el Proyector 
+VM1538:176    132. 7610878516833422614 | 27 feb, 10:15   |        0 views | POR MENOS DE 7€ en Power Bank Magnético 
+VM1538:176    133. 7610878196552142102 | 27 feb, 09:20   |        0 views | 10€ de descuento en Arrancador EIGOTRAV 
+VM1538:176    134. 7610877743969963286 | 27 feb, 08:00   |        0 views | Por menos de 7€ hoy en Power Bank Magnét
+VM1538:176    135. 7610465212386331926 | 26 feb, 18:40   |        0 views | No llega a 40€ el Proyector Magcubic 🔥 
+VM1538:176    136. 7610464714077785366 | 26 feb, 17:10   |        0 views | No llega a 7€ el Power Bank Magnético 50
+VM1538:176    137. 7610464361823440151 | 26 feb, 16:20   |        0 views | 10€ menos hoy en Arrancador EIGOTRAV 🔥 
+VM1538:176    138. 7610463795932171543 | 26 feb, 15:20   |        0 views | No llega a 40€ el Proyector Magcubic 🔥 
+VM1538:176    139. 7610876326936972546 | 26 feb, 14:30   |        0 views | Se queda por debajo de 25€ la Botella Bo
+VM1538:176    140. 7610462673657941270 | 26 feb, 13:10   |        0 views | Power Bank Magnético 5000mAh por debajo 
+VM1538:176    141. 7610461185477020950 | 26 feb, 12:05   |        0 views | 10€ menos hoy en Arrancador EIGOTRAV 🔥 
+VM1538:176    142. 7610459791432912150 | 26 feb, 10:40   |        0 views | Se queda por debajo de 25€ el Shilajit N
+VM1538:176    143. 7610458873530486038 | 26 feb, 09:20   |        0 views | LONKOOM 24K 100ml no llega a 16€ solo ho
+VM1538:176    144. 7610457607790152982 | 26 feb, 08:00   |        0 views | Se queda por debajo de 25€ la Botella Bo
+VM1538:176    145. 7609972283741981974 | 25 feb, 16:00   |        0 views | Aceite de orégano Vivonu favorece la sal
+VM1538:176    146. 7609971234746551574 | 25 feb, 15:00   |        0 views | Botella BOTTLE BOTTLE con dos sistemas d
+VM1538:176    147. 7609970624747932950 | 25 feb, 13:30   |        0 views | Auriculares bluetooth con cancelacion de
+VM1538:176    148. 7609969822213967126 | 25 feb, 12:00   |        0 views | Botella termo.Mantiene tus bebidas calie
+VM1538:176    149. 7609969303537847554 | 25 feb, 10:30   |        0 views | Powerbank magsafe ligera para tus viajes
+VM1538:176    150. 7609968905074773250 | 25 feb, 09:00   |        0 views | ¿Problemas para conciliar el sueño? Mela
+VM1538:176    151. 7609968260779379990 | 25 feb, 07:30   |        0 views | OFERTA: Por menos de 7€ en Power Bank Ma
+VM1538:176    152. 7610427131587202326 | 24 feb, 15:45   |        0 views | Este producto contiene una amplia varied
+VM1538:176    153. 7609606911742283030 | 24 feb, 15:00   |        0 views | No llega a 25€ hoy la Botella Bottle Bot
+VM1538:176    154. 7609606052383902998 | 24 feb, 13:55   |        0 views | 4 céntimos por noche hoy en Melatonina A
+VM1538:176    155. 7609605613290556694 | 24 feb, 13:15   |        0 views | 300 cápsulas por menos de 21€ en Aceite 
+VM1538:176    156. 7609605173329087766 | 24 feb, 12:10   |        0 views | melatonina_aldous_500_lotopdevicky_batch
+VM1538:176    157. 7609604792016538902 | 24 feb, 11:20   |        0 views | OFERTA: Por menos de 7€ en Power Bank Ma
+VM1538:176    158. 7609604225085000982 | 24 feb, 10:10   |        0 views | 7 céntimos por cápsula en Aceite de Orég
+VM1538:176    159. 7609603614977297686 | 24 feb, 08:00   |        0 views | Por menos de 7€ hoy en Power Bank Magnét
+VM1538:176    160. 7610123298189479190 | 23 feb, 20:00   |        0 views | Batería MagSafe! Carga inalámbrica para 
+VM1538:176    161. 7610110142524181782 | 23 feb, 19:30   |        0 views | ¡Este es uno de los mejores **suplemento
+VM1538:176    162. 7610105006062079254 | 23 feb, 17:54   |        0 views | Paraguas para la lluvia. Resistente y co
+VM1538:176    163. 7609602399837097238 | 23 feb, 15:05   |        0 views | 4 céntimos por noche en Melatonina Aldou
+VM1538:176    164. 7609602006247836950 | 23 feb, 13:55   |        0 views | 300 tomas por solo 7 céntimos cada una  
+VM1538:176    165. 7609601409666845974 | 23 feb, 12:50   |        0 views | Cada comprimido por solo 4 céntimos en M
+VM1538:176    166. 7609600479290494230 | 23 feb, 12:05   |        0 views | No llega a 25€ la Botella Bottle Bottle 
+VM1538:176    167. 7609599718250810646 | 23 feb, 11:05   |        0 views | No llega a 7€ el Power Bank Magnético 50
+VM1538:176    168. 7609598777892113686 | 23 feb, 09:55   |        0 views | Menos de 15€ en Anillo Simson 🔥 Últimas
+VM1538:176    169. 7609598081323076886 | 23 feb, 08:00   |        0 views | Power Bank Magnético 5000mAh por debajo 
+VM1538:176    170. 7609328942163496214 | 22 feb, 15:25   |        0 views | 300 cápsulas por menos de 21€ en Aceite 
+VM1538:176    171. 7609328494211829014 | 22 feb, 14:20   |        0 views | ¿Problemas para conciliar el sueño?. Aqu
+VM1538:176    172. 7609327839850040598 | 22 feb, 13:10   |        0 views | Producto natural con semilla negra. Anti
+VM1538:176    173. 7609327124125601046 | 22 feb, 12:10   |        0 views | POR MENOS DE 7€ en Power Bank Magnético 
+VM1538:176    174. 7609326227748392214 | 22 feb, 11:05   |        0 views | No llega a 15€ hoy el Anillo Simson 🔥 N
+VM1538:176    175. 7609326620771437846 | 22 feb, 09:55   |        0 views | Por menos de 7€ hoy en Power Bank Magnét
+VM1538:176    176. 7609325363113495830 | 22 feb, 08:00   |        0 views | 15€ y pico no, se queda por debajo el An
+VM1538:176    177. 7609045191407734038 | 21 feb, 14:35   |        0 views | Cada comprimido por solo 4 céntimos en M
+VM1538:176    178. 7609044166479187222 | 21 feb, 13:30   |        0 views | Menos de 7 céntimos por cápsula en Aceit
+VM1538:176    179. 7609043261323332886 | 21 feb, 12:20   |        0 views | No llega a 25€ la Botella Bottle Bottle 
+VM1538:176    180. 7609042517543144726 | 21 feb, 11:25   |        0 views | No llega a 15€ el Anillo Simson 🔥. Mas 
+VM1538:176    181. 7609041884878589206 | 21 feb, 10:20   |        0 views | Power Bank Magnético 5000mAh por debajo 
+VM1538:176    182. 7609041510599806211 | 21 feb, 09:30   |        0 views | No llega a 15€ hoy el Anillo Simson 🔥 A
+VM1538:176    183. 7609040727171026198 | 21 feb, 08:00   |        0 views | No llega a 7€ el Power Bank Magnético 50
+VM1538:176    184. 7609039673905663254 | 20 feb, 23:55   |        0 views | No llega a 25€ la Botella Bottle Bottle 
+VM1538:176    185. 7609038803893800214 | 20 feb, 23:05   |        0 views | No llega a 15€ el Anillo Simson 🔥 Toca 
+VM1538:176    186. 7609038371435924758 | 20 feb, 22:15   |        0 views | Por menos de 7€ hoy en Power Bank Magnét
+VM1538:176    187. 7608975794689412374 | 20 feb, 21:05   |        0 views | 15€ y pico no, se queda por debajo el An
+VM1538:176    188. 7608975300034170134 | 20 feb, 19:05   |        0 views | OFERTA: Por menos de 7€ en Power Bank Ma
+VM1538:176    189. 7608928420076064022 | 20 feb, 15:30   |        0 views | Batería MagSafe de 5000 mAH. Carga rápid
+VM1538:176    190. 7607923021310938390 | 19 feb, 13:05   |        0 views | 40% menos en Anillo Inteligente Fitness 
+VM1538:176    191. 7607922638152928534 | 19 feb, 11:55   |        0 views | 40% de descuento hoy en Melatonina Aldou
+VM1538:176    192. 7607922148367240470 | 19 feb, 10:45   |        0 views | Taza de café automática por menos de 5€ 
+VM1538:176    193. 7607921777536158998 | 19 feb, 09:30   |        0 views | OFERTA: 40% de descuento en Melatonina A
+VM1538:176    194. 7607921104111406358 | 19 feb, 08:00   |        0 views | Taza de café automática por menos de 5€ 
+VM1538:176    195. 7605903323597638934 | 18 feb, 20:20   |        0 views | anillo_simson_hookK_batch002_004Un smart
+VM1538:176    196. 7607907667578719510 | 18 feb, 19:30   |        0 views | Por debajo de 18€ hoy en Auriculares Blu
+VM1538:176    197. 7607906876201782550 | 18 feb, 18:25   |        0 views | 40% menos hoy en Anillo Inteligente SIMS
+VM1538:176    198. 7605902204247035158 | 18 feb, 17:30   |        0 views | ¡De locos! Lo tienes en TikTok Shop casi
+VM1538:176    199. 7607906491202276630 | 18 feb, 15:40   |        0 views | 40% menos en Anillo Inteligente Fitness 
+VM1538:176    200. 7607905858101759235 | 18 feb, 14:25   |        0 views | Melatonina Aldous Bio con 40% OFF 🔥 Blo
+VM1538:176    201. 7605902889185217814 | 18 feb, 13:20   |        0 views | Cápsulas de aceite de orégano disponible
+VM1538:176    202. 7607905326268026135 | 18 feb, 12:20   |        0 views | 40% de descuento hoy en Melatonina Aldou
+VM1538:176    203. 7605902500000025878 | 18 feb, 11:15   |        0 views | Botella térmica para gimnasio, oficina o
+VM1538:176    204. 7607904359862717699 | 18 feb, 10:00   |        0 views | Por menos de 5€ hoy en Taza automática  
+VM1538:176    205. 7605901669775232259 | 18 feb, 09:10   |        0 views | Encontre el arrancador más vendido en Am
+VM1538:176    206. 7607903675318635798 | 18 feb, 08:00   |        0 views | Por menos de 5€ en Taza de café intelige
+VM1538:176    207. 7607902824642399510 | 18 feb, 02:30   |        0 views | No llega a 18€ los Auriculares Bluetooth
+VM1538:176    208. 7607901436638252310 | 17 feb, 23:55   |        0 views | OFERTA: 40% de descuento en Anillo Intel
+VM1538:176    209. 7607900950338063638 | 17 feb, 23:05   |        0 views | 40% menos en Anillo Inteligente Fitness 
+VM1538:176    210. 7607900084998573334 | 17 feb, 22:10   |        0 views | 40% menos en Melatonina Aldous Bio 500 c
+VM1538:176    211. 7607899512169876758 | 17 feb, 21:15   |        0 views | 40% menos hoy en Melatonina Aldous Bio  
+VM1538:176    212. 7607898515011849494 | 17 feb, 20:30   |        0 views | Por menos de 5€ en Taza de café intelige
+VM1538:176    213. 7607898057954348310 | 17 feb, 19:30   |        0 views | Por menos de 5€ hoy en Taza automática  
+VM1538:176    214. 7605898858211626262 | 17 feb, 18:40   |        0 views | ¡Más barato que Amazon! Casi 20€ menos m
+VM1538:176    215. 7605900322313211158 | 17 feb, 14:35   |        0 views | ¿Sabias que puedes tener los mismo benef
+VM1538:176    216. 7605901125576838422 | 17 feb, 12:35   |        0 views | Botella de agua de diseño en TikTok Shop
+VM1538:176    217. 7605898387845598486 | 17 feb, 10:15   |        0 views | Arrancador de batería de coche 6000A con
+VM1538:176    218. 7605898063164525827 | 17 feb, 08:40   |        0 views | TikTok aplica descuento secreto sin códi
+VM1538:176    219. 7605897375156079894 | 16 feb, 15:20   |        0 views | Cosas que necesitas para tu coche, arran
+VM1538:176    220. 7605896612132474134 | 16 feb, 12:50   |        0 views | Ideal para amantes de la tecnología.Mezc
+VM1538:176    221. 7606813488962407702 | 16 feb, 11:31   |        0 views | Paraguas automático con asa especial par
+VM1538:176    222. 7605895751880740118 | 16 feb, 10:20   |        0 views | Diseñado para el uso diario, mejorando l
+VM1538:176    223. 7606815344019115286 | 15 feb, 20:38   |        0 views | Aceite de orégano vivonu  Suplemento nat
+VM1538:176    224. 7606811727396834583 | 15 feb, 18:24   |        0 views | #NovoDoveCabelos  Súper taza de café int
+VM1538:176    225. 7606808405772143894 | 15 feb, 15:10   |        0 views | Licuadora batidora portatil  Perfecto pa
+VM1538:176    226. 7605893324653759766 | 15 feb, 12:35   |        0 views | TikTok Shop lo tiene con mejor precio qu
+VM1538:176    227. 7605893000119684354 | 15 feb, 10:40   |        0 views | Elige la talla adecuada y activa el desc
+VM1538:176    228. 7605892729012374806 | 15 feb, 08:30   |        0 views | Precio reducido al seleccionar ciertas t
+VM1538:176    229. 7606809699815623958 | 14 feb, 22:00   |        0 views | Taza inteligente Producto top ventas! Tu
+VM1538:176    230. 7606807337713650966 | 14 feb, 20:37   |        0 views | Batidora portátil top en ventas de TikTo
+VM1538:176    231. 7605891027550899478 | 14 feb, 14:40   |        0 views | Mejor precio del mercado: este modelo cu
+VM1538:176    232. 7605890285213617430 | 14 feb, 11:50   |        0 views | ¿Buscas una alternativa asequible a los 
+VM1538:176    233. 7605889236901858562 | 14 feb, 08:20   |        0 views | Precio oculto activado por TikTok Shop s
+VM1538:176    234. 7605888762606046486 | 13 feb, 16:15   |        0 views | ¡Me encanta esta botella! Es genial por 
+VM1538:176    235. 7605887062444739862 | 13 feb, 14:40   |        0 views | Booster 12V para gasolina y diésel, hast
+VM1538:176    236. 7605886650526338327 | 13 feb, 13:10   |        0 views | ¡Este es uno de los mejores arrancadores
+VM1538:176    237. 7605885157849025814 | 13 feb, 11:05   |        0 views | Talla + color activan rebaja oculta. Tik
+VM1538:176    238. 7605884516585966870 | 13 feb, 09:15   |        0 views | ¡Si te obsesiona hacer un seguimiento de
+VM1538:176    239. 7605299011460893974 | 12 feb, 20:15   |        0 views | Oferta activa en TikTok Shop: aceite de 
+VM1538:176    240. 7605298080174411030 | 12 feb, 17:40   |        0 views | Talla + color activan rebaja oculta. Tik
+VM1538:176    241. 7605928969292041494 | 12 feb, 14:35   |        0 views | Rebaja activa. Botella térmica cactus de
+VM1538:176    242. 7605298564444523798 | 12 feb, 12:30   |        0 views | Diseño bonito y funcionalidad real. La b
+VM1538:176    243. 7605297385421458710 | 12 feb, 10:40   |        0 views | TikTok aplica descuento secreto sin códi
+VM1538:176    244. 7605296805252713750 | 12 feb, 08:30   |        0 views | Aceite de orégano en formato cápsula, pr
+VM1538:176    245. 7605294029365939478 | 11 feb, 16:00   |        0 views | Pack de cápsulas de orégano con rebaja v
+VM1538:176    246. 7605292188854930710 | 11 feb, 13:35   |        0 views | Pack de cápsulas de orégano con rebaja v
+VM1538:176    247. 7605203271086525699 | 11 feb, 10:35   |        0 views | TikTok Shop aplica automáticamente el cu
+VM1538:176    248. 7605295144379665667 | 11 feb, 08:00   |        0 views | Ideal para emergencias, este arrancador 
+VM1538:176    249. 7605204005718887702 | 10 feb, 22:00   |        0 views | Botella térmica para gimnasio, oficina o
+VM1538:176    250. 7605205178794446102 | 10 feb, 13:30   |        0 views | TikTok activa descuento del 30 % automát
+VM1538:176    251. 7605197705266072854 | 10 feb, 12:31   |        0 views | Terraza superior con césped artificial d
+VM1538:176    252. 7604962975744675094 | 10 feb, 08:20   |        0 views | Botella termo con pastillero incluido y 
+VM1538:176    253. 7604546734286556438 | 10 feb, 08:10   |        0 views | TikTok activa descuento del 30 % automát
+VM1538:176    254. 7604542757595516182 | 9 feb, 15:00    |        0 views | Oferta escondida: el anillo baja de prec
+VM1538:176    255. 7604547118447004950 | 9 feb, 14:30    |        0 views | Cápsulas fáciles de tomar y con envío gr
+VM1538:176    256. 7604547368133987606 | 9 feb, 08:50    |        0 views | Pack ahorro con rebaja visible desde el 
+VM1538:176    257. 7600832982944894230 | 29 ene, 18:14   |        0 views | Si estás cansado de tanta lluvia y frio,
+VM1538:176    258. 7600329968639298838 | 28 ene, 09:42   |        0 views | Decoración de salon. Estilo nòrdico sin 
+VM1538:176    259. 7600066523855686934 | 27 ene, 16:39   |        0 views | Chimenea Bioetanol. Sin olores. Sin humo
+VM1538:176    260. 7580475660481694998 | 5 dic 2025, 22:30 |        0 views | Magsafe batería magnética inalámbrica  C
+VM1538:176    261. 7580471907087043862 | 5 dic 2025, 21:22 |        0 views | Cable 4 en 1 de cristal armor Marca de c
+VM1538:176    262. 7562879587265318166 | 19 oct 2025, 12:35 |        0 views | Un pequeño cambio que dará a tu baño un 
+VM1538:176    263. 7559624636787576086 | 10 oct 2025, 18:04 |        0 views | A por ello!
+VM1538:179 
+📋 Click derecho en la consola → "Copy All" → pega en un .txt
+VM1538:180    Luego: python import_studio_html.py archivo.txt --cuenta lotopdevicky

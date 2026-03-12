@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutoTok — Flujos de Casos de Uso</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f5f5f5; color: #1a1a1a; padding: 2rem; }
+  h1 { text-align: center; margin-bottom: 0.5rem; font-size: 1.8rem; }
+  .subtitle { text-align: center; color: #666; margin-bottom: 2rem; font-size: 0.95rem; }
+  .legend { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem; padding: 1rem; background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+  .legend-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; }
+  .legend-dot { width: 14px; height: 14px; border-radius: 3px; }
+  .dot-ok { background: #22c55e; }
+  .dot-partial { background: #f59e0b; }
+  .dot-missing { background: #ef4444; }
+  .dot-auto { background: #6366f1; }
+  .flow-section { background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 2rem; overflow: hidden; }
+  .flow-header { padding: 1rem 1.5rem; border-bottom: 1px solid #e5e5e5; display: flex; align-items: center; gap: 0.75rem; }
+  .flow-header h2 { font-size: 1.15rem; }
+  .flow-role { font-size: 0.8rem; background: #e0e7ff; color: #3730a3; padding: 0.2rem 0.6rem; border-radius: 12px; }
+  .flow-body { padding: 1.5rem; overflow-x: auto; }
+  .flow-notes { padding: 0 1.5rem 1.5rem; }
+  .flow-notes h3 { font-size: 0.9rem; color: #666; margin-bottom: 0.5rem; }
+  .flow-notes ul { list-style: none; padding: 0; }
+  .flow-notes li { padding: 0.3rem 0; font-size: 0.85rem; display: flex; align-items: flex-start; gap: 0.4rem; }
+  .status-ok::before { content: "✅"; }
+  .status-partial::before { content: "⚠️"; }
+  .status-missing::before { content: "❌"; }
+  .mermaid { display: flex; justify-content: center; }
+  .mermaid svg { max-width: 100%; }
+  @media (max-width: 768px) { body { padding: 0.5rem; } .flow-body { padding: 0.5rem; } }
+</style>
+</head>
+<body>
+
+<h1>AutoTok — Flujos de Casos de Uso</h1>
+<p class="subtitle">Actualizado: 2026-03-08 | Version 1.0</p>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot dot-ok"></div> Cubierto 100%</div>
+  <div class="legend-item"><div class="legend-dot dot-partial"></div> Parcial / mejora UX</div>
+  <div class="legend-item"><div class="legend-dot dot-missing"></div> No cubierto</div>
+  <div class="legend-item"><div class="legend-dot dot-auto"></div> Automatico</div>
+</div>
+
+<!-- ============================================ -->
+<!-- FLUJO 1: CREAR VIDEOS -->
+<!-- ============================================ -->
+<div class="flow-section">
+  <div class="flow-header">
+    <h2>1. Crear Videos</h2>
+    <span class="flow-role">Sara</span>
+  </div>
+  <div class="flow-body">
+    <div class="mermaid">
+flowchart TD
+    A[Producto nuevo?] --> |Si| B[Crear input_producto.json\nen deal_math/]
+    A --> |No, ya existe| G
+
+    B --> C[Generar BOF\nbof_generator.py]
+    C --> D[Importar BOF a BD\nimport_bof.py]
+    D --> E[Copiar material a Drive\nhooks/ brolls/ audios/]
+    E --> F[Escanear material\ncli.py opcion 1]
+    F --> G[Validar material completo\ncli.py opcion 2]
+
+    G --> H{Cuantos productos?}
+    H --> |1 producto| I[cli.py opcion 3\nGenerar videos]
+    H --> |Varios productos| J[cli.py opcion 4\nGeneracion masiva]
+
+    I --> K{Cuantas cuentas?}
+    J --> K
+    K --> |1 cuenta| L[Seleccionar cuenta]
+    K --> |Varias cuentas| M[Seleccionar multiples]
+    L --> N[Definir cantidad\nde videos]
+    M --> N
+
+    N --> O[Confirmar resumen\ny ejecutar]
+    O --> P[Videos generados\nestado = Generado en BD]
+
+    style B fill:#d4edda,stroke:#22c55e
+    style C fill:#d4edda,stroke:#22c55e
+    style D fill:#d4edda,stroke:#22c55e
+    style F fill:#d4edda,stroke:#22c55e
+    style G fill:#d4edda,stroke:#22c55e
+    style I fill:#d4edda,stroke:#22c55e
+    style J fill:#d4edda,stroke:#22c55e
+    style P fill:#d4edda,stroke:#22c55e
+    </div>
+  </div>
+  <div class="flow-notes">
+    <h3>Estado de cobertura:</h3>
+    <ul>
+      <li class="status-ok">Alta de producto, BOF, escaneo, validacion, generacion individual y masiva</li>
+      <li class="status-ok">Edicion de BOF existente (cli opcion 21 o edit_bofs.py)</li>
+      <li class="status-partial">Regenerar videos con material nuevo — se puede generar mas, pero no detecta automaticamente material nuevo vs ya usado</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- FLUJO 2: PROGRAMAR CALENDARIO -->
+<!-- ============================================ -->
+<div class="flow-section">
+  <div class="flow-header">
+    <h2>2. Programar Calendario</h2>
+    <span class="flow-role">Sara</span>
+  </div>
+  <div class="flow-body">
+    <div class="mermaid">
+flowchart TD
+    A[Sara decide programar] --> B{Hay resultados\npendientes de importar?}
+    B --> |Si| C[AUTO-IMPORT\nresultados de operadoras]
+    B --> |No| D[Sync lifecycle\nSheet Productos → BD]
+    C --> D
+
+    D --> E[Seleccionar cuenta\ny dias a programar]
+    E --> F[Programador genera\ncalendario respetando reglas]
+
+    F --> G{Resultado OK?}
+    G --> |Si| H[Escribe en Sheet\nEstado = En Calendario]
+    G --> |Pocos videos| I[Aviso: quedan pocos\nvideos disponibles]
+    I --> H
+
+    H --> J[Actualiza BD\nGenerado → En Calendario]
+    J --> K[Copia videos a\nSynology Drive]
+    K --> L[AUTO-EXPORT\nlotes JSON a Synology]
+    L --> M[Calendario listo\npara operadoras]
+
+    N[Sara necesita\ndeshacer] --> O{Que deshacer?}
+    O --> |Ultima tanda| P[Rollback ultima\nprogramacion]
+    O --> |Fecha concreta| Q[Rollback por fecha]
+    P --> R[Estados vuelven\na Generado]
+    Q --> R
+
+    S[Video problematico\nen calendario] --> T{Que hacer?}
+    T --> |Descartar| U[Marcar Descartado\nen Sheet]
+    T --> |Violation| V[Marcar Violation\nen Sheet]
+    U --> W[Sync → BD actualiza\n→ Reemplazo automatico]
+    V --> W
+
+    style C fill:#fef3c7,stroke:#f59e0b
+    style D fill:#d4edda,stroke:#22c55e
+    style F fill:#d4edda,stroke:#22c55e
+    style H fill:#fef3c7,stroke:#f59e0b
+    style J fill:#d4edda,stroke:#22c55e
+    style K fill:#d4edda,stroke:#22c55e
+    style L fill:#d4edda,stroke:#22c55e
+    style P fill:#fef3c7,stroke:#f59e0b
+    style Q fill:#fef3c7,stroke:#f59e0b
+    style W fill:#d4edda,stroke:#22c55e
+    </div>
+  </div>
+  <div class="flow-notes">
+    <h3>Estado de cobertura:</h3>
+    <ul>
+      <li class="status-ok">Programar por cuenta, multiples dias, fecha especifica, reglas anti-duplicado</li>
+      <li class="status-ok">Descarte y reemplazo automatico, Violation</li>
+      <li class="status-ok">Auto-export lotes JSON a Synology</li>
+      <li class="status-partial">Rollback — roto ayer, en proceso de recuperacion</li>
+      <li class="status-partial">Auto-import de resultados — funciona, pero solo al programar, no bajo demanda</li>
+      <li class="status-partial">Ver stock de videos disponibles — no hay vista clara "te quedan X de este producto"</li>
+      <li class="status-partial">Ver calendario programado — depende de Sheet, no hay comando local</li>
+      <li class="status-missing">Cambiar videos individuales sin rollback completo del dia</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- FLUJO 3: PUBLICAR VIDEOS (OPERADORA) -->
+<!-- ============================================ -->
+<div class="flow-section">
+  <div class="flow-header">
+    <h2>3. Publicar Videos</h2>
+    <span class="flow-role">Carol / Vicky</span>
+  </div>
+  <div class="flow-body">
+    <div class="mermaid">
+flowchart TD
+    A[Operadora abre PC] --> B[Synology Drive\nsincroniza automaticamente]
+    B --> C[Doble-click\nPUBLICAR.bat]
+
+    C --> D{Hay actualizacion\nde codigo?}
+    D --> |Si| E[Aviso: actualizar Kevin\ndesde Synology]
+    D --> |No| F[Busca lote JSON\ndel dia]
+
+    F --> G{Lote encontrado?}
+    G --> |No| H[Busca en API\nVercel]
+    G --> |Si| I[Muestra resumen\npide confirmacion S/N]
+    H --> I
+
+    I --> J[Operadora confirma]
+    J --> K{Chrome abierto\ncon sesion?}
+    K --> |No, sesion expirada| L[RE-LOGIN necesario\nen tiktok.com]
+    K --> |Si| M[Inicia publicacion\nvideo por video]
+
+    L --> M
+
+    M --> N[Validacion pre-publicacion\nseo_text, hashtags, url...]
+    N --> |Falla validacion| O[Marca Error\nvalidation_failed]
+    N --> |OK| P[Sube video\na TikTok Studio]
+
+    P --> Q[Rellena descripcion\nSEO + hashtags]
+    Q --> R[Selecciona producto\nen escaparate]
+    R --> S[Programa hora\ny fecha]
+    S --> T[Click Schedule]
+
+    T --> U{Publicacion OK?}
+    U --> |Si| V[Guarda resultado\nen JSON + API]
+    U --> |No| W[Guarda error\nen JSON + API]
+
+    V --> X{Mas videos\npendientes?}
+    W --> X
+    O --> X
+    X --> |Si| M
+    X --> |No| Y[Resumen final\n+ email a Sara]
+
+    style B fill:#e0e7ff,stroke:#6366f1
+    style D fill:#e0e7ff,stroke:#6366f1
+    style N fill:#d4edda,stroke:#22c55e
+    style V fill:#d4edda,stroke:#22c55e
+    style W fill:#d4edda,stroke:#22c55e
+    style Y fill:#d4edda,stroke:#22c55e
+    style I fill:#fef3c7,stroke:#f59e0b
+    style L fill:#fee2e2,stroke:#ef4444
+    </div>
+  </div>
+  <div class="flow-notes">
+    <h3>Estado de cobertura:</h3>
+    <ul>
+      <li class="status-ok">Publicacion automatica completa, validacion pre-pub, retry de errores</li>
+      <li class="status-ok">Resultados guardados en JSON + API, email con resumen a Sara</li>
+      <li class="status-ok">Check de version automatico al arrancar</li>
+      <li class="status-partial">Resumen pre-publicacion — funcional pero poco amigable (texto en consola)</li>
+      <li class="status-missing">Aviso automatico si sesion Chrome expirada (operadora descubre al fallar)</li>
+      <li class="status-missing">Guia contextual para operadora si algo falla (que hacer, a quien avisar)</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- FLUJO 4: MONITORIZAR RESULTADOS -->
+<!-- ============================================ -->
+<div class="flow-section">
+  <div class="flow-header">
+    <h2>4. Monitorizar Resultados</h2>
+    <span class="flow-role">Sara</span>
+  </div>
+  <div class="flow-body">
+    <div class="mermaid">
+flowchart TD
+    A[Operadora termina\nde publicar] --> B[Resultados en\nJSON lote local]
+    A --> C[Resultados en\nAPI Vercel/Turso]
+
+    B --> D{Synology sincroniza\nJSON a PC Sara?}
+    D --> |Si| E[JSON disponible\nen PC Sara]
+    D --> |No, solo local| F[Resultados solo\nen PC operadora + API]
+
+    E --> G{Sara ejecuta\nprogramador?}
+    G --> |Si| H[AUTO-IMPORT\nJSON → BD Sara]
+    G --> |No| I[Resultados NO\nllegan a BD]
+
+    C --> J{Dashboard Vercel\nlee de Turso?}
+    J --> |Si| K[Dashboard muestra\nestados]
+    J --> |Pero...| L[Dashboard NO lee\nde BD local de Sara]
+
+    H --> M[BD actualizada]
+    M --> N{Sheet se\nactualiza?}
+    N --> |Si, via sheet_sync| O[Sheet refleja\nestado real]
+    N --> |No, sheet opcional| P[Sheet desactualizada]
+
+    I --> Q[BD desactualizada\nSara no ve resultados]
+    L --> R[Dashboard y BD\nno coinciden]
+
+    style B fill:#d4edda,stroke:#22c55e
+    style C fill:#d4edda,stroke:#22c55e
+    style E fill:#d4edda,stroke:#22c55e
+    style H fill:#fef3c7,stroke:#f59e0b
+    style K fill:#fef3c7,stroke:#f59e0b
+    style I fill:#fee2e2,stroke:#ef4444
+    style L fill:#fee2e2,stroke:#ef4444
+    style Q fill:#fee2e2,stroke:#ef4444
+    style R fill:#fee2e2,stroke:#ef4444
+    style P fill:#fee2e2,stroke:#ef4444
+    </div>
+  </div>
+  <div class="flow-notes">
+    <h3>Estado de cobertura:</h3>
+    <ul>
+      <li class="status-ok">Resultados se guardan correctamente en JSON y API al publicar</li>
+      <li class="status-ok">Email automatico a Sara con resumen tras publicacion</li>
+      <li class="status-partial">Import de resultados a BD — solo se ejecuta al programar, no bajo demanda</li>
+      <li class="status-partial">Dashboard Vercel — codigo listo, pero no conectado a BD local</li>
+      <li class="status-missing">Sincronizacion API ↔ BD local automatica (problema critico activo)</li>
+      <li class="status-missing">Vista unificada y fiable del estado real (BD + Sheet + API divergen)</li>
+      <li class="status-missing">Comando "reporte del dia" — no hay forma rapida de ver que paso hoy</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- FLUJO 5: GESTIONAR ERRORES -->
+<!-- ============================================ -->
+<div class="flow-section">
+  <div class="flow-header">
+    <h2>5. Gestionar Errores</h2>
+    <span class="flow-role">Sara</span>
+  </div>
+  <div class="flow-body">
+    <div class="mermaid">
+flowchart TD
+    A[Sara recibe email\ncon errores] --> B[Abre JSON del lote\npara ver detalle]
+
+    B --> C{Tipo de error?}
+
+    C --> |Escaparate fallo\nURL mal| D[Corregir URL\nen BD]
+    C --> |Sesion expirada| E[Pedir a operadora\nque haga re-login]
+    C --> |Validation failed\ndatos incompletos| F[Corregir datos\nen BD]
+    C --> |TikTok rechazo\nvideo/contenido| G{Reintentar\ntiene sentido?}
+    C --> |Crash/timeout| H[Verificar si se\npublico en TikTok]
+
+    D --> I[Operadora relanza\nPUBLICAR.bat]
+    E --> I
+    F --> I
+    G --> |Si| I
+    G --> |No| J[Descartar video\nbuscar reemplazo]
+
+    H --> K{Se publico\nen TikTok?}
+    K --> |Si pero no registro| L[DUPLICADO\nsi se reintenta]
+    K --> |No| I
+
+    L --> M[Marcar como OK\nmanualmente en BD]
+
+    I --> N[Publisher reintenta\nsolo los Error]
+
+    style A fill:#d4edda,stroke:#22c55e
+    style N fill:#d4edda,stroke:#22c55e
+    style B fill:#fef3c7,stroke:#f59e0b
+    style D fill:#fee2e2,stroke:#ef4444
+    style F fill:#fee2e2,stroke:#ef4444
+    style L fill:#fee2e2,stroke:#ef4444
+    style M fill:#fee2e2,stroke:#ef4444
+    </div>
+  </div>
+  <div class="flow-notes">
+    <h3>Estado de cobertura:</h3>
+    <ul>
+      <li class="status-ok">Email con errores categorizados y sugerencias automaticas</li>
+      <li class="status-ok">Retry automatico de videos con Error (salta los OK)</li>
+      <li class="status-partial">Diagnostico — hay que abrir el JSON a mano, no hay comando rapido</li>
+      <li class="status-missing">Corregir datos de un video (URL, descripcion) — no hay flujo definido, hay que ir a BD directamente</li>
+      <li class="status-missing">Verificar si video se publico en TikTok antes de reintentar (vulnerabilidad C1 pain test, QUA-88)</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- FLUJO 6: CICLO COMPLETO DIARIO -->
+<!-- ============================================ -->
+<div class="flow-section">
+  <div class="flow-header">
+    <h2>6. Ciclo Completo Diario (Vista General)</h2>
+    <span class="flow-role">Todos</span>
+  </div>
+  <div class="flow-body">
+    <div class="mermaid">
+flowchart LR
+    subgraph SARA_PREP["Sara (preparacion)"]
+      A[Generar videos] --> B[Programar\ncalendario]
+      B --> C[Videos + lotes\nen Synology]
+    end
+
+    subgraph SYNC_IDA["Synology (auto)"]
+      C --> D[Sync a PC\noperadora]
+    end
+
+    subgraph OPERADORA["Carol / Vicky"]
+      D --> E[PUBLICAR.bat]
+      E --> F[Videos publicados\nen TikTok]
+      F --> G[Resultados en\nJSON + API]
+    end
+
+    subgraph SYNC_VUELTA["Vuelta de resultados"]
+      G --> H[JSON via\nSynology]
+      G --> I[API Vercel\nTurso]
+      H --> J{Import a\nBD Sara}
+      I --> J
+    end
+
+    subgraph SARA_MONITOR["Sara (monitorizar)"]
+      J --> K[BD actualizada]
+      K --> L[Sheet/Dashboard\nactualizado]
+      L --> M{Errores?}
+      M --> |Si| N[Gestionar\nerrores]
+      M --> |No| O[Todo OK]
+    end
+
+    style C fill:#d4edda,stroke:#22c55e
+    style D fill:#d4edda,stroke:#22c55e
+    style E fill:#d4edda,stroke:#22c55e
+    style G fill:#d4edda,stroke:#22c55e
+    style J fill:#fee2e2,stroke:#ef4444
+    style L fill:#fee2e2,stroke:#ef4444
+    </div>
+  </div>
+  <div class="flow-notes">
+    <h3>El cuello de botella critico del sistema:</h3>
+    <ul>
+      <li class="status-ok">De Sara a operadoras (ida): funciona bien via Synology</li>
+      <li class="status-ok">Publicacion en si misma: funciona bien</li>
+      <li class="status-missing">De operadoras a Sara (vuelta): los resultados no vuelven automaticamente a BD — este es el problema central que hay que resolver hoy</li>
+      <li class="status-missing">Vista unificada: no hay una sola fuente de verdad que Sara pueda consultar y confiar</li>
+    </ul>
+  </div>
+</div>
+
+</body>
+</html>

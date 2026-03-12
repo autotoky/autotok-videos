@@ -1,0 +1,220 @@
+==========================================================================================
+REVISION ofertastrendy20 — Pasada 3: Identificar producto
+Generado: 2026-03-10 14:51
+==========================================================================================
+
+RESUMEN:
+  Pass 1 (SEO text): 297 matches
+  Pass 2 (Brand name): 7 matches
+  Total matches: 304
+  BD sin match: 76
+
+==========================================================================================
+§1 — PRODUCTOS NO IDENTIFICADOS (77)
+Indica el producto de cada uno para poder hacer match por fecha/hora
+==========================================================================================
+  # |              POST_ID |             FECHA TK | TITULO
+------------------------------------------------------------------------------------------
+  1 |  7604192565256293634 |         7 feb, 19:30 | Rebaja activa en esta botella viral de 3 botella bottle bottle
+  2 |  7604471973720116502 |         9 feb, 14:10 | Suplemento natural en cápsulas blandas c oregano
+  3 |  7604472394924723479 |         9 feb, 15:45 | Ideal si buscas formato cápsula de oréga oregano
+  4 |  7604474369154305302 |         9 feb, 18:00 | Anillo inteligente con sensor integrado  anillo
+  5 |  7604480134770380054 |         9 feb, 19:20 | Anillo smart con funciones esenciales y  anillo
+  6 |  7604925518026198294 |        10 feb, 10:20 | Nueva oferta en TikTok Shop: botella tér botella
+  7 |  7604956320772476182 |        10 feb, 14:05 | Cápsulas concentradas de orégano listas  oregano
+  8 |  7604958255521008918 |        10 feb, 16:45 | Smart ring con tracker deportivo y diseñ anillo
+  9 |  7605294571311893782 |        10 feb, 18:47 | Sumellier abridor eléctrico pack san Val esto es un video manual de un producto q no tenemos en bd
+ 10 |  7605298151792299267 |        10 feb, 20:18 | Paraguas con grip y botón de abrir  Prom paragüas
+ 11 |  7605299730653908246 |        10 feb, 21:36 | Paraguas con grip y botón de abrir autom paragüas
+ 12 |  7605301371683884310 |        11 feb, 10:34 | Paraguas con grip y botón de abrir autom paragüas
+ 13 |  7605302702150602006 |        11 feb, 14:35 | Paraguas con grip y botón de abrir autom paragüas
+ 14 |  7604501916671823126 |        11 feb, 19:20 | Diseño ergonómico y estilo moderno. Elig anillo
+ 15 |  7604503207733103894 |        11 feb, 21:55 | Modelo elegante con acabado metálico. Re anillo
+ 16 |  7604958644018400534 |        11 feb, 22:05 | Anillo inteligente con varios diseños a  anillo
+ 17 |  7605316864826199318 |        12 feb, 14:25 | ¿Quien más esta listo para actualizar su anillo
+ 18 |  7605314692923493634 |        12 feb, 16:35 | Abridor eléctrico de botellas pack sumel esto es un video manual de un producto q no tenemos en bd
+ 19 |  7605307434394979606 |        12 feb, 18:30 | Proyectos de pantalla con privacidad Ma  magcubic
+ 20 |  7605305837489294614 |        12 feb, 20:00 | Paraguas con grip y botón de abrir autom paragüas
+ 21 |  7605312169130872086 |        12 feb, 22:25 | Magic john pack de dos protectores con p esto es un video manual de un producto q no tenemos en bd
+ 22 |  7605319465764539670 |        12 feb, 23:55 | ¡Oye, èchale un vistazo! ¡Es un cuatro e arrancador
+ 23 |  7605986965711818006 |        13 feb, 08:00 | TikTok Shop activa cupón automático para oregano
+ 24 |  7605320791596551446 |        13 feb, 10:30 | Botella de agua aislada 2oz 950ml. Botel botella
+ 25 |  7605303654576295190 |        13 feb, 12:01 | Paraguas con grip y botón de abrir autom paragüas
+ 26 |  7605321843767119126 |        13 feb, 15:15 | Este es el kit de emergencia para coche  arrancador
+ 27 |  7606407255080144130 |        13 feb, 18:45 | El paraguas más viral de TikTok está de  paragüas
+ 28 |  7605988103416909058 |        13 feb, 19:00 | ¿La viste en TikTok? Esta botella de ace botella
+ 29 |  7606409195742629142 |        13 feb, 21:00 | Paraguas automático  Producto mega viral paragüas
+ 30 |  7605990776710974742 |        14 feb, 09:05 | Talla + color activan rebaja oculta. Tik anillo
+ 31 |  7605992480080809238 |        14 feb, 10:55 | Ideal para emergencias, este arrancador  arrancador
+ 32 |  7605991329595723030 |        14 feb, 13:10 | TikTok aplica descuento secreto sin códi anillo
+ 33 |  7605992973276384534 |        14 feb, 15:15 | Ideal para emergencias, este arrancador  arrancador
+ 34 |  7606411477213318422 |        14 feb, 17:31 | Paraguas  Producto viral y top ventas As paragüas
+ 35 |  7606782578225384726 |        14 feb, 22:07 | Taza mezcladora para tu momento favorito taza
+ 36 |  7605998349371837719 |        15 feb, 11:20 | Rebaja directa en el anillo inteligente  anillo
+ 37 |  7605998648874372374 |        15 feb, 13:40 | El mismo arrancador que Amazon pero más  arrancador
+ 38 |  7605999057403727126 |        15 feb, 17:40 | Arrancador de batería de coche 6000A con arrancador
+ 39 |  7605999468525440278 |        15 feb, 19:30 | Botella térmica para gimnasio, oficina o botella
+ 40 |  7606795310148553986 |        15 feb, 22:00 | Pack de herramientas  Mega promoción sol esto es un video manual de un producto q no tenemos en bd
+ 41 |  7606000476013956374 |        16 feb, 09:05 | Encontre el arrancador más vendido en Am arrancador
+ 42 |  7606783301210213654 |        16 feb, 10:30 | Taza mezcladora para tu momento favorito taza
+ 43 |  7606790169571708182 |        16 feb, 12:00 | Batidora portatil para zumos, batidos, s esto es un video manual de un producto q no tenemos en bd
+ 44 |  7606793459168529686 |        16 feb, 14:10 | Doble descuento en el pack de herramient esto es un video manual de un producto q no tenemos en bd
+ 45 |  7606800338565303574 |        16 feb, 16:35 | Batidora portatil  Perfecta para smoothi esto es un video manual de un producto q no tenemos en bd
+ 46 |  7606000862045031702 |        16 feb, 18:55 | Oferta doble activa: cupón + rebaja del  arrancador
+ 47 |  7606785266757520662 |        16 feb, 20:30 | Taza mezcladora para tu momento favorito taza
+ 48 |  7607526712624057622 |        17 feb, 10:50 | Anillo Inteligente Fitness Tracker SIMSO anillo
+ 49 |  7607527109120036118 |        17 feb, 11:40 | OFERTA: 40% de descuento en Anillo Intel anillo
+ 50 |  7607552123122814230 |        17 feb, 14:50 | Por debajo del umbral de 40€ en Manta El manta
+ 51 |  7607553158377835799 |        17 feb, 15:50 | OFERTA: POR MENOS DE 40€ en Manta Eléctr manta
+ 52 |  7607554582524316950 |        17 feb, 16:40 | Ahorras 14€ hoy en Plancha Eléctrica Coc plancha electrica
+ 53 |  7607559129493736726 |        17 feb, 21:30 | 20€ menos en Arrancador de Batería EIGOT arrancador
+ 54 |  7607889452727405846 |        17 feb, 22:15 | Magic John protector de pantalla con pri esto es un video manual de un producto q no tenemos en bd
+ 55 |  7607902161900571926 |        18 feb, 10:28 | Bateria inalámbrica con tecnología MagSa bateria
+ 56 |  7607734661913136406 |        18 feb, 11:35 | 40% de descuento en Anillo Inteligente F anillo
+ 57 |  7607730506872114435 |        18 feb, 11:35 | Anillo Inteligente Fitness Tracker SIMSO anillo
+ 58 |  7607765308434156822 |        18 feb, 14:55 | Por debajo del umbral de 40€ en Manta El manta
+ 59 |  7607765848429825302 |        18 feb, 15:40 | HOY la tienes por menos de 40€. Llévate  manta
+ 60 |  7607766469417438486 |        18 feb, 16:30 | TE AHORRAS 14€ en Plancha Eléctrica Coci plancha
+ 61 |  7607767120004254998 |        18 feb, 17:20 | Ahorras 14€ hoy en Plancha Eléctrica Coc plancha
+ 62 |  7607773289653521686 |        18 feb, 21:45 | Hay 20€ de diferencia en Arrancador de B arrancador
+ 63 |  7608269266877549846 |        19 feb, 10:30 | Anillo Inteligente Fitness Tracker SIMSO anillo
+ 64 |  7608269861784947990 |        19 feb, 11:20 | OFERTA: 40% de descuento en Anillo Intel anillo
+ 65 |  7608273899612163350 |        19 feb, 16:20 | Ahorras 14€ hoy en Plancha Eléctrica Coc plancha
+ 66 |  7608278855752633603 |        19 feb, 21:30 | TE AHORRAS 20€ en Arrancador de Batería  bateria
+ 67 |  7607898484167134467 |        19 feb, 22:15 | Pack abridor de vinos elegante electric  esto es un video manual de un producto q no tenemos en bd
+ 68 |  7608902091205053698 |        20 feb, 12:06 | Bateria inalámbrica magnética para carga bateria
+ 69 |  7608903990390099222 |        20 feb, 14:00 | Súper oferta batería de móvil inalámbric bateria
+ 70 |  7608928649701625110 |        20 feb, 15:00 | Smart watch  Doble Oferta solo hoy! Smar reloj
+ 71 |  7608926422987508994 |        20 feb, 17:10 | Smartwatch reloj inteligente con la nuev reloj
+ 72 |  7608930181272587542 |        20 feb, 18:07 | Smart Face Tracking Selfie Stick recarga palo selfie
+ 73 |  7609727836605205782 |        23 feb, 00:02 | Cargador inalámbrico para móviles!  Llev cargador
+ 74 |  7611886458009373974 |        28 feb, 20:15 | Cable de carga para movil 4 en 1 ahora p cable 4 en 1
+ 75 |  7611891832896769302 |         1 mar, 22:11 | Cargador de movil para coches Con luces  cargador
+ 76 |  7611895915271572758 |         1 mar, 22:30 | Palo selfie stick inteligente de bolsill palo selfie
+ 77 |  7614908332825971990 |         8 mar, 21:25 | "Palo selfie con seguimiento facial Nove palo selfie
+
+==========================================================================================
+§2 — PRODUCTO IDENTIFICADO PERO SIN MATCH EN BD (36)
+Producto reconocido pero no hay video de ese producto en BD en esa fecha
+==========================================================================================
+  # |              POST_ID |             FECHA TK |                       PRODUCTO | TITULO
+--------------------------------------------------------------------------------------------------------------
+  1 |  7605171340219272470 |        10 feb, 11:30 | landot_cepillo_electrico_alisador | Landot cepillo alisador de pelo  Doble d
+  2 |  7605274914702052630 |        11 feb, 09:00 | landot_cepillo_electrico_alisador | Landot cepillo eléctrico alisador de pel
+  3 |  7605300015312932118 |        11 feb, 13:30 | landot_cepillo_electrico_alisador | Landot cepillo alisador de pelo eléctric
+  4 |  7605173949776874774 |        11 feb, 18:28 | landot_cepillo_electrico_alisador | Landot alisador de pelo eléctrico  Doble
+  5 |  7605276776113147158 |        12 feb, 09:07 | landot_cepillo_electrico_alisador | Landot cepillo eléctrico de pelo y alisa
+  6 |  7605318008520674582 |        12 feb, 11:30 |                  anillo_simson | El anillo inteligente Simson es verdader
+  7 |  7605277622318189846 |        13 feb, 09:11 | landot_cepillo_electrico_alisador | Landot cepillo y alisador electrico Prom
+  8 |  7605322443191848214 |        13 feb, 17:30 |          aceite_oregano_vivonu | Cápsulas blandas de aceite de orégano di
+  9 |  7606765719937748246 |        14 feb, 17:56 |          botella_bottle_bottle | Botella Bottle bottle  Botella termo de
+ 10 |  7606417593326669058 |        14 feb, 19:54 |          botella_bottle_bottle | Botella de agua bottle bottle extra gran
+ 11 |  7606767441145859350 |        15 feb, 08:00 |          botella_bottle_bottle | Botella bottle bottle  Promoción solo ho
+ 12 |  7605278630121409814 |        15 feb, 09:15 | landot_cepillo_electrico_alisador | Landot cepillo y alisador de pelo eléctr
+ 13 |  7606418811125910806 |        15 feb, 15:31 |          botella_bottle_bottle | Botella bottle bottle 27€ y envío gratis
+ 14 |  7607555200349474070 |        17 feb, 15:30 |          picadora_inox_4_hojas | 14€ menos en Plancha Eléctrica Cocinarte
+ 15 |  7607768258132970774 |        18 feb, 18:25 |             proyector_magcubic | Por debajo de 22€ hoy en Magcubic HY300P
+ 16 |  7607892386114587926 |        18 feb, 22:30 |      perfume_lonkoom_24k_100ml | Pack duo promoción especially de Lonkoom
+ 17 |  7608636181860961558 |        19 feb, 19:10 |        bateria_power_bank_5000 | Power Bank Magnético 5000mAh por debajo
+ 18 |  7608643473780051222 |        19 feb, 19:22 |        bateria_power_bank_5000 | Bateria MagSafe  Super precio hoy! Carga
+ 19 |  7608907921874799894 |        20 feb, 13:05 | landot_cepillo_electrico_alisador | Cepillo alisador de Landot  Doble promoc
+ 20 |  7608914212106095894 |        20 feb, 16:00 | landot_cepillo_electrico_alisador | Oferta Landot alisador de pelo! Doble de
+ 21 |  7607899990136048918 |        20 feb, 22:30 |       shilajit_resina_himalaya | Shilajit puro del Himalaya  Te da fuerza
+ 22 |  7611889726743645462 |        28 feb, 22:00 |                   cable_4_en_1 | Cable 4 en 1 de casi 2 metros, extra rob
+ 23 |  7611601157642784022 |         1 mar, 18:30 |          aceite_oregano_vivonu | 300 cápsulas por solo 7 céntimos cada un
+ 24 |  7611597642606316822 |         1 mar, 19:25 |     drdent_tiras_blanqueadoras | DR.DENT 42 tiras = 21 aplicaciones por m
+ 25 |  7611598273438027030 |         1 mar, 20:00 | landot_cepillo_electrico_alisador | No llega a 34€ solo hoy el Cepillo Alisa
+ 26 |  7611601926165204246 |         1 mar, 20:35 |       shilajit_resina_himalaya | Envío gratis y menos de 25€ el Shilajit
+ 27 |  7611598936226254102 |         1 mar, 21:35 |          botella_bottle_bottle | No llega a 25€ la Botella Bottle Bottle
+ 28 |  7613093541568613654 |         6 mar, 12:20 | MINISO_MS180_Auriculares_Bluetooth | POR MENOS DE 18€ en Auriculares Bluetoot
+ 29 |  7613095504993438998 |         6 mar, 15:10 |             proyector_magcubic | Se queda por debajo de 40€ el Proyector
+ 30 |  7613096076718918934 |         6 mar, 16:10 |                  anillo_simson | Menos de 15€ en Anillo Simson 🔥 Últimas
+ 31 |  7613096633349278998 |         6 mar, 16:55 | landot_cepillo_electrico_alisador | 34€ y pico no: Cepillo Eléctrico Alisado
+ 32 |  7613097764012035350 |         6 mar, 17:35 |      arrancador_coche_EIGOTRAV | 10€ de cupón en Arrancador de Batería EI
+ 33 |  7613756343178005782 |         7 mar, 00:30 |        bateria_power_bank_5000 | Por menos de 9€ hoy en Power Bank Magnét
+ 34 |  7614906693448715542 |         8 mar, 16:27 |                   cable_4_en_1 | Desde 7€ tienes 4 cables en 1. Asegura e
+ 35 |  7614907639079783702 |         8 mar, 20:15 | NIKLOK_Manta_electrica_127x152 | Manta eléctrica por menos de 22€ 🔥 Bloq
+ 36 |  7614909354751429910 |         8 mar, 23:55 |        paraguas_sunny_umbrella | Paraguas automático Sunny Umbrella por m
+
+==========================================================================================
+§3 — BD SIN MATCH (76)
+Videos en BD (Programado/Violation) sin post de TikTok encontrado
+==========================================================================================
+  # |  BD_ID |      FECHA |  HORA |                            PRODUCTO
+--------------------------------------------------------------------------------
+  1 |    426 | 2026-02-07 | 19:26 | botella_bottle_bottle
+  2 |    427 | 2026-02-09 | 14:09 | aceite_oregano_vivonu
+  3 |    428 | 2026-02-09 | 15:44 | aceite_oregano_vivonu
+  4 |    429 | 2026-02-09 | 18:00 | anillo_simson
+  5 |    430 | 2026-02-09 | 19:22 | anillo_simson
+  6 |    442 | 2026-02-10 | 10:18 | botella_bottle_bottle
+  7 |    447 | 2026-02-10 | 14:08 | aceite_oregano_vivonu
+  8 |    446 | 2026-02-10 | 16:47 | anillo_simson
+  9 |    459 | 2026-02-11 | 19:28 | anillo_simson
+ 10 |    460 | 2026-02-11 | 21:53 | anillo_simson
+ 11 |    464 | 2026-02-11 | 22:07 | anillo_simson
+ 12 |    474 | 2026-02-12 | 12:51 | aceite_oregano_vivonu
+ 13 |    468 | 2026-02-12 | 14:31 | anillo_simson
+ 14 |    469 | 2026-02-12 | 16:56 | anillo_simson
+ 15 |    470 | 2026-02-12 | 20:55 | arrancador_coche_EIGOTRAV
+ 16 |    484 | 2026-02-13 | 09:09 | aceite_oregano_vivonu
+ 17 |    488 | 2026-02-13 | 09:37 | anillo_simson
+ 18 |    492 | 2026-02-13 | 10:08 | botella_bottle_bottle
+ 19 |    472 | 2026-02-13 | 10:30 | botella_bottle_bottle
+ 20 |    489 | 2026-02-13 | 13:47 | anillo_simson
+ 21 |    490 | 2026-02-13 | 13:47 | arrancador_coche_EIGOTRAV
+ 22 |    471 | 2026-02-13 | 15:15 | arrancador_coche_EIGOTRAV
+ 23 |    486 | 2026-02-13 | 15:33 | botella_bottle_bottle
+ 24 |    491 | 2026-02-13 | 17:33 | arrancador_coche_EIGOTRAV
+ 25 |    493 | 2026-02-14 | 10:54 | anillo_simson
+ 26 |    494 | 2026-02-14 | 11:54 | anillo_simson
+ 27 |    495 | 2026-02-14 | 18:41 | arrancador_coche_EIGOTRAV
+ 28 |    496 | 2026-02-14 | 19:07 | arrancador_coche_EIGOTRAV
+ 29 |    505 | 2026-02-15 | 11:27 | anillo_simson
+ 30 |    506 | 2026-02-15 | 13:40 | arrancador_coche_EIGOTRAV
+ 31 |    507 | 2026-02-15 | 17:42 | arrancador_coche_EIGOTRAV
+ 32 |    508 | 2026-02-15 | 19:30 | botella_bottle_bottle
+ 33 |    513 | 2026-02-16 | 09:03 | arrancador_coche_EIGOTRAV
+ 34 |    514 | 2026-02-16 | 18:55 | arrancador_coche_EIGOTRAV
+ 35 |     61 | 2026-02-17 | 10:47 | anillo_simson
+ 36 |     62 | 2026-02-17 | 11:39 | anillo_simson
+ 37 |    141 | 2026-02-17 | 14:42 | NIKLOK_Manta_electrica_127x152
+ 38 |    142 | 2026-02-17 | 15:40 | NIKLOK_Manta_electrica_127x152
+ 39 |    181 | 2026-02-17 | 16:41 | Plancha_de_asar_Electrica_90x23cm_2000
+ 40 |    182 | 2026-02-17 | 17:32 | Plancha_de_asar_Electrica_90x23cm_2000
+ 41 |    301 | 2026-02-17 | 21:22 | arrancador_coche_EIGOTRAV
+ 42 |     63 | 2026-02-18 | 10:37 | anillo_simson
+ 43 |     64 | 2026-02-18 | 11:36 | anillo_simson
+ 44 |    143 | 2026-02-18 | 14:57 | NIKLOK_Manta_electrica_127x152
+ 45 |    144 | 2026-02-18 | 15:41 | NIKLOK_Manta_electrica_127x152
+ 46 |    183 | 2026-02-18 | 16:29 | Plancha_de_asar_Electrica_90x23cm_2000
+ 47 |    184 | 2026-02-18 | 17:21 | Plancha_de_asar_Electrica_90x23cm_2000
+ 48 |    302 | 2026-02-18 | 21:21 | arrancador_coche_EIGOTRAV
+ 49 |     65 | 2026-02-19 | 10:30 | anillo_simson
+ 50 |     66 | 2026-02-19 | 11:20 | anillo_simson
+ 51 |    185 | 2026-02-19 | 16:20 | Plancha_de_asar_Electrica_90x23cm_2000
+ 52 |    186 | 2026-02-19 | 17:04 | Plancha_de_asar_Electrica_90x23cm_2000
+ 53 |    303 | 2026-02-19 | 21:28 | arrancador_coche_EIGOTRAV
+ 54 |    386 | 2026-02-20 | 18:33 | bateria_power_bank_5000
+ 55 |    381 | 2026-02-20 | 19:25 | bateria_power_bank_5000
+ 56 |    387 | 2026-02-20 | 19:25 | bateria_power_bank_5000
+ 57 |    354 | 2026-03-01 | 08:00 | botella_bottle_bottle
+ 58 |    860 | 2026-03-01 | 09:35 | aceite_oregano_vivonu
+ 59 |    808 | 2026-03-01 | 11:02 | landot_cepillo_electrico_alisador
+ 60 |    725 | 2026-03-01 | 12:29 | shilajit_resina_himalaya
+ 61 |    769 | 2026-03-01 | 14:24 | drdent_tiras_blanqueadoras
+ 62 |    690 | 2026-03-02 | 15:25 | perfume_lonkoom_24k_100ml
+ 63 |    693 | 2026-03-05 | 15:35 | perfume_lonkoom_24k_100ml
+ 64 |   1421 | 2026-03-06 | 00:35 | bateria_power_bank_5000
+ 65 |   1150 | 2026-03-06 | 08:10 | proyector_magcubic
+ 66 |   1330 | 2026-03-06 | 08:20 | MINISO_MS180_Auriculares_Bluetooth
+ 67 |   1371 | 2026-03-06 | 08:25 | anillo_simson
+ 68 |    818 | 2026-03-06 | 09:00 | landot_cepillo_electrico_alisador
+ 69 |   1113 | 2026-03-06 | 14:15 | arrancador_coche_EIGOTRAV
+ 70 |    694 | 2026-03-06 | 15:15 | perfume_lonkoom_24k_100ml
+ 71 |    695 | 2026-03-07 | 15:25 | perfume_lonkoom_24k_100ml
+ 72 |    944 | 2026-03-08 | 04:10 | paraguas_sunny_umbrella
+ 73 |   1293 | 2026-03-08 | 11:50 | cable_4_en_1
+ 74 |   1207 | 2026-03-08 | 14:20 | NIKLOK_Manta_electrica_127x152
+ 75 |    909 | 2026-03-08 | 21:25 | palo_selfie_novete
+ 76 |    910 | 2026-03-09 | 12:20 | palo_selfie_novete

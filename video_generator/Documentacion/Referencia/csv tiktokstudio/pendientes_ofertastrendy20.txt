@@ -1,0 +1,108 @@
+==========================================================================================
+PENDIENTES ofertastrendy20 — Generado: 2026-03-10
+Datos para importar stats retroactivamente en el futuro
+==========================================================================================
+
+RESUMEN:
+  TK posts pre-cutoff (antes 7 feb):      526
+  TK posts manuales (no en BD):            9
+  TK posts huérfanos (sin match en BD):    44
+  BD con link TK pendiente de importar:    10
+  BD no publicado/no programado:           6
+  TOTAL PENDIENTES CON DATOS:              589
+
+------------------------------------------------------------------------------------------
+§1 — TK POSTS PRE-CUTOFF (526)
+Posts publicados antes del 7 feb 2026 (antes de que el sistema empezara)
+No se listan aquí por volumen — ver trendy.txt para el detalle
+------------------------------------------------------------------------------------------
+
+------------------------------------------------------------------------------------------
+§2 — TK POSTS MANUALES (9)
+Videos publicados manualmente de productos que no están en BD
+------------------------------------------------------------------------------------------
+  7605294571311893782 | 10 feb, 18:47 | Sumellier abridor eléctrico pack san Val esto es un video manual de un producto q no tenemos en bd
+  7605314692923493634 | 12 feb, 16:35 | Abridor eléctrico de botellas pack sumel esto es un video manual de un producto q no tenemos en bd
+  7605312169130872086 | 12 feb, 22:25 | Magic john pack de dos protectores con p esto es un video manual de un producto q no tenemos en bd
+  7606795310148553986 | 15 feb, 22:00 | Pack de herramientas  Mega promoción sol esto es un video manual de un producto q no tenemos en bd
+  7606790169571708182 | 16 feb, 12:00 | Batidora portatil para zumos, batidos, s esto es un video manual de un producto q no tenemos en bd
+  7606793459168529686 | 16 feb, 14:10 | Doble descuento en el pack de herramient esto es un video manual de un producto q no tenemos en bd
+  7606800338565303574 | 16 feb, 16:35 | Batidora portatil  Perfecta para smoothi esto es un video manual de un producto q no tenemos en bd
+  7607889452727405846 | 17 feb, 22:15 | Magic John protector de pantalla con pri esto es un video manual de un producto q no tenemos en bd
+  7607898484167134467 | 19 feb, 22:15 | Pack abridor de vinos elegante electric  esto es un video manual de un producto q no tenemos en bd
+
+------------------------------------------------------------------------------------------
+§3 — TK POSTS HUÉRFANOS (44)
+Posts en TikTok cuyo producto se identifica pero no hay video en BD esa fecha
+------------------------------------------------------------------------------------------
+7605171340219272470 |        10 feb, 11:30 | Landot cepillo alisador de pelo  Doble d
+7605298151792299267 |        10 feb, 20:18 | Paraguas con grip y botón de abrir  Prom
+7605299730653908246 |        10 feb, 21:36 | Paraguas con grip y botón de abrir autom
+7605274914702052630 |        11 feb, 09:00 | Landot cepillo eléctrico alisador de pel
+7605301371683884310 |        11 feb, 10:34 | Paraguas con grip y botón de abrir autom
+7605300015312932118 |        11 feb, 13:30 | Landot cepillo alisador de pelo eléctric
+7605302702150602006 |        11 feb, 14:35 | Paraguas con grip y botón de abrir autom
+7605173949776874774 |        11 feb, 18:28 | Landot alisador de pelo eléctrico  Doble
+7605276776113147158 |        12 feb, 09:07 | Landot cepillo eléctrico de pelo y alisa
+7605307434394979606 |        12 feb, 18:30 | Proyectos de pantalla con privacidad Mag
+7605305837489294614 |        12 feb, 20:00 | Paraguas con grip y botón de abrir autom
+7605986965711818006 |        13 feb, 08:00 | TikTok Shop activa cupón automático para
+7605277622318189846 |        13 feb, 09:11 | Landot cepillo y alisador electrico Prom
+7605303654576295190 |        13 feb, 12:01 | Paraguas con grip y botón de abrir autom
+7606407255080144130 |        13 feb, 18:45 | El paraguas más viral de TikTok está de
+7606409195742629142 |        13 feb, 21:00 | Paraguas automático  Producto mega viral
+7606411477213318422 |        14 feb, 17:31 | Paraguas  Producto viral y top ventas As
+7606765719937748246 |        14 feb, 17:56 | Botella Bottle bottle  Botella termo de
+7606417593326669058 |        14 feb, 19:54 | Botella de agua bottle bottle extra gran
+7606782578225384726 |        14 feb, 22:07 | Taza mezcladora para tu momento favorito
+7606767441145859350 |        15 feb, 08:00 | Botella bottle bottle  Promoción solo ho
+7605278630121409814 |        15 feb, 09:15 | Landot cepillo y alisador de pelo eléctr
+7605999468525440278 |        15 feb, 19:30 | Botella térmica para gimnasio, oficina o
+7606783301210213654 |        16 feb, 10:30 | Taza mezcladora para tu momento favorito
+7606785266757520662 |        16 feb, 20:30 | Taza mezcladora para tu momento favorito
+7607555200349474070 |        17 feb, 15:30 | 14€ menos en Plancha Eléctrica Cocinarte
+7607902161900571926 |        18 feb, 10:28 | Bateria inalámbrica con tecnología MagSa
+7607768258132970774 |        18 feb, 18:25 | Por debajo de 22€ hoy en Magcubic HY300P
+7607892386114587926 |        18 feb, 22:30 | Pack duo promoción especially de Lonkoom
+7608636181860961558 |        19 feb, 19:10 | Power Bank Magnético 5000mAh por debajo
+7608643473780051222 |        19 feb, 19:22 | Bateria MagSafe  Super precio hoy! Carga
+7608278855752633603 |        19 feb, 21:30 | TE AHORRAS 20€ en Arrancador de Batería
+7608907921874799894 |        20 feb, 13:05 | Cepillo alisador de Landot  Doble promoc
+7608928649701625110 |        20 feb, 15:00 | Smart watch  Doble Oferta solo hoy! Smar
+7608914212106095894 |        20 feb, 16:00 | Oferta Landot alisador de pelo! Doble de
+7608926422987508994 |        20 feb, 17:10 | Smartwatch reloj inteligente con la nuev
+7608930181272587542 |        20 feb, 18:07 | Smart Face Tracking Selfie Stick recarga
+7607899990136048918 |        20 feb, 22:30 | Shilajit puro del Himalaya  Te da fuerza
+7609727836605205782 |        23 feb, 00:02 | Cargador inalámbrico para móviles!  Llev
+7611886458009373974 |        28 feb, 20:15 | Cable de carga para movil 4 en 1 ahora p
+7611889726743645462 |        28 feb, 22:00 | Cable 4 en 1 de casi 2 metros, extra rob
+7611891832896769302 |         1 mar, 22:11 | Cargador de movil para coches Con luces
+7611895915271572758 |         1 mar, 22:30 | Palo selfie stick inteligente de bolsill
+7613756343178005782 |         7 mar, 00:30 | Por menos de 9€ hoy en Power Bank Magnét
+
+------------------------------------------------------------------------------------------
+§4 — BD PROGRAMADO CON LINK TK PENDIENTE (10)
+Videos en BD que Sara identificó el post de TK pero no se importó el post_id
+Para importar: extraer el post_id del link y hacer UPDATE en BD
+------------------------------------------------------------------------------------------
+id= 474 2026-02-12 12:51   Programado aceite_oregano_vivonu https://www.tiktok.com/@ofertastrendy2.0/video/7605986134514044182
+id= 492 2026-02-13 10:08   Programado botella_bottle_bottle https://www.tiktok.com/@ofertastrendy2.0/video/7605320791596551446 o https://www.tiktok.com/@ofertastrendy2.0/video/7605988103416909058
+id= 490 2026-02-13 13:47   Programado arrancador_coche_EIGOTRAV https://www.tiktok.com/@ofertastrendy2.0/video/7605321843767119126
+id= 182 2026-02-17 17:32   Programado Plancha_de_asar_Electrica_90x23cm_2000 https://www.tiktok.com/@ofertastrendy2.0/video/7607555200349474070
+id= 186 2026-02-19 17:04   Programado Plancha_de_asar_Electrica_90x23cm_2000 https://www.tiktok.com/@ofertastrendy2.0/video/7607554582524316950
+id= 303 2026-02-19 21:28   Programado arrancador_coche_EIGOTRAV https://www.tiktok.com/@ofertastrendy2.0/video/7608278855752633603
+id= 690 2026-03-02 15:25   Programado perfume_lonkoom_24k_100ml https://www.tiktok.com/@ofertastrendy2.0/video/7611875492999859478
+id= 693 2026-03-05 15:35   Programado perfume_lonkoom_24k_100ml https://www.tiktok.com/@ofertastrendy2.0/video/7613081153485933847
+id=1421 2026-03-06 00:35   Programado bateria_power_bank_5000 https://www.tiktok.com/@ofertastrendy2.0/video/7613757002065628419
+id= 910 2026-03-09 12:20   Programado palo_selfie_novete https://www.tiktok.com/@ofertastrendy2.0/video/7614935059233049879
+
+------------------------------------------------------------------------------------------
+§5 — BD NO PUBLICADO (6)
+Videos que estaban Programado en BD pero nunca se publicaron en TikTok
+------------------------------------------------------------------------------------------
+id= 488 2026-02-13 09:37   Programado anillo_simson no publicado
+id= 489 2026-02-13 13:47   Programado anillo_simson no publicado
+id= 491 2026-02-13 17:33   Programado arrancador_coche_EIGOTRAV no publicado
+id= 387 2026-02-20 19:25   Programado bateria_power_bank_5000 no programado
+id= 694 2026-03-06 15:15   Programado perfume_lonkoom_24k_100ml no publicado
+id= 695 2026-03-07 15:25   Programado perfume_lonkoom_24k_100ml no publicado

@@ -1,0 +1,1095 @@
+webmssdk.js:1 .
+core.js?globalName=__PNS_RUNTIME__:3 Creating a worker from 'https://www.tiktok.com/sw.js' violates the following Content Security Policy directive: "worker-src 'none'". The policy is report-only, so the violation has been logged but no further action has been taken.
+[Violation] Permissions policy violation: unload is not allowed in this document.
+[Violation] Permissions policy violation: unload is not allowed in this document.
+[Violation] Permissions policy violation: unload is not allowed in this document.
+[Violation] Permissions policy violation: unload is not allowed in this document.
+[Violation] Permissions policy violation: unload is not allowed in this document.
+[Violation] Permissions policy violation: unload is not allowed in this document.
+[Violation] Permissions policy violation: unload is not allowed in this document.
+[Violation] Permissions policy violation: unload is not allowed in this document.
+[Violation] Permissions policy violation: unload is not allowed in this document.
+[Violation] Permissions policy violation: unload is not allowed in this document.
+[Violation] Permissions policy violation: unload is not allowed in this document.
+3749.1ae65256.js:2 [DEPRECATED] Default export is deprecated. Instead use `import { create } from 'zustand'`.
+d @ 3749.1ae65256.js:2
+3749.1ae65256.js:2 [DEPRECATED] Default export is deprecated. Instead use `import { create } from 'zustand'`.
+d @ 3749.1ae65256.js:2
+3749.1ae65256.js:2 [DEPRECATED] Default export is deprecated. Instead use `import { create } from 'zustand'`.
+d @ 3749.1ae65256.js:2
+collect.js:1  [instance: webapp] appid: 1988, userInfo:{"user_unique_id":"7613789171085837846","user_type":12,"user_id":"7559621437260235798","user_is_login":true,"device_id":"7613789171085837846"}
+collect.js:1  [instance: webapp] appid: 1988, sdk is ready, version is 5.3.12_oversea, you can report now !!!
+collect.js:1  [instance: studio_web] appid: 335386, userInfo:{"user_unique_id":"7559621437260235798","web_id":"7613445645095175702"}
+collect.js:1  [instance: studio_web] appid: 335386, sdk is ready, version is 5.3.12_oversea, you can report now !!!
+main.cdd82326.js:134 [useSWAPIResultSync] start listen: L2S_PROJECT_LIST
+main.cdd82326.js:134 [useSWAPIResultSync] start listen: L2S_ICON_INFO
+index.js:4 Creating a worker from 'https://www.tiktok.com/sw.js' violates the following Content Security Policy directive: "worker-src 'none'". The policy is report-only, so the violation has been logged but no further action has been taken.
+content:1 <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes">
+3749.1ae65256.js:2 [ttastra-runtime][warning]: importing getVGeo from '@ttastra/core/runtime' is deprecated, please update import path to '@ttastra/core/regions'. for example: import { getVGeo } from '@ttastra/core/runtime/regions';
+
+At @ 3749.1ae65256.js:2
+The Content Security Policy directive 'upgrade-insecure-requests' is ignored when delivered in a report-only policy.
+The Content Security Policy directive 'upgrade-insecure-requests' is ignored when delivered in a report-only policy.
+The Content Security Policy directive 'upgrade-insecure-requests' is ignored when delivered in a report-only policy.
+The Content Security Policy directive 'upgrade-insecure-requests' is ignored when delivered in a report-only policy.
+The Content Security Policy directive 'upgrade-insecure-requests' is ignored when delivered in a report-only policy.
+The Content Security Policy directive 'upgrade-insecure-requests' is ignored when delivered in a report-only policy.
+The Content Security Policy directive 'upgrade-insecure-requests' is ignored when delivered in a report-only policy.
+The Content Security Policy directive 'upgrade-insecure-requests' is ignored when delivered in a report-only policy.
+The Content Security Policy directive 'upgrade-insecure-requests' is ignored when delivered in a report-only policy.
+The Content Security Policy directive 'upgrade-insecure-requests' is ignored when delivered in a report-only policy.
+The Content Security Policy directive 'upgrade-insecure-requests' is ignored when delivered in a report-only policy.
+The Content Security Policy directive 'upgrade-insecure-requests' is ignored when delivered in a report-only policy.
+Warning: Don’t paste code into the DevTools Console that you don’t understand or haven’t reviewed yourself. This could allow attackers to steal your identity or take control of your computer. Please type ‘allow pasting’ below and press Enter to allow pasting.
+allow pasting
+(async () => {
+  const SCROLL_DELAY = 300;   // ms entre scrolls
+  const SCROLL_AMOUNT = 300;  // px por scroll
+  const IDLE_LIMIT = 10;      // scrolls sin nuevos videos → parar
+
+  const collected = new Map(); // post_id → {data}
+
+  function captureVisible() {
+    // Buscar todos los links de video visibles en el DOM
+    const links = document.querySelectorAll('a[href*="/video/"]');
+    let newCount = 0;
+
+    links.forEach(link => {
+      const href = link.getAttribute('href') || '';
+      const match = href.match(/@([^/]+)\/video\/(\d+)/);
+      if (!match) return;
+
+      const cuenta = match[1];
+      const postId = match[2];
+
+      if (collected.has(postId)) return; // ya capturado
+
+      // Título del video
+      const title = link.textContent.trim();
+
+      // Buscar el contenedor padre para fecha y métricas
+      // Subimos por el DOM hasta encontrar el row del video
+      let container = link;
+      for (let i = 0; i < 15; i++) {
+        container = container.parentElement;
+        if (!container) break;
+        // Buscamos un contenedor que tenga las métricas
+        if (container.querySelectorAll('[data-tt*="ItemRow"]').length > 0 ||
+            container.querySelectorAll('[data-tt*="PublishStageLabel"]').length > 0) {
+          break;
+        }
+      }
+
+      // Fecha
+      let dateStr = '';
+      if (container) {
+        const dateEl = container.querySelector('[data-tt*="PublishStageLabel"]');
+        if (dateEl) dateStr = dateEl.textContent.trim();
+      }
+
+      // Métricas (views, likes, comments en orden)
+      let metrics = [];
+      if (container) {
+        const metricEls = container.querySelectorAll('[data-tt*="ItemRow"]');
+        metricEls.forEach(el => {
+          const text = el.textContent.trim();
+          if (text && text !== '') metrics.push(text);
+        });
+      }
+
+      collected.set(postId, {
+        cuenta,
+        postId,
+        title: title.substring(0, 100),
+        date: dateStr,
+        views: metrics[0] || '0',
+        likes: metrics[1] || '0',
+        comments: metrics[2] || '0',
+      });
+
+      newCount++;
+    });
+
+    return newCount;
+  }
+
+  // Encontrar el contenedor scrollable
+  // TikTok Studio usa un div con overflow scroll
+  function findScrollContainer() {
+    // Intentar encontrar el contenedor de la lista de videos
+    const candidates = document.querySelectorAll('[class*="ContentManagement"], [class*="content-list"], [class*="VideoList"]');
+    for (const c of candidates) {
+      if (c.scrollHeight > c.clientHeight) return c;
+    }
+
+    // Fallback: buscar cualquier div scrollable que contenga links de video
+    const allDivs = document.querySelectorAll('div');
+    for (const div of allDivs) {
+      if (div.scrollHeight > div.clientHeight + 100 &&
+          div.querySelector('a[href*="/video/"]')) {
+        return div;
+      }
+    }
+
+    // Último recurso: el document
+    return document.scrollingElement || document.documentElement;
+  }
+
+  console.log('🔍 AutoTok Extractor — Iniciando...');
+  console.log('   Buscando contenedor scrollable...');
+
+  const scrollEl = findScrollContainer();
+  console.log('   Contenedor:', scrollEl.tagName, scrollEl.className?.substring(0, 50));
+
+  // Capturar lo visible inicialmente
+  captureVisible();
+  console.log(`   Videos iniciales: ${collected.size}`);
+
+  // Scroll hasta arriba primero
+  scrollEl.scrollTop = 0;
+  await new Promise(r => setTimeout(r, 500));
+
+  let idleCount = 0;
+  let lastSize = collected.size;
+  let scrollCount = 0;
+
+  // Scroll hacia abajo capturando
+  while (idleCount < IDLE_LIMIT) {
+    scrollEl.scrollTop += SCROLL_AMOUNT;
+    await new Promise(r => setTimeout(r, SCROLL_DELAY));
+
+    captureVisible();
+    scrollCount++;
+
+    if (collected.size > lastSize) {
+      console.log(`   Scroll #${scrollCount}: ${collected.size} videos capturados (+${collected.size - lastSize})`);
+      lastSize = collected.size;
+      idleCount = 0;
+    } else {
+      idleCount++;
+    }
+
+    // Si ya no se puede scrollear más
+    if (scrollEl.scrollTop + scrollEl.clientHeight >= scrollEl.scrollHeight - 10) {
+      // Esperar un poco por si carga más contenido
+      await new Promise(r => setTimeout(r, 1000));
+      captureVisible();
+      if (collected.size === lastSize) {
+        idleCount = IDLE_LIMIT; // forzar parada
+      } else {
+        lastSize = collected.size;
+        idleCount = 0;
+      }
+    }
+  }
+
+  // Generar HTML compatible con import_studio_html.py
+  const cuenta = collected.values().next().value?.cuenta || 'unknown';
+  let html = `<!-- AutoTok Extractor — ${collected.size} videos de @${cuenta} — ${new Date().toISOString()} -->\n`;
+  html += `<div class="content-list">\n`;
+
+  for (const [postId, v] of collected) {
+    html += `  <div class="video-row">\n`;
+    html += `    <a href="/@${v.cuenta}/video/${v.postId}" class="video-link">${v.title}</a>\n`;
+    html += `    <span class="PublishStageLabel_TUXText">${v.date}</span>\n`;
+    html += `    <span class="ItemRow_TUXText">${v.views}</span>\n`;
+    html += `    <span class="ItemRow_TUXText">${v.likes}</span>\n`;
+    html += `    <span class="ItemRow_TUXText">${v.comments}</span>\n`;
+    html += `  </div>\n`;
+  }
+
+  html += `</div>\n`;
+
+  // Copiar al clipboard
+  try {
+    await navigator.clipboard.writeText(html);
+    console.log(`\n✅ ¡LISTO! ${collected.size} videos capturados y copiados al portapapeles`);
+    console.log(`   Cuenta: @${cuenta}`);
+    console.log(`   Pega el contenido en un archivo .html y ejecútalo con:`);
+    console.log(`   python import_studio_html.py archivo.html`);
+  } catch (e) {
+    // Si clipboard falla, abrir en nueva pestaña
+    console.log(`\n✅ ¡LISTO! ${collected.size} videos capturados`);
+    console.log(`   No se pudo copiar al clipboard. Abriendo en nueva pestaña...`);
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    window.open(url);
+  }
+
+  // También mostrar resumen en consola
+  console.log('\n📊 Resumen:');
+  let i = 1;
+  for (const [postId, v] of collected) {
+    console.log(`   ${i++}. ${postId} | ${v.date.padEnd(15)} | ${v.views.padStart(8)} views | ${v.title.substring(0, 40)}`);
+  }
+
+  // Retornar los datos por si quieren usarlos
+  return { count: collected.size, videos: Object.fromEntries(collected) };
+})();
+
+VM198:94 🔍 AutoTok Extractor — Iniciando...
+VM198:95    Buscando contenedor scrollable...
+VM198:98    Contenedor: DIV css-snthx edss2sz11
+VM198:102    Videos iniciales: 9
+Promise {<pending>}
+VM198:121    Scroll #1: 17 videos capturados (+8)
+VM198:121    Scroll #2: 20 videos capturados (+3)
+VM198:121    Scroll #3: 23 videos capturados (+3)
+VM198:121    Scroll #4: 26 videos capturados (+3)
+VM198:121    Scroll #5: 29 videos capturados (+3)
+VM198:121    Scroll #6: 32 videos capturados (+3)
+VM198:121    Scroll #7: 35 videos capturados (+3)
+VM198:121    Scroll #8: 38 videos capturados (+3)
+VM198:121    Scroll #9: 41 videos capturados (+3)
+VM198:121    Scroll #10: 44 videos capturados (+3)
+VM198:121    Scroll #11: 47 videos capturados (+3)
+VM198:121    Scroll #12: 50 videos capturados (+3)
+VM198:121    Scroll #13: 53 videos capturados (+3)
+VM198:121    Scroll #14: 56 videos capturados (+3)
+VM198:121    Scroll #15: 59 videos capturados (+3)
+VM198:121    Scroll #16: 62 videos capturados (+3)
+VM198:121    Scroll #17: 65 videos capturados (+3)
+VM198:121    Scroll #18: 68 videos capturados (+3)
+VM198:121    Scroll #19: 71 videos capturados (+3)
+VM198:121    Scroll #20: 74 videos capturados (+3)
+VM198:121    Scroll #21: 77 videos capturados (+3)
+VM198:121    Scroll #22: 80 videos capturados (+3)
+VM198:121    Scroll #23: 83 videos capturados (+3)
+VM198:121    Scroll #24: 86 videos capturados (+3)
+VM198:121    Scroll #25: 89 videos capturados (+3)
+VM198:121    Scroll #26: 92 videos capturados (+3)
+VM198:121    Scroll #27: 95 videos capturados (+3)
+VM198:121    Scroll #28: 98 videos capturados (+3)
+VM198:121    Scroll #29: 101 videos capturados (+3)
+VM198:121    Scroll #30: 104 videos capturados (+3)
+VM198:121    Scroll #31: 107 videos capturados (+3)
+VM198:121    Scroll #32: 110 videos capturados (+3)
+VM198:121    Scroll #33: 113 videos capturados (+3)
+VM198:121    Scroll #34: 116 videos capturados (+3)
+VM198:121    Scroll #38: 119 videos capturados (+3)
+VM198:121    Scroll #39: 121 videos capturados (+2)
+VM198:168 
+✅ ¡LISTO! 121 videos capturados
+VM198:169    No se pudo copiar al clipboard. Abriendo en nueva pestaña...
+VM198:176 
+📊 Resumen:
+VM198:179    1. 7611261228660493591 | 28 feb, 17:05   |        0 views | No llega a 25€ la Botella Bottle Bottle 
+VM198:179    2. 7611260813596183830 | 28 feb, 16:05   |        0 views | Por debajo de 18€ hoy en Auriculares Blu
+VM198:179    3. 7611260291657059606 | 28 feb, 14:50   |        0 views | Cupón de 10€ hoy en Arrancador EIGOTRAV 
+VM198:179    4. 7611259822201244950 | 28 feb, 13:55   |        0 views | Se queda por debajo de 40€ el Proyector 
+VM198:179    5. 7611259397230152963 | 28 feb, 13:00   |        0 views | No llega a 25€ hoy la Botella Bottle Bot
+VM198:179    6. 7611259061463518486 | 28 feb, 11:50   |        0 views | Te ahorras 10€ en Arrancador EIGOTRAV 🔥
+VM198:179    7. 7611258504686390550 | 28 feb, 10:55   |        0 views | Por menos de 7€ hoy en Power Bank Magnét
+VM198:179    8. 7611258069292551446 | 28 feb, 09:45   |        0 views | No llega a 40€ hoy el Proyector Magcubic
+VM198:179    9. 7611257705055178006 | 28 feb, 08:00   |        0 views | bateria_power_bank_5000_lotopdevicky_bat
+VM198:179    10. 7614590673861233942 | 11 mar, 19:10   |        0 views | No llega a 40€ hoy el Proyector Magcubic
+VM198:179    11. 7614590045541960982 | 11 mar, 16:50   |        0 views | Cupón de 10€ hoy en Arrancador EIGOTRAV 
+VM198:179    12. 7614589366589246742 | 11 mar, 14:50   |        0 views | 34€ y pico no: Cepillo Eléctrico Alisado
+VM198:179    13. 7614588809077935382 | 11 mar, 13:10   |        0 views | OFERTA: Por menos de 9€ en Power Bank Ma
+VM198:179    14. 7614588233472593174 | 11 mar, 11:05   |        0 views | No llega a 40€ el Proyector Magcubic 🔥 
+VM198:179    15. 7614805212439629078 | 11 mar, 08:50   |        0 views | 10€ de descuento en Arrancador EIGOTRAV 
+VM198:179    16. 7614586918847663382 | 11 mar, 07:05   |        0 views | Hoy no llega a 34€ el Cepillo Alisador L
+VM198:179    17. 7614586295305669910 | 11 mar, 01:05   |        0 views | Por menos de 9€ hoy en Power Bank Magnét
+VM198:179    18. 7614235021611666710 | 10 mar, 21:50   |        0 views | Power Bank Magnético 5000mAh por debajo 
+VM198:179    19. 7614234426762874134 | 10 mar, 19:55   |        0 views | Por debajo de 9€ hoy en Power Bank Magné
+VM198:179    20. 7614233174943616278 | 10 mar, 17:40   |        0 views | 10€ de cupón en Arrancador de Batería EI
+VM198:179    21. 7614232494480641302 | 10 mar, 16:30   |        0 views | Se queda por debajo de 40€ el Proyector 
+VM198:179    22. 7614231888726740246 | 10 mar, 14:25   |        0 views | 15€ y pico no, se queda por debajo el An
+VM198:179    23. 7614231310457933078 | 10 mar, 13:15   |        0 views | Envío gratis + Landot Cepillo Eléctrico 
+VM198:179    24. 7614230751306910998 | 10 mar, 12:15   |        0 views | No llega a 40€ hoy el Proyector Magcubic
+VM198:179    25. 7614229555779276054 | 10 mar, 09:00   |        0 views | Hoy no llega a 34€ el Cepillo Alisador L
+VM198:179    26. 7614228984376708355 | 10 mar, 08:00   |        0 views | Te ahorras 10€ en Arrancador EIGOTRAV 🔥
+VM198:179    27. 7614804139305880854 | 10 mar, 00:00   |        0 views | Taza automática por menos de 10€ hoy 🔥 
+VM198:179    28. 7614217811090492694 | 9 mar, 23:40    |        0 views | Se queda por debajo de 22€ la Manta Eléc
+VM198:179    29. 7614217226236824854 | 9 mar, 22:05    |        0 views | Por menos de 9€ hoy en Power Bank Magnét
+VM198:179    30. 7614216629773225238 | 9 mar, 19:55    |        0 views | OFERTA: Por menos de 9€ en Power Bank Ma
+VM198:179    31. 7614216062996892950 | 9 mar, 17:50    |        0 views | No llega a 15€ el Anillo Simson 🔥 Toca 
+VM198:179    32. 7614214796619074838 | 9 mar, 15:45    |        0 views | 10€ de cupón en Arrancador de Batería EI
+VM198:179    33. 7614214200730225943 | 9 mar, 14:35    |        0 views | No llega a 34€ solo hoy el Cepillo Alisa
+VM198:179    34. 7614213622079687958 | 9 mar, 13:35    |        0 views | No llega a 40€ el Proyector Magcubic 🔥 
+VM198:179    35. 7614212963838414083 | 9 mar, 12:35    |        0 views | 15€ y pico no, se queda por debajo el An
+VM198:179    36. 7614212345207835926 | 9 mar, 10:15    |        0 views | Se queda por debajo de 40€ el Proyector 
+VM198:179    37. 7614211744067505430 | 9 mar, 08:00    |        0 views | Landot Cepillo Eléctrico Alisador no lle
+VM198:179    38. 7614211094034337046 | 9 mar, 07:00    |        0 views | Cupón de 10€ hoy en Arrancador EIGOTRAV 
+VM198:179    39. 7614201344223857942 | 8 mar, 21:50    |        0 views | Por menos de 9€ hoy en Power Bank Magnét
+VM198:179    40. 7614200729657527574 | 8 mar, 19:50    |        0 views | Por debajo de 9€ hoy en Power Bank Magné
+VM198:179    41. 7614200133751819542 | 8 mar, 16:25    |        0 views | Te ahorras 10€ en Arrancador EIGOTRAV 🔥
+VM198:179    42. 7614199485287238934 | 8 mar, 15:25    |        0 views | Menos de 15€ en Anillo Simson 🔥 Últimas
+VM198:179    43. 7614198912286559510 | 8 mar, 14:20    |        0 views | Hoy no llega a 34€ el Cepillo Alisador L
+VM198:179    44. 7614198348219698454 | 8 mar, 13:15    |        0 views | 40€ y pico no, se queda por debajo el Pr
+VM198:179    45. 7614197717463502102 | 8 mar, 10:00    |        0 views | 15€ y pico no, se queda por debajo el An
+VM198:179    46. 7614197132907515159 | 8 mar, 08:50    |        0 views | No llega a 40€ hoy el Proyector Magcubic
+VM198:179    47. 7614196536540712195 | 8 mar, 08:00    |        0 views | 34€ y pico no: Cepillo Eléctrico Alisado
+VM198:179    48. 7614195914638363926 | 8 mar, 06:55    |        0 views | Te ahorras 10€ en Arrancador EIGOTRAV 🔥
+VM198:179    49. 7614194350951566614 | 7 mar, 21:55    |        0 views | Por debajo de 9€ hoy en Power Bank Magné
+VM198:179    50. 7614193765053484310 | 7 mar, 19:30    |        0 views | OFERTA: Por menos de 9€ en Power Bank Ma
+VM198:179    51. 7614193148369194262 | 7 mar, 16:25    |        0 views | Se queda por debajo de 40€ el Proyector 
+VM198:179    52. 7614192505436884246 | 7 mar, 14:20    |        0 views | Te ahorras 10€ en Arrancador EIGOTRAV 🔥
+VM198:179    53. 7614191848952712470 | 7 mar, 13:15    |        0 views | Landot Cepillo Eléctrico Alisador no lle
+VM198:179    54. 7614191247028260118 | 7 mar, 12:15    |        0 views | Menos de 15€ en Anillo Simson 🔥 Últimas
+VM198:179    55. 7614190633766456598 | 7 mar, 10:05    |        0 views | Cupón de 10€ hoy en Arrancador EIGOTRAV 
+VM198:179    56. 7614190030843661590 | 7 mar, 08:50    |        0 views | No llega a 40€ el Proyector Magcubic 🔥 
+VM198:179    57. 7614189371905871126 | 7 mar, 08:00    |        0 views | No llega a 15€ hoy el Anillo Simson 🔥 N
+VM198:179    58. 7614188768307776790 | 7 mar, 06:50    |        0 views | Se queda por debajo de 34€ el Cepillo Al
+VM198:179    59. 7614177050064080150 | 6 mar, 22:45    |        0 views | Menos de 40€ en Proyector Magcubic 🔥#Bl
+VM198:179    60. 7613712502001585430 | 6 mar, 21:55    |        0 views | Por debajo de 9€ hoy en Power Bank Magné
+VM198:179    61. 7613711916459986198 | 6 mar, 19:55    |        0 views | POR MENOS DE 9€ en Power Bank Magnético 
+VM198:179    62. 7614177321725005078 | 6 mar, 17:16    |        0 views | 40€ y pico no, se queda por debajo el Pr
+VM198:179    63. 7613710568133840150 | 6 mar, 16:25    |        0 views | POR MENOS DE 18€ en Auriculares Bluetoot
+VM198:179    64. 7613707608481991958 | 6 mar, 14:15    |        0 views | No llega a 18€ los Auriculares Bluetooth
+VM198:179    65. 7613707020474043670 | 6 mar, 13:10    |        0 views | Por debajo de 15€ el Anillo Simson 🔥 Ap
+VM198:179    66. 7613706431463705878 | 6 mar, 12:05    |        0 views | Te ahorras 10€ en Arrancador EIGOTRAV 🔥
+VM198:179    67. 7613698667588996355 | 6 mar, 11:05    |        0 views | Landot Cepillo Eléctrico Alisador no lle
+VM198:179    68. 7613697696221744406 | 6 mar, 09:05    |        0 views | 10€ de descuento en Arrancador EIGOTRAV 
+VM198:179    69. 7613448181241613570 | 6 mar, 08:00    |        0 views | No llega a 15€ hoy el Anillo Simson 🔥 A
+VM198:179    70. 7613010935413804310 | 5 mar, 15:35    |        0 views | No llega a 40€ el Proyector Magcubic 🔥 
+VM198:179    71. 7613010510417530134 | 5 mar, 14:30    |        0 views | No llega a 15€ hoy el Anillo Simson 🔥 N
+VM198:179    72. 7613010120842300694 | 5 mar, 13:20    |        0 views | Se queda por debajo de 34€ el Cepillo Al
+VM198:179    73. 7613009822375480598 | 5 mar, 12:15    |        0 views | Menos de 40€ en Proyector Magcubic 🔥 Bl
+VM198:179    74. 7613009389863161110 | 5 mar, 11:10    |        0 views | No llega a 18€ los Auriculares Bluetooth
+VM198:179    75. 7613009084228406550 | 5 mar, 10:00    |        0 views | Cupón de 10€ hoy en Arrancador EIGOTRAV 
+VM198:179    76. 7613008599643704598 | 5 mar, 09:05    |        0 views | Landot Cepillo Eléctrico Alisador no lle
+VM198:179    77. 7613008233246051606 | 5 mar, 08:00    |        0 views | Aplica el cupón de 10€ en Arrancador EIG
+VM198:179    78. 7613007745050086678 | 4 mar, 16:20    |        0 views | No llega a 40€ hoy el Proyector Magcubic
+VM198:179    79. 7613006774165130518 | 4 mar, 14:25    |        0 views | No llega a 15€ hoy el Anillo Simson 🔥 A
+VM198:179    80. 7613007227393297686 | 4 mar, 13:55    |        0 views | Por menos de 18€ hoy los Auriculares Blu
+VM198:179    81. 7613006395348356375 | 4 mar, 13:20    |        0 views | Te ahorras 10€ en Arrancador EIGOTRAV 🔥
+VM198:179    82. 7613005925913332994 | 4 mar, 12:15    |        0 views | Envío gratis + Landot Cepillo Eléctrico 
+VM198:179    83. 7613005450732211478 | 4 mar, 11:15    |        0 views | No llega a 40€ el Proyector Magcubic 🔥 
+VM198:179    84. 7613005094996610326 | 4 mar, 10:05    |        0 views | No llega a 18€ los Auriculares Bluetooth
+VM198:179    85. 7613004697317674262 | 4 mar, 09:05    |        0 views | No llega a 15€ el Anillo Simson 🔥 Toca 
+VM198:179    86. 7613003945425800470 | 4 mar, 08:00    |        0 views | 10€ de descuento en Arrancador EIGOTRAV 
+VM198:179    87. 7612219255391653142 | 3 mar, 16:40    |        0 views | 40€ y pico no, se queda por debajo el Pr
+VM198:179    88. 7612218664628129046 | 3 mar, 15:40    |        0 views | 34€ y pico no: Cepillo Eléctrico Alisado
+VM198:179    89. 7612218347521838358 | 3 mar, 14:35    |        0 views | Auriculares Bluetooth MS180 MINISO por d
+VM198:179    90. 7612217971309579522 | 3 mar, 13:25    |        0 views | Menos de 15€ en Anillo Simson 🔥 Últimas
+VM198:179    91. 7612217262497418518 | 3 mar, 12:25    |        0 views | Aplica el cupón de 10€ en Arrancador EIG
+VM198:179    92. 7612216185215536406 | 3 mar, 10:05    |        0 views | Menos de 40€ en Proyector Magcubic 🔥 Bl
+VM198:179    93. 7612215711263411478 | 3 mar, 09:00    |        0 views | OFERTA: Por menos de 18€ los Auriculares
+VM198:179    94. 7612215345394273558 | 3 mar, 08:00    |        0 views | No llega a 15€ hoy el Anillo Simson 🔥 N
+VM198:179    95. 7611846059488300310 | 2 mar, 17:15    |        0 views | Por menos de 7€ hoy en Power Bank Magnét
+VM198:179    96. 7611845522088889622 | 2 mar, 16:30    |        0 views | Se queda por debajo de 34€ el Cepillo Al
+VM198:179    97. 7611845030537383190 | 2 mar, 15:20    |        0 views | 40€ y pico no, se queda por debajo el Pr
+VM198:179    98. 7611844578420821270 | 2 mar, 14:20    |        0 views | Por debajo de 18€ hoy en Auriculares Blu
+VM198:179    99. 7611844148877970710 | 2 mar, 13:20    |        0 views | anilloNo llega a 15€ el Anillo Simson 🔥
+VM198:179    100. 7611843639257419030 | 2 mar, 12:10    |        0 views | No llega a 7€ el Power Bank Magnético 50
+VM198:179    101. 7611843090021764374 | 2 mar, 11:05    |        0 views | No llega a 40€ hoy el Proyector Magcubic
+VM198:179    102. 7611842559719132438 | 2 mar, 10:05    |        0 views | Aplica el cupón de 10€ en Arrancador EIG
+VM198:179    103. 7611841982150757654 | 2 mar, 08:45    |        0 views | Hoy no llega a 34€ el Cepillo Alisador L
+VM198:179    104. 7611841472840600854 | 2 mar, 07:45    |        0 views | Auriculares Bluetooth MS180 MINISO por d
+VM198:179    105. 7611840898770439446 | 1 mar, 17:25    |        0 views | DR.DENT 42 tiras = 1,19€ por aplicación 
+VM198:179    106. 7611840315728645398 | 1 mar, 16:40    |        0 views | No llega a 25€ y el envío es gratis el S
+VM198:179    107. 7611839511969959190 | 1 mar, 15:45    |        0 views | LONKOOM 24K 100ml no llega a 16€ 🔥 Toca
+VM198:179    108. 7611839033592778006 | 1 mar, 14:15    |        0 views | No llega a 25€ hoy la Botella Bottle Bot
+VM198:179    109. 7611838408968654102 | 1 mar, 13:00    |        0 views | Por menos de 22€ en Manta Eléctrica NIKL
+VM198:179    110. 7611837611644062998 | 1 mar, 11:25    |        0 views | No llega a 55€ la Plancha de Asar Eléctr
+VM198:179    111. 7612216659402689814 | 1 mar, 11:15    |        0 views | No llega a 34€ solo hoy el Cepillo Alisa
+VM198:179    112. 7611836715040312598 | 1 mar, 10:15    |        0 views | 10€ menos hoy en Arrancador EIGOTRAV 🔥 
+VM198:179    113. 7611836145281895702 | 1 mar, 09:30    |        0 views | OFERTA: Por menos de 7€ en Power Bank Ma
+VM198:179    114. 7611835745833192726 | 1 mar, 08:15    |        0 views | No llega a 40€ el Proyector Magcubic 🔥 
+VM198:179    115. 7611835181162319126 | 1 mar, 07:30    |        0 views | No llega a 7€ el Power Bank Magnético 50
+VM198:179    116. 7611261725010169110 | 28 feb, 17:55   |        0 views | Por menos de 10€ en Taza de café intelig
+VM198:179    117. 7610882553028807958 | 27 feb, 17:15   |        0 views | Landot Cepillo Eléctrico Alisador no lle
+VM198:179    118. 7610882074102287638 | 27 feb, 16:20   |        0 views | Menos de 25€ en Botella Bottle Bottle 🔥
+VM198:179    119. 7610881712708504854 | 27 feb, 15:10   |        0 views | DR.DENT 42 tiras = 1,19€ por aplicación 
+VM198:179    120. 7610880528622947586 | 27 feb, 14:10   |        0 views | No llega a 25€ la Botella Bottle Bottle 
+VM198:179    121. 7610880176817278230 | 27 feb, 13:25   |        0 views | 40€ y pico no, se queda por debajo el Pr
+// ═══════════════════════════════════════════════════════════
+// AutoTok — TikTok Studio Video Extractor v2.0
+// ═══════════════════════════════════════════════════════════
+// Pega esto en la consola del inspector (F12 → Console)
+// en la página de TikTok Studio > Publicaciones
+// Hará scroll automático y capturará TODOS los videos
+// ═══════════════════════════════════════════════════════════
+
+(async () => {
+  const SCROLL_DELAY = 500;   // ms entre scrolls (más lento = más fiable)
+  const SCROLL_AMOUNT = 200;  // px por scroll (menos = más granular)
+  const IDLE_LIMIT = 25;      // scrolls sin nuevos videos → parar
+  const LOAD_WAIT = 3000;     // ms extra cuando llega al fondo (lazy load)
+
+  const collected = new Map();
+
+  function captureVisible() {
+    const links = document.querySelectorAll('a[href*="/video/"]');
+    let newCount = 0;
+
+    links.forEach(link => {
+      const href = link.getAttribute('href') || '';
+      const match = href.match(/@([^/]+)\/video\/(\d+)/);
+      if (!match) return;
+
+      const cuenta = match[1];
+      const postId = match[2];
+      if (collected.has(postId)) return;
+
+      const title = link.textContent.trim();
+
+      let container = link;
+      for (let i = 0; i < 20; i++) {
+        container = container.parentElement;
+        if (!container) break;
+        if (container.querySelectorAll('[data-tt*="ItemRow"]').length > 0 ||
+            container.querySelectorAll('[data-tt*="PublishStageLabel"]').length > 0) {
+          break;
+        }
+      }
+
+      let dateStr = '';
+      if (container) {
+        const dateEl = container.querySelector('[data-tt*="PublishStageLabel"]');
+        if (dateEl) dateStr = dateEl.textContent.trim();
+      }
+
+      let metrics = [];
+      if (container) {
+        const metricEls = container.querySelectorAll('[data-tt*="ItemRow"]');
+        metricEls.forEach(el => {
+          const text = el.textContent.trim();
+          if (text && text !== '') metrics.push(text);
+        });
+      }
+
+      collected.set(postId, {
+        cuenta, postId,
+        title: title.substring(0, 100),
+        date: dateStr,
+        views: metrics[0] || '0',
+        likes: metrics[1] || '0',
+        comments: metrics[2] || '0',
+      });
+      newCount++;
+    });
+    return newCount;
+  }
+
+  function findScrollContainer() {
+    const allDivs = document.querySelectorAll('div');
+    let best = null;
+    let bestHeight = Infinity;
+
+    for (const div of allDivs) {
+      if (div.scrollHeight > div.clientHeight + 50 &&
+          div.querySelector('a[href*="/video/"]')) {
+        if (div.scrollHeight < bestHeight) {
+          best = div;
+          bestHeight = div.scrollHeight;
+        }
+      }
+    }
+    return best || document.scrollingElement || document.documentElement;
+  }
+
+  console.log('🔍 AutoTok Extractor v2.0 — Iniciando...');
+
+  const scrollEl = findScrollContainer();
+  console.log('   Contenedor:', scrollEl.tagName, scrollEl.className?.substring(0, 60));
+  console.log('   scrollHeight:', scrollEl.scrollHeight, 'clientHeight:', scrollEl.clientHeight);
+
+  captureVisible();
+  console.log(`   Videos iniciales: ${collected.size}`);
+
+  // Scroll hasta arriba
+  scrollEl.scrollTop = 0;
+  await new Promise(r => setTimeout(r, 1000));
+
+  let idleCount = 0;
+  let lastSize = collected.size;
+  let scrollCount = 0;
+  let lastScrollHeight = scrollEl.scrollHeight;
+  let bottomHits = 0;
+  const MAX_BOTTOM_RETRIES = 8;
+
+  while (idleCount < IDLE_LIMIT) {
+    scrollEl.scrollTop += SCROLL_AMOUNT;
+    await new Promise(r => setTimeout(r, SCROLL_DELAY));
+
+    captureVisible();
+    scrollCount++;
+
+    if (collected.size > lastSize) {
+      if (scrollCount % 20 === 0 || collected.size - lastSize > 5) {
+        console.log(`   📦 ${collected.size} videos (scroll #${scrollCount})`);
+      }
+      lastSize = collected.size;
+      idleCount = 0;
+      bottomHits = 0;
+    } else {
+      idleCount++;
+    }
+
+    // Detectar fondo
+    const atBottom = scrollEl.scrollTop + scrollEl.clientHeight >= scrollEl.scrollHeight - 20;
+
+    if (atBottom && bottomHits < MAX_BOTTOM_RETRIES) {
+      bottomHits++;
+      console.log(`   ⏳ Fondo #${bottomHits} (${collected.size} videos). Esperando lazy load...`);
+
+      // Esperar lazy load
+      await new Promise(r => setTimeout(r, LOAD_WAIT));
+      captureVisible();
+
+      if (scrollEl.scrollHeight > lastScrollHeight) {
+        console.log(`   ✅ Más contenido! scrollHeight: ${lastScrollHeight} → ${scrollEl.scrollHeight}`);
+        lastScrollHeight = scrollEl.scrollHeight;
+        idleCount = 0;
+        bottomHits = 0;
+      } else {
+        // Truco: scroll arriba un poco y volver abajo para forzar carga
+        scrollEl.scrollTop -= 1000;
+        await new Promise(r => setTimeout(r, 800));
+        scrollEl.scrollTop = scrollEl.scrollHeight;
+        await new Promise(r => setTimeout(r, LOAD_WAIT));
+        captureVisible();
+
+        if (scrollEl.scrollHeight > lastScrollHeight || collected.size > lastSize) {
+          console.log(`   🔄 Retry exitoso: ${collected.size} videos`);
+          lastScrollHeight = scrollEl.scrollHeight;
+          lastSize = collected.size;
+          idleCount = 0;
+        }
+      }
+
+      if (bottomHits >= MAX_BOTTOM_RETRIES) {
+        console.log(`   🛑 ${MAX_BOTTOM_RETRIES} intentos en el fondo sin más datos. Parando.`);
+        break;
+      }
+    }
+  }
+
+  // ═══ RESULTADO ═══
+  const cuenta = collected.values().next().value?.cuenta || 'unknown';
+
+  console.log(`\n✅ ¡LISTO! ${collected.size} videos de @${cuenta}`);
+  console.log(`   Scrolls: ${scrollCount}`);
+  console.log('\n📊 Lista completa:');
+
+  let i = 1;
+  for (const [postId, v] of collected) {
+    console.log(`   ${i++}. ${postId} | ${v.date.padEnd(15)} | ${String(v.views).padStart(8)} views | ${v.title.substring(0, 40)}`);
+  }
+
+  console.log(`\n📋 Click derecho en la consola → "Copy All" → pega en un .txt`);
+  console.log(`   Luego: python import_studio_html.py archivo.txt --cuenta ${cuenta}`);
+
+  return { count: collected.size, cuenta };
+})();
+
+VM202:87 🔍 AutoTok Extractor v2.0 — Iniciando...
+VM202:90    Contenedor: DIV css-12sthmp edss2sz11
+VM202:91    scrollHeight: 127 clientHeight: 36
+VM202:94    Videos iniciales: 9
+Promise {<pending>}
+VM202:167 
+✅ ¡LISTO! 9 videos de @lotopdevicky
+VM202:168    Scrolls: 25
+VM202:169 
+📊 Lista completa:
+VM202:173    1. 7609606052383902998 | 24 feb, 13:55   |        0 views | 4 céntimos por noche hoy en Melatonina A
+VM202:173    2. 7609605613290556694 | 24 feb, 13:15   |        0 views | 300 cápsulas por menos de 21€ en Aceite 
+VM202:173    3. 7609605173329087766 | 24 feb, 12:10   |        0 views | melatonina_aldous_500_lotopdevicky_batch
+VM202:173    4. 7609604792016538902 | 24 feb, 11:20   |        0 views | OFERTA: Por menos de 7€ en Power Bank Ma
+VM202:173    5. 7609604225085000982 | 24 feb, 10:10   |        0 views | 7 céntimos por cápsula en Aceite de Orég
+VM202:173    6. 7609603614977297686 | 24 feb, 08:00   |        0 views | Por menos de 7€ hoy en Power Bank Magnét
+VM202:173    7. 7610123298189479190 | 23 feb, 20:00   |        0 views | Batería MagSafe! Carga inalámbrica para 
+VM202:173    8. 7610110142524181782 | 23 feb, 19:30   |        0 views | ¡Este es uno de los mejores **suplemento
+VM202:173    9. 7610105006062079254 | 23 feb, 17:54   |        0 views | Paraguas para la lluvia. Resistente y co
+VM202:176 
+📋 Click derecho en la consola → "Copy All" → pega en un .txt
+VM202:177    Luego: python import_studio_html.py archivo.txt --cuenta lotopdevicky
+// ═══════════════════════════════════════════════════════════
+// AutoTok — TikTok Studio Video Extractor v2.0
+// ═══════════════════════════════════════════════════════════
+// Pega esto en la consola del inspector (F12 → Console)
+// en la página de TikTok Studio > Publicaciones
+// Hará scroll automático y capturará TODOS los videos
+// ═══════════════════════════════════════════════════════════
+
+(async () => {
+  const SCROLL_DELAY = 500;   // ms entre scrolls (más lento = más fiable)
+  const SCROLL_AMOUNT = 200;  // px por scroll (menos = más granular)
+  const IDLE_LIMIT = 25;      // scrolls sin nuevos videos → parar
+  const LOAD_WAIT = 3000;     // ms extra cuando llega al fondo (lazy load)
+
+  const collected = new Map();
+
+  function captureVisible() {
+    const links = document.querySelectorAll('a[href*="/video/"]');
+    let newCount = 0;
+
+    links.forEach(link => {
+      const href = link.getAttribute('href') || '';
+      const match = href.match(/@([^/]+)\/video\/(\d+)/);
+      if (!match) return;
+
+      const cuenta = match[1];
+      const postId = match[2];
+      if (collected.has(postId)) return;
+
+      const title = link.textContent.trim();
+
+      let container = link;
+      for (let i = 0; i < 20; i++) {
+        container = container.parentElement;
+        if (!container) break;
+        if (container.querySelectorAll('[data-tt*="ItemRow"]').length > 0 ||
+            container.querySelectorAll('[data-tt*="PublishStageLabel"]').length > 0) {
+          break;
+        }
+      }
+
+      let dateStr = '';
+      if (container) {
+        const dateEl = container.querySelector('[data-tt*="PublishStageLabel"]');
+        if (dateEl) dateStr = dateEl.textContent.trim();
+      }
+
+      let metrics = [];
+      if (container) {
+        const metricEls = container.querySelectorAll('[data-tt*="ItemRow"]');
+        metricEls.forEach(el => {
+          const text = el.textContent.trim();
+          if (text && text !== '') metrics.push(text);
+        });
+      }
+
+      collected.set(postId, {
+        cuenta, postId,
+        title: title.substring(0, 100),
+        date: dateStr,
+        views: metrics[0] || '0',
+        likes: metrics[1] || '0',
+        comments: metrics[2] || '0',
+      });
+      newCount++;
+    });
+    return newCount;
+  }
+
+  function findScrollContainer() {
+    // Buscar el contenedor scrollable MÁS GRANDE que contenga videos
+    const allDivs = document.querySelectorAll('div');
+    let best = null;
+    let bestHeight = 0;
+
+    for (const div of allDivs) {
+      // Debe ser scrollable (scrollHeight > clientHeight) y tener altura real (>200px)
+      if (div.scrollHeight > div.clientHeight + 50 &&
+          div.clientHeight > 200 &&
+          div.querySelector('a[href*="/video/"]')) {
+        if (div.scrollHeight > bestHeight) {
+          best = div;
+          bestHeight = div.scrollHeight;
+        }
+      }
+    }
+    return best || document.scrollingElement || document.documentElement;
+  }
+
+  console.log('🔍 AutoTok Extractor v2.0 — Iniciando...');
+
+  const scrollEl = findScrollContainer();
+  console.log('   Contenedor:', scrollEl.tagName, scrollEl.className?.substring(0, 60));
+  console.log('   scrollHeight:', scrollEl.scrollHeight, 'clientHeight:', scrollEl.clientHeight);
+
+  captureVisible();
+  console.log(`   Videos iniciales: ${collected.size}`);
+
+  // Scroll hasta arriba
+  scrollEl.scrollTop = 0;
+  await new Promise(r => setTimeout(r, 1000));
+
+  let idleCount = 0;
+  let lastSize = collected.size;
+  let scrollCount = 0;
+  let lastScrollHeight = scrollEl.scrollHeight;
+  let bottomHits = 0;
+  const MAX_BOTTOM_RETRIES = 8;
+
+  while (idleCount < IDLE_LIMIT) {
+    scrollEl.scrollTop += SCROLL_AMOUNT;
+    await new Promise(r => setTimeout(r, SCROLL_DELAY));
+
+    captureVisible();
+    scrollCount++;
+
+    if (collected.size > lastSize) {
+      if (scrollCount % 20 === 0 || collected.size - lastSize > 5) {
+        console.log(`   📦 ${collected.size} videos (scroll #${scrollCount})`);
+      }
+      lastSize = collected.size;
+      idleCount = 0;
+      bottomHits = 0;
+    } else {
+      idleCount++;
+    }
+
+    // Detectar fondo
+    const atBottom = scrollEl.scrollTop + scrollEl.clientHeight >= scrollEl.scrollHeight - 20;
+
+    if (atBottom && bottomHits < MAX_BOTTOM_RETRIES) {
+      bottomHits++;
+      console.log(`   ⏳ Fondo #${bottomHits} (${collected.size} videos). Esperando lazy load...`);
+
+      // Esperar lazy load
+      await new Promise(r => setTimeout(r, LOAD_WAIT));
+      captureVisible();
+
+      if (scrollEl.scrollHeight > lastScrollHeight) {
+        console.log(`   ✅ Más contenido! scrollHeight: ${lastScrollHeight} → ${scrollEl.scrollHeight}`);
+        lastScrollHeight = scrollEl.scrollHeight;
+        idleCount = 0;
+        bottomHits = 0;
+      } else {
+        // Truco: scroll arriba un poco y volver abajo para forzar carga
+        scrollEl.scrollTop -= 1000;
+        await new Promise(r => setTimeout(r, 800));
+        scrollEl.scrollTop = scrollEl.scrollHeight;
+        await new Promise(r => setTimeout(r, LOAD_WAIT));
+        captureVisible();
+
+        if (scrollEl.scrollHeight > lastScrollHeight || collected.size > lastSize) {
+          console.log(`   🔄 Retry exitoso: ${collected.size} videos`);
+          lastScrollHeight = scrollEl.scrollHeight;
+          lastSize = collected.size;
+          idleCount = 0;
+        }
+      }
+
+      if (bottomHits >= MAX_BOTTOM_RETRIES) {
+        console.log(`   🛑 ${MAX_BOTTOM_RETRIES} intentos en el fondo sin más datos. Parando.`);
+        break;
+      }
+    }
+  }
+
+  // ═══ RESULTADO ═══
+  const cuenta = collected.values().next().value?.cuenta || 'unknown';
+
+  console.log(`\n✅ ¡LISTO! ${collected.size} videos de @${cuenta}`);
+  console.log(`   Scrolls: ${scrollCount}`);
+  console.log('\n📊 Lista completa:');
+
+  let i = 1;
+  for (const [postId, v] of collected) {
+    console.log(`   ${i++}. ${postId} | ${v.date.padEnd(15)} | ${String(v.views).padStart(8)} views | ${v.title.substring(0, 40)}`);
+  }
+
+  console.log(`\n📋 Click derecho en la consola → "Copy All" → pega en un .txt`);
+  console.log(`   Luego: python import_studio_html.py archivo.txt --cuenta ${cuenta}`);
+
+  return { count: collected.size, cuenta };
+})();
+
+VM338:90 🔍 AutoTok Extractor v2.0 — Iniciando...
+VM338:93    Contenedor: DIV css-snthx edss2sz11
+VM338:94    scrollHeight: 16410 clientHeight: 528
+VM338:97    Videos iniciales: 9
+Promise {<pending>}
+VM338:119    📦 17 videos (scroll #1)
+VM338:119    📦 55 videos (scroll #20)
+VM338:119    📦 95 videos (scroll #40)
+VM338:119    📦 135 videos (scroll #60)
+VM338:133    ⏳ Fondo #1 (162 videos). Esperando lazy load...
+VM338:140    ✅ Más contenido! scrollHeight: 16410 → 17410
+VM338:133    ⏳ Fondo #1 (172 videos). Esperando lazy load...
+VM338:140    ✅ Más contenido! scrollHeight: 17410 → 18410
+VM338:133    ⏳ Fondo #1 (182 videos). Esperando lazy load...
+VM338:140    ✅ Más contenido! scrollHeight: 18410 → 19410
+VM338:133    ⏳ Fondo #1 (192 videos). Esperando lazy load...
+VM338:140    ✅ Más contenido! scrollHeight: 19410 → 20410
+VM338:133    ⏳ Fondo #1 (202 videos). Esperando lazy load...
+VM338:140    ✅ Más contenido! scrollHeight: 20410 → 21410
+VM338:133    ⏳ Fondo #1 (212 videos). Esperando lazy load...
+VM338:140    ✅ Más contenido! scrollHeight: 21410 → 22410
+VM338:133    ⏳ Fondo #1 (222 videos). Esperando lazy load...
+VM338:140    ✅ Más contenido! scrollHeight: 22410 → 23410
+VM338:133    ⏳ Fondo #1 (232 videos). Esperando lazy load...
+VM338:140    ✅ Más contenido! scrollHeight: 23410 → 24410
+VM338:133    ⏳ Fondo #1 (242 videos). Esperando lazy load...
+VM338:140    ✅ Más contenido! scrollHeight: 24410 → 25410
+VM338:133    ⏳ Fondo #1 (252 videos). Esperando lazy load...
+VM338:140    ✅ Más contenido! scrollHeight: 25410 → 26410
+VM338:133    ⏳ Fondo #1 (262 videos). Esperando lazy load...
+VM338:140    ✅ Más contenido! scrollHeight: 26410 → 26510
+VM338:133    ⏳ Fondo #1 (264 videos). Esperando lazy load...
+VM338:133    ⏳ Fondo #2 (264 videos). Esperando lazy load...
+VM338:133    ⏳ Fondo #3 (264 videos). Esperando lazy load...
+VM338:133    ⏳ Fondo #4 (264 videos). Esperando lazy load...
+VM338:133    ⏳ Fondo #5 (264 videos). Esperando lazy load...
+VM338:133    ⏳ Fondo #6 (264 videos). Esperando lazy load...
+VM338:133    ⏳ Fondo #7 (264 videos). Esperando lazy load...
+VM338:133    ⏳ Fondo #8 (264 videos). Esperando lazy load...
+VM338:161    🛑 8 intentos en el fondo sin más datos. Parando.
+VM338:170 
+✅ ¡LISTO! 264 videos de @lotopdevicky
+VM338:171    Scrolls: 138
+VM338:172 
+📊 Lista completa:
+VM338:176    1. 7609605613290556694 | 24 feb, 13:15   |        0 views | 300 cápsulas por menos de 21€ en Aceite 
+VM338:176    2. 7609605173329087766 | 24 feb, 12:10   |        0 views | melatonina_aldous_500_lotopdevicky_batch
+VM338:176    3. 7609604792016538902 | 24 feb, 11:20   |        0 views | OFERTA: Por menos de 7€ en Power Bank Ma
+VM338:176    4. 7609604225085000982 | 24 feb, 10:10   |        0 views | 7 céntimos por cápsula en Aceite de Orég
+VM338:176    5. 7609603614977297686 | 24 feb, 08:00   |        0 views | Por menos de 7€ hoy en Power Bank Magnét
+VM338:176    6. 7610123298189479190 | 23 feb, 20:00   |        0 views | Batería MagSafe! Carga inalámbrica para 
+VM338:176    7. 7610110142524181782 | 23 feb, 19:30   |        0 views | ¡Este es uno de los mejores **suplemento
+VM338:176    8. 7610105006062079254 | 23 feb, 17:54   |        0 views | Paraguas para la lluvia. Resistente y co
+VM338:176    9. 7609602399837097238 | 23 feb, 15:05   |        0 views | 4 céntimos por noche en Melatonina Aldou
+VM338:176    10. 7614591323949092118 | 11 mar, 21:10   |        0 views | No llega a 22€ la Manta Eléctrica NIKLOK
+VM338:176    11. 7614590673861233942 | 11 mar, 19:10   |        0 views | No llega a 40€ hoy el Proyector Magcubic
+VM338:176    12. 7614590045541960982 | 11 mar, 16:50   |        0 views | Cupón de 10€ hoy en Arrancador EIGOTRAV 
+VM338:176    13. 7614589366589246742 | 11 mar, 14:50   |        0 views | 34€ y pico no: Cepillo Eléctrico Alisado
+VM338:176    14. 7614588809077935382 | 11 mar, 13:10   |        0 views | OFERTA: Por menos de 9€ en Power Bank Ma
+VM338:176    15. 7614588233472593174 | 11 mar, 11:05   |        0 views | No llega a 40€ el Proyector Magcubic 🔥 
+VM338:176    16. 7614805212439629078 | 11 mar, 08:50   |        0 views | 10€ de descuento en Arrancador EIGOTRAV 
+VM338:176    17. 7614586918847663382 | 11 mar, 07:05   |        0 views | Hoy no llega a 34€ el Cepillo Alisador L
+VM338:176    18. 7614586295305669910 | 11 mar, 01:05   |        0 views | Por menos de 9€ hoy en Power Bank Magnét
+VM338:176    19. 7614235021611666710 | 10 mar, 21:50   |        0 views | Power Bank Magnético 5000mAh por debajo 
+VM338:176    20. 7614234426762874134 | 10 mar, 19:55   |        0 views | Por debajo de 9€ hoy en Power Bank Magné
+    21. 7614233174943616278 | 10 mar, 17:40   |        0 views | 10€ de cupón en Arrancador de Batería EI
+    22. 7614232494480641302 | 10 mar, 16:30   |        0 views | Se queda por debajo de 40€ el Proyector 
+    23. 7614231888726740246 | 10 mar, 14:25   |        0 views | 15€ y pico no, se queda por debajo el An
+    24. 7614231310457933078 | 10 mar, 13:15   |        0 views | Envío gratis + Landot Cepillo Eléctrico 
+    25. 7614230751306910998 | 10 mar, 12:15   |        0 views | No llega a 40€ hoy el Proyector Magcubic
+    26. 7614229555779276054 | 10 mar, 09:00   |        0 views | Hoy no llega a 34€ el Cepillo Alisador L
+    27. 7614228984376708355 | 10 mar, 08:00   |        0 views | Te ahorras 10€ en Arrancador EIGOTRAV 🔥
+    28. 7614804139305880854 | 10 mar, 00:00   |        0 views | Taza automática por menos de 10€ hoy 🔥 
+    29. 7614217811090492694 | 9 mar, 23:40    |        0 views | Se queda por debajo de 22€ la Manta Eléc
+    30. 7614217226236824854 | 9 mar, 22:05    |        0 views | Por menos de 9€ hoy en Power Bank Magnét
+    31. 7614216629773225238 | 9 mar, 19:55    |        0 views | OFERTA: Por menos de 9€ en Power Bank Ma
+    32. 7614216062996892950 | 9 mar, 17:50    |        0 views | No llega a 15€ el Anillo Simson 🔥 Toca 
+    33. 7614214796619074838 | 9 mar, 15:45    |        0 views | 10€ de cupón en Arrancador de Batería EI
+    34. 7614214200730225943 | 9 mar, 14:35    |        0 views | No llega a 34€ solo hoy el Cepillo Alisa
+    35. 7614213622079687958 | 9 mar, 13:35    |        0 views | No llega a 40€ el Proyector Magcubic 🔥 
+    36. 7614212963838414083 | 9 mar, 12:35    |        0 views | 15€ y pico no, se queda por debajo el An
+    37. 7614212345207835926 | 9 mar, 10:15    |        0 views | Se queda por debajo de 40€ el Proyector 
+    38. 7614211744067505430 | 9 mar, 08:00    |        0 views | Landot Cepillo Eléctrico Alisador no lle
+    39. 7614211094034337046 | 9 mar, 07:00    |        0 views | Cupón de 10€ hoy en Arrancador EIGOTRAV 
+    40. 7614201344223857942 | 8 mar, 21:50    |        0 views | Por menos de 9€ hoy en Power Bank Magnét
+    41. 7614200729657527574 | 8 mar, 19:50    |        0 views | Por debajo de 9€ hoy en Power Bank Magné
+    42. 7614200133751819542 | 8 mar, 16:25    |        0 views | Te ahorras 10€ en Arrancador EIGOTRAV 🔥
+    43. 7614199485287238934 | 8 mar, 15:25    |        0 views | Menos de 15€ en Anillo Simson 🔥 Últimas
+    44. 7614198912286559510 | 8 mar, 14:20    |        0 views | Hoy no llega a 34€ el Cepillo Alisador L
+    45. 7614198348219698454 | 8 mar, 13:15    |        0 views | 40€ y pico no, se queda por debajo el Pr
+    46. 7614197717463502102 | 8 mar, 10:00    |        0 views | 15€ y pico no, se queda por debajo el An
+    47. 7614197132907515159 | 8 mar, 08:50    |        0 views | No llega a 40€ hoy el Proyector Magcubic
+    48. 7614196536540712195 | 8 mar, 08:00    |        0 views | 34€ y pico no: Cepillo Eléctrico Alisado
+    49. 7614195914638363926 | 8 mar, 06:55    |        0 views | Te ahorras 10€ en Arrancador EIGOTRAV 🔥
+    50. 7614194350951566614 | 7 mar, 21:55    |        0 views | Por debajo de 9€ hoy en Power Bank Magné
+    51. 7614193765053484310 | 7 mar, 19:30    |        0 views | OFERTA: Por menos de 9€ en Power Bank Ma
+    52. 7614193148369194262 | 7 mar, 16:25    |        0 views | Se queda por debajo de 40€ el Proyector 
+    53. 7614192505436884246 | 7 mar, 14:20    |        0 views | Te ahorras 10€ en Arrancador EIGOTRAV 🔥
+    54. 7614191848952712470 | 7 mar, 13:15    |        0 views | Landot Cepillo Eléctrico Alisador no lle
+    55. 7614191247028260118 | 7 mar, 12:15    |        0 views | Menos de 15€ en Anillo Simson 🔥 Últimas
+    56. 7614190633766456598 | 7 mar, 10:05    |        0 views | Cupón de 10€ hoy en Arrancador EIGOTRAV 
+    57. 7614190030843661590 | 7 mar, 08:50    |        0 views | No llega a 40€ el Proyector Magcubic 🔥 
+    58. 7614189371905871126 | 7 mar, 08:00    |        0 views | No llega a 15€ hoy el Anillo Simson 🔥 N
+    59. 7614188768307776790 | 7 mar, 06:50    |        0 views | Se queda por debajo de 34€ el Cepillo Al
+    60. 7614177050064080150 | 6 mar, 22:45    |        0 views | Menos de 40€ en Proyector Magcubic 🔥#Bl
+    61. 7613712502001585430 | 6 mar, 21:55    |        0 views | Por debajo de 9€ hoy en Power Bank Magné
+    62. 7613711916459986198 | 6 mar, 19:55    |        0 views | POR MENOS DE 9€ en Power Bank Magnético 
+    63. 7614177321725005078 | 6 mar, 17:16    |        0 views | 40€ y pico no, se queda por debajo el Pr
+    64. 7613710568133840150 | 6 mar, 16:25    |        0 views | POR MENOS DE 18€ en Auriculares Bluetoot
+    65. 7613707608481991958 | 6 mar, 14:15    |        0 views | No llega a 18€ los Auriculares Bluetooth
+    66. 7613707020474043670 | 6 mar, 13:10    |        0 views | Por debajo de 15€ el Anillo Simson 🔥 Ap
+    67. 7613706431463705878 | 6 mar, 12:05    |        0 views | Te ahorras 10€ en Arrancador EIGOTRAV 🔥
+    68. 7613698667588996355 | 6 mar, 11:05    |        0 views | Landot Cepillo Eléctrico Alisador no lle
+    69. 7613697696221744406 | 6 mar, 09:05    |        0 views | 10€ de descuento en Arrancador EIGOTRAV 
+    70. 7613448181241613570 | 6 mar, 08:00    |        0 views | No llega a 15€ hoy el Anillo Simson 🔥 A
+    71. 7613010935413804310 | 5 mar, 15:35    |        0 views | No llega a 40€ el Proyector Magcubic 🔥 
+    72. 7613010510417530134 | 5 mar, 14:30    |        0 views | No llega a 15€ hoy el Anillo Simson 🔥 N
+    73. 7613010120842300694 | 5 mar, 13:20    |        0 views | Se queda por debajo de 34€ el Cepillo Al
+    74. 7613009822375480598 | 5 mar, 12:15    |        0 views | Menos de 40€ en Proyector Magcubic 🔥 Bl
+    75. 7613009389863161110 | 5 mar, 11:10    |        0 views | No llega a 18€ los Auriculares Bluetooth
+    76. 7613009084228406550 | 5 mar, 10:00    |        0 views | Cupón de 10€ hoy en Arrancador EIGOTRAV 
+    77. 7613008599643704598 | 5 mar, 09:05    |        0 views | Landot Cepillo Eléctrico Alisador no lle
+    78. 7613008233246051606 | 5 mar, 08:00    |        0 views | Aplica el cupón de 10€ en Arrancador EIG
+    79. 7613007745050086678 | 4 mar, 16:20    |        0 views | No llega a 40€ hoy el Proyector Magcubic
+    80. 7613006774165130518 | 4 mar, 14:25    |        0 views | No llega a 15€ hoy el Anillo Simson 🔥 A
+    81. 7613007227393297686 | 4 mar, 13:55    |        0 views | Por menos de 18€ hoy los Auriculares Blu
+    82. 7613006395348356375 | 4 mar, 13:20    |        0 views | Te ahorras 10€ en Arrancador EIGOTRAV 🔥
+    83. 7613005925913332994 | 4 mar, 12:15    |        0 views | Envío gratis + Landot Cepillo Eléctrico 
+    84. 7613005450732211478 | 4 mar, 11:15    |        0 views | No llega a 40€ el Proyector Magcubic 🔥 
+    85. 7613005094996610326 | 4 mar, 10:05    |        0 views | No llega a 18€ los Auriculares Bluetooth
+    86. 7613004697317674262 | 4 mar, 09:05    |        0 views | No llega a 15€ el Anillo Simson 🔥 Toca 
+    87. 7613003945425800470 | 4 mar, 08:00    |        0 views | 10€ de descuento en Arrancador EIGOTRAV 
+    88. 7612219255391653142 | 3 mar, 16:40    |        0 views | 40€ y pico no, se queda por debajo el Pr
+    89. 7612218664628129046 | 3 mar, 15:40    |        0 views | 34€ y pico no: Cepillo Eléctrico Alisado
+    90. 7612218347521838358 | 3 mar, 14:35    |        0 views | Auriculares Bluetooth MS180 MINISO por d
+    91. 7612217971309579522 | 3 mar, 13:25    |        0 views | Menos de 15€ en Anillo Simson 🔥 Últimas
+    92. 7612217262497418518 | 3 mar, 12:25    |        0 views | Aplica el cupón de 10€ en Arrancador EIG
+    93. 7612216185215536406 | 3 mar, 10:05    |        0 views | Menos de 40€ en Proyector Magcubic 🔥 Bl
+    94. 7612215711263411478 | 3 mar, 09:00    |        0 views | OFERTA: Por menos de 18€ los Auriculares
+    95. 7612215345394273558 | 3 mar, 08:00    |        0 views | No llega a 15€ hoy el Anillo Simson 🔥 N
+    96. 7611846059488300310 | 2 mar, 17:15    |        0 views | Por menos de 7€ hoy en Power Bank Magnét
+    97. 7611845522088889622 | 2 mar, 16:30    |        0 views | Se queda por debajo de 34€ el Cepillo Al
+    98. 7611845030537383190 | 2 mar, 15:20    |        0 views | 40€ y pico no, se queda por debajo el Pr
+    99. 7611844578420821270 | 2 mar, 14:20    |        0 views | Por debajo de 18€ hoy en Auriculares Blu
+    100. 7611844148877970710 | 2 mar, 13:20    |        0 views | anilloNo llega a 15€ el Anillo Simson 🔥
+    101. 7611843639257419030 | 2 mar, 12:10    |        0 views | No llega a 7€ el Power Bank Magnético 50
+    102. 7611843090021764374 | 2 mar, 11:05    |        0 views | No llega a 40€ hoy el Proyector Magcubic
+    103. 7611842559719132438 | 2 mar, 10:05    |        0 views | Aplica el cupón de 10€ en Arrancador EIG
+    104. 7611841982150757654 | 2 mar, 08:45    |        0 views | Hoy no llega a 34€ el Cepillo Alisador L
+    105. 7611841472840600854 | 2 mar, 07:45    |        0 views | Auriculares Bluetooth MS180 MINISO por d
+    106. 7611840898770439446 | 1 mar, 17:25    |        0 views | DR.DENT 42 tiras = 1,19€ por aplicación 
+    107. 7611840315728645398 | 1 mar, 16:40    |        0 views | No llega a 25€ y el envío es gratis el S
+    108. 7611839511969959190 | 1 mar, 15:45    |        0 views | LONKOOM 24K 100ml no llega a 16€ 🔥 Toca
+    109. 7611839033592778006 | 1 mar, 14:15    |        0 views | No llega a 25€ hoy la Botella Bottle Bot
+    110. 7611838408968654102 | 1 mar, 13:00    |        0 views | Por menos de 22€ en Manta Eléctrica NIKL
+    111. 7611837611644062998 | 1 mar, 11:25    |        0 views | No llega a 55€ la Plancha de Asar Eléctr
+    112. 7612216659402689814 | 1 mar, 11:15    |        0 views | No llega a 34€ solo hoy el Cepillo Alisa
+    113. 7611836715040312598 | 1 mar, 10:15    |        0 views | 10€ menos hoy en Arrancador EIGOTRAV 🔥 
+    114. 7611836145281895702 | 1 mar, 09:30    |        0 views | OFERTA: Por menos de 7€ en Power Bank Ma
+    115. 7611835745833192726 | 1 mar, 08:15    |        0 views | No llega a 40€ el Proyector Magcubic 🔥 
+    116. 7611835181162319126 | 1 mar, 07:30    |        0 views | No llega a 7€ el Power Bank Magnético 50
+    117. 7611261725010169110 | 28 feb, 17:55   |        0 views | Por menos de 10€ en Taza de café intelig
+    118. 7611261228660493591 | 28 feb, 17:05   |        0 views | No llega a 25€ la Botella Bottle Bottle 
+    119. 7611260813596183830 | 28 feb, 16:05   |        0 views | Por debajo de 18€ hoy en Auriculares Blu
+    120. 7611260291657059606 | 28 feb, 14:50   |        0 views | Cupón de 10€ hoy en Arrancador EIGOTRAV 
+    121. 7611259822201244950 | 28 feb, 13:55   |        0 views | Se queda por debajo de 40€ el Proyector 
+    122. 7611259397230152963 | 28 feb, 13:00   |        0 views | No llega a 25€ hoy la Botella Bottle Bot
+    123. 7611259061463518486 | 28 feb, 11:50   |        0 views | Te ahorras 10€ en Arrancador EIGOTRAV 🔥
+    124. 7611258504686390550 | 28 feb, 10:55   |        0 views | Por menos de 7€ hoy en Power Bank Magnét
+    125. 7611258069292551446 | 28 feb, 09:45   |        0 views | No llega a 40€ hoy el Proyector Magcubic
+    126. 7611257705055178006 | 28 feb, 08:00   |        0 views | bateria_power_bank_5000_lotopdevicky_bat
+    127. 7610882553028807958 | 27 feb, 17:15   |        0 views | Landot Cepillo Eléctrico Alisador no lle
+    128. 7610882074102287638 | 27 feb, 16:20   |        0 views | Menos de 25€ en Botella Bottle Bottle 🔥
+    129. 7610881712708504854 | 27 feb, 15:10   |        0 views | DR.DENT 42 tiras = 1,19€ por aplicación 
+    130. 7610880528622947586 | 27 feb, 14:10   |        0 views | No llega a 25€ la Botella Bottle Bottle 
+    131. 7610880176817278230 | 27 feb, 13:25   |        0 views | 40€ y pico no, se queda por debajo el Pr
+    132. 7610879799715745027 | 27 feb, 12:30   |        0 views | Aplica el cupón de 10€ en Arrancador EIG
+    133. 7610878945969343766 | 27 feb, 11:30   |        0 views | Se queda por debajo de 40€ el Proyector 
+    134. 7610878516833422614 | 27 feb, 10:15   |        0 views | POR MENOS DE 7€ en Power Bank Magnético 
+    135. 7610878196552142102 | 27 feb, 09:20   |        0 views | 10€ de descuento en Arrancador EIGOTRAV 
+    136. 7610877743969963286 | 27 feb, 08:00   |        0 views | Por menos de 7€ hoy en Power Bank Magnét
+    137. 7610465212386331926 | 26 feb, 18:40   |        0 views | No llega a 40€ el Proyector Magcubic 🔥 
+    138. 7610464714077785366 | 26 feb, 17:10   |        0 views | No llega a 7€ el Power Bank Magnético 50
+    139. 7610464361823440151 | 26 feb, 16:20   |        0 views | 10€ menos hoy en Arrancador EIGOTRAV 🔥 
+    140. 7610463795932171543 | 26 feb, 15:20   |        0 views | No llega a 40€ el Proyector Magcubic 🔥 
+    141. 7610876326936972546 | 26 feb, 14:30   |        0 views | Se queda por debajo de 25€ la Botella Bo
+    142. 7610462673657941270 | 26 feb, 13:10   |        0 views | Power Bank Magnético 5000mAh por debajo 
+    143. 7610461185477020950 | 26 feb, 12:05   |        0 views | 10€ menos hoy en Arrancador EIGOTRAV 🔥 
+    144. 7610459791432912150 | 26 feb, 10:40   |        0 views | Se queda por debajo de 25€ el Shilajit N
+    145. 7610458873530486038 | 26 feb, 09:20   |        0 views | LONKOOM 24K 100ml no llega a 16€ solo ho
+    146. 7610457607790152982 | 26 feb, 08:00   |        0 views | Se queda por debajo de 25€ la Botella Bo
+    147. 7609972283741981974 | 25 feb, 16:00   |        0 views | Aceite de orégano Vivonu favorece la sal
+    148. 7609971234746551574 | 25 feb, 15:00   |        0 views | Botella BOTTLE BOTTLE con dos sistemas d
+    149. 7609970624747932950 | 25 feb, 13:30   |        0 views | Auriculares bluetooth con cancelacion de
+    150. 7609969822213967126 | 25 feb, 12:00   |        0 views | Botella termo.Mantiene tus bebidas calie
+    151. 7609969303537847554 | 25 feb, 10:30   |        0 views | Powerbank magsafe ligera para tus viajes
+    152. 7609968905074773250 | 25 feb, 09:00   |        0 views | ¿Problemas para conciliar el sueño? Mela
+    153. 7609968260779379990 | 25 feb, 07:30   |        0 views | OFERTA: Por menos de 7€ en Power Bank Ma
+    154. 7610427131587202326 | 24 feb, 15:45   |        0 views | Este producto contiene una amplia varied
+    155. 7609606911742283030 | 24 feb, 15:00   |        0 views | No llega a 25€ hoy la Botella Bottle Bot
+    156. 7609606052383902998 | 24 feb, 13:55   |        0 views | 4 céntimos por noche hoy en Melatonina A
+    157. 7609602006247836950 | 23 feb, 13:55   |        0 views | 300 tomas por solo 7 céntimos cada una  
+    158. 7609601409666845974 | 23 feb, 12:50   |        0 views | Cada comprimido por solo 4 céntimos en M
+    159. 7609600479290494230 | 23 feb, 12:05   |        0 views | No llega a 25€ la Botella Bottle Bottle 
+    160. 7609599718250810646 | 23 feb, 11:05   |        0 views | No llega a 7€ el Power Bank Magnético 50
+    161. 7609598777892113686 | 23 feb, 09:55   |        0 views | Menos de 15€ en Anillo Simson 🔥 Últimas
+    162. 7609598081323076886 | 23 feb, 08:00   |        0 views | Power Bank Magnético 5000mAh por debajo 
+    163. 7609328942163496214 | 22 feb, 15:25   |        0 views | 300 cápsulas por menos de 21€ en Aceite 
+    164. 7609328494211829014 | 22 feb, 14:20   |        0 views | ¿Problemas para conciliar el sueño?. Aqu
+    165. 7609327839850040598 | 22 feb, 13:10   |        0 views | Producto natural con semilla negra. Anti
+    166. 7609327124125601046 | 22 feb, 12:10   |        0 views | POR MENOS DE 7€ en Power Bank Magnético 
+    167. 7609326227748392214 | 22 feb, 11:05   |        0 views | No llega a 15€ hoy el Anillo Simson 🔥 N
+    168. 7609326620771437846 | 22 feb, 09:55   |        0 views | Por menos de 7€ hoy en Power Bank Magnét
+    169. 7609325363113495830 | 22 feb, 08:00   |        0 views | 15€ y pico no, se queda por debajo el An
+    170. 7609045191407734038 | 21 feb, 14:35   |        0 views | Cada comprimido por solo 4 céntimos en M
+    171. 7609044166479187222 | 21 feb, 13:30   |        0 views | Menos de 7 céntimos por cápsula en Aceit
+    172. 7609043261323332886 | 21 feb, 12:20   |        0 views | No llega a 25€ la Botella Bottle Bottle 
+    173. 7609042517543144726 | 21 feb, 11:25   |        0 views | No llega a 15€ el Anillo Simson 🔥. Mas 
+    174. 7609041884878589206 | 21 feb, 10:20   |        0 views | Power Bank Magnético 5000mAh por debajo 
+    175. 7609041510599806211 | 21 feb, 09:30   |        0 views | No llega a 15€ hoy el Anillo Simson 🔥 A
+    176. 7609040727171026198 | 21 feb, 08:00   |        0 views | No llega a 7€ el Power Bank Magnético 50
+    177. 7609039673905663254 | 20 feb, 23:55   |        0 views | No llega a 25€ la Botella Bottle Bottle 
+    178. 7609038803893800214 | 20 feb, 23:05   |        0 views | No llega a 15€ el Anillo Simson 🔥 Toca 
+    179. 7609038371435924758 | 20 feb, 22:15   |        0 views | Por menos de 7€ hoy en Power Bank Magnét
+    180. 7608975794689412374 | 20 feb, 21:05   |        0 views | 15€ y pico no, se queda por debajo el An
+    181. 7608975300034170134 | 20 feb, 19:05   |        0 views | OFERTA: Por menos de 7€ en Power Bank Ma
+    182. 7608928420076064022 | 20 feb, 15:30   |        0 views | Batería MagSafe de 5000 mAH. Carga rápid
+    183. 7608924046813662486 | 20 feb, 13:31   |        0 views | Como dice el refrán: “En Abril aguas mil
+    184. 7608708100266200342 | 20 feb, 10:45   |        0 views | Anillo SIMSON LAB recargable para hombre
+    185. 7608702577118563606 | 20 feb, 09:10   |        0 views | Es perfecto para quienes viajan con frec
+    186. 7608697951212424470 | 20 feb, 08:00   |        0 views | ¿Tiene dificultades para dormir? ¡Este p
+    187. 7608686504382188822 | 19 feb, 22:09   |        0 views | Cepillo eléctrico Landot. Pelo rizado?  
+    188. 7608663320110959894 | 19 feb, 20:39   |        0 views | Nutralie magnesio  Promoción doble solo 
+    189. 7607924172735679767 | 19 feb, 16:00   |        0 views | Anillo Inteligente Fitness Tracker SIMSO
+    190. 7607923573071678742 | 19 feb, 14:50   |        0 views | OFERTA: Por menos de 18€ los Auriculares
+    191. 7607923021310938390 | 19 feb, 13:05   |        0 views | 40% menos en Anillo Inteligente Fitness 
+    192. 7607922638152928534 | 19 feb, 11:55   |        0 views | 40% de descuento hoy en Melatonina Aldou
+    193. 7607922148367240470 | 19 feb, 10:45   |        0 views | Taza de café automática por menos de 5€ 
+    194. 7607921777536158998 | 19 feb, 09:30   |        0 views | OFERTA: 40% de descuento en Melatonina A
+    195. 7607921104111406358 | 19 feb, 08:00   |        0 views | Taza de café automática por menos de 5€ 
+    196. 7605903323597638934 | 18 feb, 20:20   |        0 views | anillo_simson_hookK_batch002_004Un smart
+    197. 7607907667578719510 | 18 feb, 19:30   |        0 views | Por debajo de 18€ hoy en Auriculares Blu
+    198. 7607906876201782550 | 18 feb, 18:25   |        0 views | 40% menos hoy en Anillo Inteligente SIMS
+    199. 7605902204247035158 | 18 feb, 17:30   |        0 views | ¡De locos! Lo tienes en TikTok Shop casi
+    200. 7607906491202276630 | 18 feb, 15:40   |        0 views | 40% menos en Anillo Inteligente Fitness 
+    201. 7607905858101759235 | 18 feb, 14:25   |        0 views | Melatonina Aldous Bio con 40% OFF 🔥 Blo
+    202. 7605902889185217814 | 18 feb, 13:20   |        0 views | Cápsulas de aceite de orégano disponible
+    203. 7607905326268026135 | 18 feb, 12:20   |        0 views | 40% de descuento hoy en Melatonina Aldou
+    204. 7605902500000025878 | 18 feb, 11:15   |        0 views | Botella térmica para gimnasio, oficina o
+    205. 7607904359862717699 | 18 feb, 10:00   |        0 views | Por menos de 5€ hoy en Taza automática  
+    206. 7605901669775232259 | 18 feb, 09:10   |        0 views | Encontre el arrancador más vendido en Am
+    207. 7607903675318635798 | 18 feb, 08:00   |        0 views | Por menos de 5€ en Taza de café intelige
+    208. 7607902824642399510 | 18 feb, 02:30   |        0 views | No llega a 18€ los Auriculares Bluetooth
+    209. 7607901436638252310 | 17 feb, 23:55   |        0 views | OFERTA: 40% de descuento en Anillo Intel
+    210. 7607900950338063638 | 17 feb, 23:05   |        0 views | 40% menos en Anillo Inteligente Fitness 
+    211. 7607900084998573334 | 17 feb, 22:10   |        0 views | 40% menos en Melatonina Aldous Bio 500 c
+    212. 7607899512169876758 | 17 feb, 21:15   |        0 views | 40% menos hoy en Melatonina Aldous Bio  
+    213. 7607898515011849494 | 17 feb, 20:30   |        0 views | Por menos de 5€ en Taza de café intelige
+    214. 7607898057954348310 | 17 feb, 19:30   |        0 views | Por menos de 5€ hoy en Taza automática  
+    215. 7605898858211626262 | 17 feb, 18:40   |        0 views | ¡Más barato que Amazon! Casi 20€ menos m
+    216. 7605900322313211158 | 17 feb, 14:35   |        0 views | ¿Sabias que puedes tener los mismo benef
+    217. 7605901125576838422 | 17 feb, 12:35   |        0 views | Botella de agua de diseño en TikTok Shop
+    218. 7605898387845598486 | 17 feb, 10:15   |        0 views | Arrancador de batería de coche 6000A con
+VM338:176    219. 7605898063164525827 | 17 feb, 08:40   |        0 views | TikTok aplica descuento secreto sin códi
+VM338:176    220. 7605897375156079894 | 16 feb, 15:20   |        0 views | Cosas que necesitas para tu coche, arran
+VM338:176    221. 7605896612132474134 | 16 feb, 12:50   |        0 views | Ideal para amantes de la tecnología.Mezc
+VM338:176    222. 7606813488962407702 | 16 feb, 11:31   |        0 views | Paraguas automático con asa especial par
+VM338:176    223. 7605895751880740118 | 16 feb, 10:20   |        0 views | Diseñado para el uso diario, mejorando l
+VM338:176    224. 7606815344019115286 | 15 feb, 20:38   |        0 views | Aceite de orégano vivonu  Suplemento nat
+VM338:176    225. 7606811727396834583 | 15 feb, 18:24   |        0 views | #NovoDoveCabelos  Súper taza de café int
+VM338:176    226. 7606808405772143894 | 15 feb, 15:10   |        0 views | Licuadora batidora portatil  Perfecto pa
+VM338:176    227. 7605893324653759766 | 15 feb, 12:35   |        0 views | TikTok Shop lo tiene con mejor precio qu
+VM338:176    228. 7605893000119684354 | 15 feb, 10:40   |        0 views | Elige la talla adecuada y activa el desc
+VM338:176    229. 7605892729012374806 | 15 feb, 08:30   |        0 views | Precio reducido al seleccionar ciertas t
+VM338:176    230. 7606809699815623958 | 14 feb, 22:00   |        0 views | Taza inteligente Producto top ventas! Tu
+VM338:176    231. 7606807337713650966 | 14 feb, 20:37   |        0 views | Batidora portátil top en ventas de TikTo
+VM338:176    232. 7605891027550899478 | 14 feb, 14:40   |        0 views | Mejor precio del mercado: este modelo cu
+VM338:176    233. 7605890285213617430 | 14 feb, 11:50   |        0 views | ¿Buscas una alternativa asequible a los 
+VM338:176    234. 7605889236901858562 | 14 feb, 08:20   |        0 views | Precio oculto activado por TikTok Shop s
+VM338:176    235. 7605888762606046486 | 13 feb, 16:15   |        0 views | ¡Me encanta esta botella! Es genial por 
+VM338:176    236. 7605887062444739862 | 13 feb, 14:40   |        0 views | Booster 12V para gasolina y diésel, hast
+VM338:176    237. 7605886650526338327 | 13 feb, 13:10   |        0 views | ¡Este es uno de los mejores arrancadores
+VM338:176    238. 7605885157849025814 | 13 feb, 11:05   |        0 views | Talla + color activan rebaja oculta. Tik
+VM338:176    239. 7605884516585966870 | 13 feb, 09:15   |        0 views | ¡Si te obsesiona hacer un seguimiento de
+VM338:176    240. 7605299011460893974 | 12 feb, 20:15   |        0 views | Oferta activa en TikTok Shop: aceite de 
+VM338:176    241. 7605298080174411030 | 12 feb, 17:40   |        0 views | Talla + color activan rebaja oculta. Tik
+VM338:176    242. 7605928969292041494 | 12 feb, 14:35   |        0 views | Rebaja activa. Botella térmica cactus de
+VM338:176    243. 7605298564444523798 | 12 feb, 12:30   |        0 views | Diseño bonito y funcionalidad real. La b
+VM338:176    244. 7605297385421458710 | 12 feb, 10:40   |        0 views | TikTok aplica descuento secreto sin códi
+VM338:176    245. 7605296805252713750 | 12 feb, 08:30   |        0 views | Aceite de orégano en formato cápsula, pr
+VM338:176    246. 7605294029365939478 | 11 feb, 16:00   |        0 views | Pack de cápsulas de orégano con rebaja v
+VM338:176    247. 7605292188854930710 | 11 feb, 13:35   |        0 views | Pack de cápsulas de orégano con rebaja v
+VM338:176    248. 7605203271086525699 | 11 feb, 10:35   |        0 views | TikTok Shop aplica automáticamente el cu
+VM338:176    249. 7605295144379665667 | 11 feb, 08:00   |        0 views | Ideal para emergencias, este arrancador 
+VM338:176    250. 7605204005718887702 | 10 feb, 22:00   |        0 views | Botella térmica para gimnasio, oficina o
+VM338:176    251. 7605205178794446102 | 10 feb, 13:30   |        0 views | TikTok activa descuento del 30 % automát
+VM338:176    252. 7605197705266072854 | 10 feb, 12:31   |        0 views | Terraza superior con césped artificial d
+VM338:176    253. 7604962975744675094 | 10 feb, 08:20   |        0 views | Botella termo con pastillero incluido y 
+VM338:176    254. 7604546734286556438 | 10 feb, 08:10   |        0 views | TikTok activa descuento del 30 % automát
+VM338:176    255. 7604542757595516182 | 9 feb, 15:00    |        0 views | Oferta escondida: el anillo baja de prec
+VM338:176    256. 7604547118447004950 | 9 feb, 14:30    |        0 views | Cápsulas fáciles de tomar y con envío gr
+VM338:176    257. 7604547368133987606 | 9 feb, 08:50    |        0 views | Pack ahorro con rebaja visible desde el 
+VM338:176    258. 7600832982944894230 | 29 ene, 18:14   |        0 views | Si estás cansado de tanta lluvia y frio,
+VM338:176    259. 7600329968639298838 | 28 ene, 09:42   |        0 views | Decoración de salon. Estilo nòrdico sin 
+VM338:176    260. 7600066523855686934 | 27 ene, 16:39   |        0 views | Chimenea Bioetanol. Sin olores. Sin humo
+VM338:176    261. 7580475660481694998 | 5 dic 2025, 22:30 |        0 views | Magsafe batería magnética inalámbrica  C
+VM338:176    262. 7580471907087043862 | 5 dic 2025, 21:22 |        0 views | Cable 4 en 1 de cristal armor Marca de c
+VM338:176    263. 7562879587265318166 | 19 oct 2025, 12:35 |        0 views | Un pequeño cambio que dará a tu baño un 
+VM338:176    264. 7559624636787576086 | 10 oct 2025, 18:04 |        0 views | A por ello!
+VM338:179 
+📋 Click derecho en la consola → "Copy All" → pega en un .txt
+VM338:180    Luego: python import_studio_html.py archivo.txt --cuenta lotopdevicky

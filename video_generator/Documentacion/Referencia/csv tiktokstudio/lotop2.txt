@@ -1,0 +1,22 @@
+🔍 AutoTok Extractor v2.0 — Iniciando...
+VM202:90    Contenedor: DIV css-12sthmp edss2sz11
+VM202:91    scrollHeight: 127 clientHeight: 36
+VM202:94    Videos iniciales: 9
+Promise {<pending>}
+VM202:167 
+✅ ¡LISTO! 9 videos de @lotopdevicky
+VM202:168    Scrolls: 25
+VM202:169 
+📊 Lista completa:
+VM202:173    1. 7609606052383902998 | 24 feb, 13:55   |        0 views | 4 céntimos por noche hoy en Melatonina A
+VM202:173    2. 7609605613290556694 | 24 feb, 13:15   |        0 views | 300 cápsulas por menos de 21€ en Aceite 
+VM202:173    3. 7609605173329087766 | 24 feb, 12:10   |        0 views | melatonina_aldous_500_lotopdevicky_batch
+VM202:173    4. 7609604792016538902 | 24 feb, 11:20   |        0 views | OFERTA: Por menos de 7€ en Power Bank Ma
+VM202:173    5. 7609604225085000982 | 24 feb, 10:10   |        0 views | 7 céntimos por cápsula en Aceite de Orég
+VM202:173    6. 7609603614977297686 | 24 feb, 08:00   |        0 views | Por menos de 7€ hoy en Power Bank Magnét
+VM202:173    7. 7610123298189479190 | 23 feb, 20:00   |        0 views | Batería MagSafe! Carga inalámbrica para 
+VM202:173    8. 7610110142524181782 | 23 feb, 19:30   |        0 views | ¡Este es uno de los mejores **suplemento
+VM202:173    9. 7610105006062079254 | 23 feb, 17:54   |        0 views | Paraguas para la lluvia. Resistente y co
+VM202:176 
+📋 Click derecho en la consola → "Copy All" → pega en un .txt
+VM202:177    Luego: python import_studio_html.py archivo.txt --cuenta lotopdevicky

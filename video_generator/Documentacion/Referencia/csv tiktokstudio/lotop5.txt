@@ -1,0 +1,1061 @@
+The Content Security Policy directive 'upgrade-insecure-requests' is ignored when delivered in a report-only policy.
+The Content Security Policy directive 'upgrade-insecure-requests' is ignored when delivered in a report-only policy.
+The Content Security Policy directive 'upgrade-insecure-requests' is ignored when delivered in a report-only policy.
+The Content Security Policy directive 'upgrade-insecure-requests' is ignored when delivered in a report-only policy.
+The Content Security Policy directive 'upgrade-insecure-requests' is ignored when delivered in a report-only policy.
+The Content Security Policy directive 'upgrade-insecure-requests' is ignored when delivered in a report-only policy.
+The Content Security Policy directive 'upgrade-insecure-requests' is ignored when delivered in a report-only policy.
+The Content Security Policy directive 'upgrade-insecure-requests' is ignored when delivered in a report-only policy.
+The Content Security Policy directive 'upgrade-insecure-requests' is ignored when delivered in a report-only policy.
+The Content Security Policy directive 'upgrade-insecure-requests' is ignored when delivered in a report-only policy.
+The Content Security Policy directive 'upgrade-insecure-requests' is ignored when delivered in a report-only policy.
+The Content Security Policy directive 'upgrade-insecure-requests' is ignored when delivered in a report-only policy.
+The Content Security Policy directive 'upgrade-insecure-requests' is ignored when delivered in a report-only policy.
+3749.1ae65256.js:2 [DEPRECATED] Default export is deprecated. Instead use `import { create } from 'zustand'`.
+d @ 3749.1ae65256.js:2
+78603 @ main.cdd82326.js:134
+f @ builder-runtime.1488716e.js:1
+64859 @ main.cdd82326.js:134
+f @ builder-runtime.1488716e.js:1
+73470 @ 3749.1ae65256.js:2
+f @ builder-runtime.1488716e.js:1
+t @ main.cdd82326.js:134
+(anonymous) @ main.cdd82326.js:134
+(anonymous) @ builder-runtime.1488716e.js:1
+(anonymous) @ main.cdd82326.js:134
+t @ builder-runtime.1488716e.js:1
+(anonymous) @ main.cdd82326.js:1
+3749.1ae65256.js:2 [DEPRECATED] Default export is deprecated. Instead use `import { create } from 'zustand'`.
+d @ 3749.1ae65256.js:2
+81227 @ main.cdd82326.js:134
+f @ builder-runtime.1488716e.js:1
+64859 @ main.cdd82326.js:134
+f @ builder-runtime.1488716e.js:1
+73470 @ 3749.1ae65256.js:2
+f @ builder-runtime.1488716e.js:1
+t @ main.cdd82326.js:134
+(anonymous) @ main.cdd82326.js:134
+(anonymous) @ builder-runtime.1488716e.js:1
+(anonymous) @ main.cdd82326.js:134
+t @ builder-runtime.1488716e.js:1
+(anonymous) @ main.cdd82326.js:1
+3749.1ae65256.js:2 [DEPRECATED] Default export is deprecated. Instead use `import { create } from 'zustand'`.
+d @ 3749.1ae65256.js:2
+13919 @ main.cdd82326.js:1
+f @ builder-runtime.1488716e.js:1
+64252 @ main.cdd82326.js:134
+f @ builder-runtime.1488716e.js:1
+64859 @ main.cdd82326.js:134
+f @ builder-runtime.1488716e.js:1
+73470 @ 3749.1ae65256.js:2
+f @ builder-runtime.1488716e.js:1
+t @ main.cdd82326.js:134
+(anonymous) @ main.cdd82326.js:134
+(anonymous) @ builder-runtime.1488716e.js:1
+(anonymous) @ main.cdd82326.js:134
+t @ builder-runtime.1488716e.js:1
+(anonymous) @ main.cdd82326.js:1
+index.js:4 Creating a worker from 'https://www.tiktok.com/sw.js' violates the following Content Security Policy directive: "worker-src 'none'". The policy is report-only, so the violation has been logged but no further action has been taken.
+webmssdk.js:1 .
+[Violation] Permissions policy violation: unload is not allowed in this document.
+[Violation] Permissions policy violation: unload is not allowed in this document.
+[Violation] Permissions policy violation: unload is not allowed in this document.
+[Violation] Permissions policy violation: unload is not allowed in this document.
+[Violation] Permissions policy violation: unload is not allowed in this document.
+[Violation] Permissions policy violation: unload is not allowed in this document.
+[Violation] Permissions policy violation: unload is not allowed in this document.
+[Violation] Permissions policy violation: unload is not allowed in this document.
+[Violation] Permissions policy violation: unload is not allowed in this document.
+[Violation] Permissions policy violation: unload is not allowed in this document.
+[Violation] Permissions policy violation: unload is not allowed in this document.
+collect.js:1  [instance: studio_web] appid: 335386, userInfo:{"user_unique_id":"7559621437260235798","web_id":"7613445645095175702"}
+collect.js:1  [instance: studio_web] appid: 335386, sdk is ready, version is 5.3.12_oversea, you can report now !!!
+collect.js:1  [instance: webapp] appid: 1988, userInfo:{"user_unique_id":"7613789171085837846","user_type":12,"user_id":"7559621437260235798","user_is_login":true,"device_id":"7613789171085837846"}
+collect.js:1  [instance: webapp] appid: 1988, sdk is ready, version is 5.3.12_oversea, you can report now !!!
+core.js?globalName=__PNS_RUNTIME__:3 Creating a worker from 'https://www.tiktok.com/sw.js' violates the following Content Security Policy directive: "worker-src 'none'". The policy is report-only, so the violation has been logged but no further action has been taken.
+content:1 Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=webmssdk&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: The value of the 'Access-Control-Allow-Credentials' header in the response is '' which must be 'true' when the request's credentials mode is 'include'. The credentials mode of requests initiated by the XMLHttpRequest is controlled by the withCredentials attribute.
+index.js:4  GET https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=webmssdk&store=1 net::ERR_FAILED
+value @ index.js:4
+(anonymous) @ index.js:2
+(anonymous) @ index.js:4
+value @ index.js:4
+h @ webmssdk.js:1
+(anonymous) @ webmssdk.js:1
+n @ webmssdk.js:1
+ir @ webmssdk.js:1
+get @ webmssdk.js:1
+(anonymous) @ webmssdk.js:1
+setConfig @ webmssdk.js:1
+init @ webmssdk.js:1
+(anonymous) @ webmssdk.js:1
+E @ webmssdk.js:1
+(anonymous) @ webmssdk.js:1
+u @ webmssdk.js:1
+(anonymous) @ webmssdk.js:1
+h @ webmssdk.js:1
+(anonymous) @ webmssdk.js:1
+n @ webmssdk.js:1
+h @ webmssdk.js:1
+(anonymous) @ webmssdk.js:1
+(anonymous) @ webmssdk.js:1
+(anonymous) @ webmssdk.js:1
+(anonymous) @ main.cdd82326.js:134
+d @ 3749.1ae65256.js:2
+(anonymous) @ 3749.1ae65256.js:2
+(anonymous) @ 3749.1ae65256.js:2
+n @ 3749.1ae65256.js:2
+i @ 3749.1ae65256.js:2
+Promise.then
+n @ 3749.1ae65256.js:2
+i @ 3749.1ae65256.js:2
+(anonymous) @ 3749.1ae65256.js:2
+(anonymous) @ 3749.1ae65256.js:2
+(anonymous) @ main.cdd82326.js:134
+67590 @ main.cdd82326.js:134
+f @ builder-runtime.1488716e.js:1
+53109 @ main.cdd82326.js:134
+f @ builder-runtime.1488716e.js:1
+64859 @ main.cdd82326.js:134
+f @ builder-runtime.1488716e.js:1
+73470 @ 3749.1ae65256.js:2
+f @ builder-runtime.1488716e.js:1
+t @ main.cdd82326.js:134
+(anonymous) @ main.cdd82326.js:134
+(anonymous) @ builder-runtime.1488716e.js:1
+(anonymous) @ main.cdd82326.js:134
+t @ builder-runtime.1488716e.js:1
+(anonymous) @ main.cdd82326.js:1
+main.cdd82326.js:134 [useSWAPIResultSync] start listen: L2S_PROJECT_LIST
+main.cdd82326.js:134 [useSWAPIResultSync] start listen: L2S_ICON_INFO
+content:1 <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes">
+3749.1ae65256.js:2 [ttastra-runtime][warning]: importing getVGeo from '@ttastra/core/runtime' is deprecated, please update import path to '@ttastra/core/regions'. for example: import { getVGeo } from '@ttastra/core/runtime/regions';
+
+At @ 3749.1ae65256.js:2
+q @ 661.6e5719fb.js:1
+73255 @ 661.6e5719fb.js:1
+__webpack_require__ @ vmok-remote-entry.e72d30ac.js:57
+64913 @ __federation_expose_BrowserMode.1bca491e.js:8
+__webpack_require__ @ vmok-remote-entry.e72d30ac.js:57
+(anonymous) @ vmok-remote-entry.e72d30ac.js:1
+(anonymous) @ 3749.1ae65256.js:2
+get @ 3749.1ae65256.js:2
+await in get
+loadRemote @ 3749.1ae65256.js:2
+await in loadRemote
+loadRemote @ 3749.1ae65256.js:2
+$t @ 3749.1ae65256.js:2
+(anonymous) @ 3749.1ae65256.js:2
+d @ 3749.1ae65256.js:2
+(anonymous) @ 3749.1ae65256.js:2
+(anonymous) @ 3749.1ae65256.js:2
+n @ 3749.1ae65256.js:2
+i @ 3749.1ae65256.js:2
+Promise.then
+n @ 3749.1ae65256.js:2
+i @ 3749.1ae65256.js:2
+(anonymous) @ 3749.1ae65256.js:2
+(anonymous) @ 3749.1ae65256.js:2
+(anonymous) @ 3749.1ae65256.js:2
+(anonymous) @ main.cdd82326.js:134
+(anonymous) @ main.cdd82326.js:134
+N @ lib-react.cad72241.js:2
+Ei @ lib-react.cad72241.js:2
+ks @ lib-react.cad72241.js:2
+bs @ lib-react.cad72241.js:2
+ls @ lib-react.cad72241.js:2
+S @ lib-react.cad72241.js:2
+R @ lib-react.cad72241.js:2
+(anonymous) @ lib-polyfill.9252ee59.js:2
+M @ lib-polyfill.9252ee59.js:2
+j @ lib-polyfill.9252ee59.js:2
+// ═══════════════════════════════════════════════════════════
+// AutoTok — TikTok Studio Network Interceptor v1.0
+// ═══════════════════════════════════════════════════════════
+// PASO 1: Pega esto en la consola (F12 → Console) en TikTok Studio > Posts
+// PASO 2: Haz scroll manual hacia abajo, despacio, hasta el final
+// PASO 3: Cuando llegues al fondo, escribe: AUTOTOK_DUMP()
+// ═══════════════════════════════════════════════════════════
+
+(() => {
+  // Almacén global de videos capturados
+  window.__AUTOTOK = window.__AUTOTOK || { videos: new Map(), rawResponses: [] };
+  const store = window.__AUTOTOK;
+
+  // ── Detectar si un objeto JSON parece un video/post de TikTok ──
+  function extractVideos(data, source) {
+    let found = 0;
+
+    // Estrategia: buscar recursivamente arrays de objetos con campos típicos de posts
+    function walk(obj, depth) {
+      if (depth > 8 || !obj) return;
+
+      if (Array.isArray(obj)) {
+        // ¿Es un array de posts? Comprobar el primer elemento
+        for (const item of obj) {
+          if (item && typeof item === 'object') {
+            // Campos típicos de un post de TikTok
+            const postId = item.item_id || item.id || item.video_id || item.postId || item.post_id;
+            const createTime = item.create_time || item.createTime || item.publish_time || item.publishTime;
+            const title = item.title || item.desc || item.description || item.caption || '';
+
+            // Si tiene un ID numérico largo (>15 dígitos) + algún otro campo, es un post
+            if (postId && String(postId).length > 15 && (createTime || title)) {
+              if (!store.videos.has(String(postId))) {
+                // Extraer stats si las hay
+                const stats = item.statistics || item.stats || {};
+                const video_info = item.video || {};
+
+                store.videos.set(String(postId), {
+                  postId: String(postId),
+                  title: String(title).substring(0, 120),
+                  createTime: createTime || '',
+                  // Intentar múltiples nombres para views/likes/etc
+                  views: stats.play_count || stats.playCount || stats.views || stats.view_count || item.play_count || 0,
+                  likes: stats.digg_count || stats.diggCount || stats.likes || stats.like_count || item.digg_count || 0,
+                  comments: stats.comment_count || stats.commentCount || stats.comments || item.comment_count || 0,
+                  shares: stats.share_count || stats.shareCount || stats.shares || item.share_count || 0,
+                  duration: video_info.duration || item.duration || 0,
+                  // Guardar todo el objeto por si necesitamos más campos después
+                  _raw_keys: Object.keys(item).join(','),
+                  _source: source,
+                });
+                found++;
+              }
+            }
+          }
+        }
+      }
+
+      // Seguir buscando en sub-objetos
+      if (typeof obj === 'object' && !Array.isArray(obj)) {
+        for (const key of Object.keys(obj)) {
+          walk(obj[key], depth + 1);
+        }
+      }
+    }
+
+    walk(data, 0);
+    return found;
+  }
+
+  // ── Patch fetch ──
+  const originalFetch = window.fetch;
+  window.fetch = async function(...args) {
+    const response = await originalFetch.apply(this, args);
+
+    try {
+      const url = typeof args[0] === 'string' ? args[0] : args[0]?.url || '';
+
+      // Solo interceptar respuestas JSON de TikTok
+      if (url.includes('tiktok.com') || url.startsWith('/')) {
+        const clone = response.clone();
+        clone.json().then(data => {
+          const prevCount = store.videos.size;
+          const found = extractVideos(data, `fetch:${url.substring(0, 100)}`);
+          if (found > 0) {
+            console.log(`🎯 +${found} videos (total: ${store.videos.size}) ← ${url.substring(0, 80)}`);
+          }
+          // Guardar respuestas que contenían datos útiles
+          if (found > 0) {
+            store.rawResponses.push({
+              url: url.substring(0, 200),
+              videoCount: found,
+              timestamp: new Date().toISOString(),
+              dataKeys: Object.keys(data).join(','),
+            });
+          }
+        }).catch(() => {}); // No es JSON, ignorar
+      }
+    } catch (e) {}
+
+    return response;
+  };
+
+  // ── Patch XMLHttpRequest ──
+  const originalXHROpen = XMLHttpRequest.prototype.open;
+  const originalXHRSend = XMLHttpRequest.prototype.send;
+
+  XMLHttpRequest.prototype.open = function(method, url, ...rest) {
+    this.__autotok_url = url;
+    return originalXHROpen.call(this, method, url, ...rest);
+  };
+
+  XMLHttpRequest.prototype.send = function(...args) {
+    this.addEventListener('load', function() {
+      try {
+        const url = this.__autotok_url || '';
+        if (url.includes('tiktok.com') || url.startsWith('/')) {
+          const data = JSON.parse(this.responseText);
+          const found = extractVideos(data, `xhr:${url.substring(0, 100)}`);
+          if (found > 0) {
+            console.log(`🎯 +${found} videos (total: ${store.videos.size}) ← XHR ${url.substring(0, 80)}`);
+            store.rawResponses.push({
+              url: url.substring(0, 200),
+              videoCount: found,
+              timestamp: new Date().toISOString(),
+            });
+          }
+        }
+      } catch (e) {}
+    });
+    return originalXHRSend.apply(this, args);
+  };
+
+  // ── Comando para ver estado ──
+  window.AUTOTOK_STATUS = () => {
+    console.log(`\n📊 AutoTok Interceptor — ${store.videos.size} videos capturados`);
+    console.log(`   Respuestas interceptadas: ${store.rawResponses.length}`);
+    if (store.rawResponses.length > 0) {
+      console.log('   Últimas fuentes:');
+      store.rawResponses.slice(-5).forEach(r => {
+        console.log(`     ${r.timestamp} | +${r.videoCount} | ${r.url.substring(0, 70)}`);
+      });
+    }
+    return store.videos.size;
+  };
+
+  // ── Comando para volcar resultados ──
+  window.AUTOTOK_DUMP = () => {
+    const videos = Array.from(store.videos.values());
+
+    if (videos.length === 0) {
+      console.log('❌ No hay videos capturados. ¿Has hecho scroll en la página de Posts?');
+      console.log('   Si no se captura nada, prueba AUTOTOK_DEBUG() para ver qué pasa.');
+      return;
+    }
+
+    // Ordenar por createTime descendente
+    videos.sort((a, b) => {
+      const ta = typeof a.createTime === 'number' ? a.createTime : 0;
+      const tb = typeof b.createTime === 'number' ? b.createTime : 0;
+      return tb - ta;
+    });
+
+    console.log(`\n✅ ¡LISTO! ${videos.length} videos capturados via API`);
+    console.log('📊 Lista completa:\n');
+
+    videos.forEach((v, i) => {
+      // Formatear fecha
+      let dateStr = '';
+      if (typeof v.createTime === 'number' && v.createTime > 1000000000) {
+        const d = new Date(v.createTime * 1000);
+        dateStr = d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: undefined })
+                  + ', ' + d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+      } else {
+        dateStr = String(v.createTime);
+      }
+
+      console.log(`   ${String(i+1).padStart(4)}. ${v.postId} | ${dateStr.padEnd(18)} | ${String(v.views).padStart(8)} views | ${v.title.substring(0, 50)}`);
+    });
+
+    console.log(`\n📋 Click derecho en la consola → "Copy All" → pega en un .txt`);
+    console.log(`   O usa: AUTOTOK_JSON() para copiar como JSON`);
+
+    return videos.length;
+  };
+
+  // ── Comando para exportar JSON limpio ──
+  window.AUTOTOK_JSON = () => {
+    const videos = Array.from(store.videos.values()).map(v => ({
+      postId: v.postId,
+      title: v.title,
+      createTime: v.createTime,
+      views: v.views,
+      likes: v.likes,
+      comments: v.comments,
+      shares: v.shares,
+      duration: v.duration,
+    }));
+
+    videos.sort((a, b) => (b.createTime || 0) - (a.createTime || 0));
+
+    const json = JSON.stringify(videos, null, 2);
+    console.log(json);
+    console.log(`\n📋 ${videos.length} videos. Click derecho → "Copy All" para copiar.`);
+    return videos;
+  };
+
+  // ── Debug: ver qué URLs se interceptan ──
+  window.AUTOTOK_DEBUG = () => {
+    console.log('🔧 Modo debug activado — se mostrarán TODAS las respuestas JSON interceptadas');
+    store._debug = true;
+
+    // Re-patch fetch con debug
+    const debugFetch = window.fetch;
+    window.fetch = async function(...args) {
+      const response = await debugFetch.apply(this, args);
+      try {
+        const url = typeof args[0] === 'string' ? args[0] : args[0]?.url || '';
+        const clone = response.clone();
+        clone.json().then(data => {
+          const keys = Object.keys(data);
+          console.log(`   🔍 [fetch] ${url.substring(0, 80)} → keys: ${keys.join(',').substring(0, 100)}`);
+        }).catch(() => {});
+      } catch(e) {}
+      return response;
+    };
+  };
+
+  console.log('');
+  console.log('═══════════════════════════════════════════════════════');
+  console.log('  🎯 AutoTok Network Interceptor v1.0 — ACTIVO');
+  console.log('═══════════════════════════════════════════════════════');
+  console.log('');
+  console.log('  Ahora haz scroll hacia abajo en la lista de Posts.');
+  console.log('  Verás mensajes 🎯 cada vez que se capturen videos.');
+  console.log('');
+  console.log('  Comandos disponibles:');
+  console.log('    AUTOTOK_STATUS()  → Ver cuántos videos llevas');
+  console.log('    AUTOTOK_DUMP()    → Volcar la lista completa');
+  console.log('    AUTOTOK_JSON()    → Exportar como JSON');
+  console.log('    AUTOTOK_DEBUG()   → Ver TODAS las llamadas de red');
+  console.log('');
+})();
+
+VM272:229 
+VM272:230 ═══════════════════════════════════════════════════════
+VM272:231   🎯 AutoTok Network Interceptor v1.0 — ACTIVO
+VM272:232 ═══════════════════════════════════════════════════════
+VM272:233 
+VM272:234   Ahora haz scroll hacia abajo en la lista de Posts.
+VM272:235   Verás mensajes 🎯 cada vez que se capturen videos.
+VM272:236 
+VM272:237   Comandos disponibles:
+VM272:238     AUTOTOK_STATUS()  → Ver cuántos videos llevas
+VM272:239     AUTOTOK_DUMP()    → Volcar la lista completa
+VM272:240     AUTOTOK_JSON()    → Exportar como JSON
+VM272:241     AUTOTOK_DEBUG()   → Ver TODAS las llamadas de red
+VM272:242 
+undefined
+VM272:121 🎯 +68 videos (total: 68) ← XHR https://www.tiktok.com/tiktok/creator/manage/item_list/v1/?locale=es&aid=1988&pr
+// ═══════════════════════════════════════════════════════════
+// AutoTok — TikTok Studio Network Interceptor v1.0
+// ═══════════════════════════════════════════════════════════
+// PASO 1: Pega esto en la consola (F12 → Console) en TikTok Studio > Posts
+// PASO 2: Haz scroll manual hacia abajo, despacio, hasta el final
+// PASO 3: Cuando llegues al fondo, escribe: AUTOTOK_DUMP()
+// ═══════════════════════════════════════════════════════════
+
+(() => {
+  // Almacén global de videos capturados
+  window.__AUTOTOK = window.__AUTOTOK || { videos: new Map(), rawResponses: [] };
+  const store = window.__AUTOTOK;
+
+  // ── Detectar si un objeto JSON parece un video/post de TikTok ──
+  function extractVideos(data, source) {
+    let found = 0;
+
+    // Estrategia: buscar recursivamente arrays de objetos con campos típicos de posts
+    function walk(obj, depth) {
+      if (depth > 8 || !obj) return;
+
+      if (Array.isArray(obj)) {
+        // ¿Es un array de posts? Comprobar el primer elemento
+        for (const item of obj) {
+          if (item && typeof item === 'object') {
+            // Campos típicos de un post de TikTok
+            const postId = item.item_id || item.id || item.video_id || item.postId || item.post_id;
+            const createTime = item.create_time || item.createTime || item.publish_time || item.publishTime;
+            const title = item.title || item.desc || item.description || item.caption || '';
+
+            // Si tiene un ID numérico largo (>15 dígitos) + algún otro campo, es un post
+            if (postId && String(postId).length > 15 && (createTime || title)) {
+              if (!store.videos.has(String(postId))) {
+                // Extraer stats si las hay
+                const stats = item.statistics || item.stats || {};
+                const video_info = item.video || {};
+
+                store.videos.set(String(postId), {
+                  postId: String(postId),
+                  title: String(title).substring(0, 120),
+                  createTime: createTime || '',
+                  // Intentar múltiples nombres para views/likes/etc
+                  views: stats.play_count || stats.playCount || stats.views || stats.view_count || item.play_count || 0,
+                  likes: stats.digg_count || stats.diggCount || stats.likes || stats.like_count || item.digg_count || 0,
+                  comments: stats.comment_count || stats.commentCount || stats.comments || item.comment_count || 0,
+                  shares: stats.share_count || stats.shareCount || stats.shares || item.share_count || 0,
+                  duration: video_info.duration || item.duration || 0,
+                  // Guardar todo el objeto por si necesitamos más campos después
+                  _raw_keys: Object.keys(item).join(','),
+                  _source: source,
+                });
+                found++;
+              }
+            }
+          }
+        }
+      }
+
+      // Seguir buscando en sub-objetos
+      if (typeof obj === 'object' && !Array.isArray(obj)) {
+        for (const key of Object.keys(obj)) {
+          walk(obj[key], depth + 1);
+        }
+      }
+    }
+
+    walk(data, 0);
+    return found;
+  }
+
+  // ── Patch fetch ──
+  const originalFetch = window.fetch;
+  window.fetch = async function(...args) {
+    const response = await originalFetch.apply(this, args);
+
+    try {
+      const url = typeof args[0] === 'string' ? args[0] : args[0]?.url || '';
+
+      // Solo interceptar respuestas JSON de TikTok
+      if (url.includes('tiktok.com') || url.startsWith('/')) {
+        const clone = response.clone();
+        clone.json().then(data => {
+          const prevCount = store.videos.size;
+          const found = extractVideos(data, `fetch:${url.substring(0, 100)}`);
+          if (found > 0) {
+            console.log(`🎯 +${found} videos (total: ${store.videos.size}) ← ${url.substring(0, 80)}`);
+          }
+          // Guardar respuestas que contenían datos útiles
+          if (found > 0) {
+            store.rawResponses.push({
+              url: url.substring(0, 200),
+              videoCount: found,
+              timestamp: new Date().toISOString(),
+              dataKeys: Object.keys(data).join(','),
+            });
+          }
+        }).catch(() => {}); // No es JSON, ignorar
+      }
+    } catch (e) {}
+
+    return response;
+  };
+
+  // ── Patch XMLHttpRequest ──
+  const originalXHROpen = XMLHttpRequest.prototype.open;
+  const originalXHRSend = XMLHttpRequest.prototype.send;
+
+  XMLHttpRequest.prototype.open = function(method, url, ...rest) {
+    this.__autotok_url = url;
+    return originalXHROpen.call(this, method, url, ...rest);
+  };
+
+  XMLHttpRequest.prototype.send = function(...args) {
+    this.addEventListener('load', function() {
+      try {
+        const url = this.__autotok_url || '';
+        if (url.includes('tiktok.com') || url.startsWith('/')) {
+          const data = JSON.parse(this.responseText);
+          const found = extractVideos(data, `xhr:${url.substring(0, 100)}`);
+          if (found > 0) {
+            console.log(`🎯 +${found} videos (total: ${store.videos.size}) ← XHR ${url.substring(0, 80)}`);
+            store.rawResponses.push({
+              url: url.substring(0, 200),
+              videoCount: found,
+              timestamp: new Date().toISOString(),
+            });
+          }
+        }
+      } catch (e) {}
+    });
+    return originalXHRSend.apply(this, args);
+  };
+
+  // ── Comando para ver estado ──
+  window.AUTOTOK_STATUS = () => {
+    console.log(`\n📊 AutoTok Interceptor — ${store.videos.size} videos capturados`);
+    console.log(`   Respuestas interceptadas: ${store.rawResponses.length}`);
+    if (store.rawResponses.length > 0) {
+      console.log('   Últimas fuentes:');
+      store.rawResponses.slice(-5).forEach(r => {
+        console.log(`     ${r.timestamp} | +${r.videoCount} | ${r.url.substring(0, 70)}`);
+      });
+    }
+    return store.videos.size;
+  };
+
+  // ── Comando para volcar resultados ──
+  window.AUTOTOK_DUMP = () => {
+    const videos = Array.from(store.videos.values());
+
+    if (videos.length === 0) {
+      console.log('❌ No hay videos capturados. ¿Has hecho scroll en la página de Posts?');
+      console.log('   Si no se captura nada, prueba AUTOTOK_DEBUG() para ver qué pasa.');
+      return;
+    }
+
+    // Ordenar por createTime descendente
+    videos.sort((a, b) => {
+      const ta = typeof a.createTime === 'number' ? a.createTime : 0;
+      const tb = typeof b.createTime === 'number' ? b.createTime : 0;
+      return tb - ta;
+    });
+
+    console.log(`\n✅ ¡LISTO! ${videos.length} videos capturados via API`);
+    console.log('📊 Lista completa:\n');
+
+    videos.forEach((v, i) => {
+      // Formatear fecha
+      let dateStr = '';
+      if (typeof v.createTime === 'number' && v.createTime > 1000000000) {
+        const d = new Date(v.createTime * 1000);
+        dateStr = d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: undefined })
+                  + ', ' + d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+      } else {
+        dateStr = String(v.createTime);
+      }
+
+      console.log(`   ${String(i+1).padStart(4)}. ${v.postId} | ${dateStr.padEnd(18)} | ${String(v.views).padStart(8)} views | ${v.title.substring(0, 50)}`);
+    });
+
+    console.log(`\n📋 Click derecho en la consola → "Copy All" → pega en un .txt`);
+    console.log(`   O usa: AUTOTOK_JSON() para copiar como JSON`);
+
+    return videos.length;
+  };
+
+  // ── Comando para exportar JSON limpio ──
+  window.AUTOTOK_JSON = () => {
+    const videos = Array.from(store.videos.values()).map(v => ({
+      postId: v.postId,
+      title: v.title,
+      createTime: v.createTime,
+      views: v.views,
+      likes: v.likes,
+      comments: v.comments,
+      shares: v.shares,
+      duration: v.duration,
+    }));
+
+    videos.sort((a, b) => (b.createTime || 0) - (a.createTime || 0));
+
+    const json = JSON.stringify(videos, null, 2);
+    console.log(json);
+    console.log(`\n📋 ${videos.length} videos. Click derecho → "Copy All" para copiar.`);
+    return videos;
+  };
+
+  // ── Debug: ver qué URLs se interceptan ──
+  window.AUTOTOK_DEBUG = () => {
+    console.log('🔧 Modo debug activado — se mostrarán TODAS las respuestas JSON interceptadas');
+    store._debug = true;
+
+    // Re-patch fetch con debug
+    const debugFetch = window.fetch;
+    window.fetch = async function(...args) {
+      const response = await debugFetch.apply(this, args);
+      try {
+        const url = typeof args[0] === 'string' ? args[0] : args[0]?.url || '';
+        const clone = response.clone();
+        clone.json().then(data => {
+          const keys = Object.keys(data);
+          console.log(`   🔍 [fetch] ${url.substring(0, 80)} → keys: ${keys.join(',').substring(0, 100)}`);
+        }).catch(() => {});
+      } catch(e) {}
+      return response;
+    };
+  };
+
+  console.log('');
+  console.log('═══════════════════════════════════════════════════════');
+  console.log('  🎯 AutoTok Network Interceptor v1.0 — ACTIVO');
+  console.log('═══════════════════════════════════════════════════════');
+  console.log('');
+  console.log('  Ahora haz scroll hacia abajo en la lista de Posts.');
+  console.log('  Verás mensajes 🎯 cada vez que se capturen videos.');
+  console.log('');
+  console.log('  Comandos disponibles:');
+  console.log('    AUTOTOK_STATUS()  → Ver cuántos videos llevas');
+  console.log('    AUTOTOK_DUMP()    → Volcar la lista completa');
+  console.log('    AUTOTOK_JSON()    → Exportar como JSON');
+  console.log('    AUTOTOK_DEBUG()   → Ver TODAS las llamadas de red');
+  console.log('');
+})();
+
+VM275:229 
+VM275:230 ═══════════════════════════════════════════════════════
+VM275:231   🎯 AutoTok Network Interceptor v1.0 — ACTIVO
+VM275:232 ═══════════════════════════════════════════════════════
+VM275:233 
+VM275:234   Ahora haz scroll hacia abajo en la lista de Posts.
+VM275:235   Verás mensajes 🎯 cada vez que se capturen videos.
+VM275:236 
+VM275:237   Comandos disponibles:
+VM275:238     AUTOTOK_STATUS()  → Ver cuántos videos llevas
+VM275:239     AUTOTOK_DUMP()    → Volcar la lista completa
+VM275:240     AUTOTOK_JSON()    → Exportar como JSON
+VM275:241     AUTOTOK_DEBUG()   → Ver TODAS las llamadas de red
+VM275:242 
+undefined
+AUTOTOK_STATUS()
+VM275:136 
+📊 AutoTok Interceptor — 68 videos capturados
+VM275:137    Respuestas interceptadas: 1
+VM275:139    Últimas fuentes:
+VM275:141      2026-03-10T07:48:36.289Z | +68 | https://www.tiktok.com/tiktok/creator/manage/item_list/v1/?locale=es&a
+68
+VM275:121 🎯 +10 videos (total: 78) ← XHR https://www.tiktok.com/tiktok/creator/manage/item_list/v1/?locale=es&aid=1988&pr
+VM275:121 🎯 +10 videos (total: 88) ← XHR https://www.tiktok.com/tiktok/creator/manage/item_list/v1/?locale=es&aid=1988&pr
+VM275:121 🎯 +10 videos (total: 98) ← XHR https://www.tiktok.com/tiktok/creator/manage/item_list/v1/?locale=es&aid=1988&pr
+VM275:121 🎯 +10 videos (total: 108) ← XHR https://www.tiktok.com/tiktok/creator/manage/item_list/v1/?locale=es&aid=1988&pr
+VM275:121 🎯 +10 videos (total: 118) ← XHR https://www.tiktok.com/tiktok/creator/manage/item_list/v1/?locale=es&aid=1988&pr
+VM275:121 🎯 +10 videos (total: 128) ← XHR https://www.tiktok.com/tiktok/creator/manage/item_list/v1/?locale=es&aid=1988&pr
+VM275:121 🎯 +10 videos (total: 138) ← XHR https://www.tiktok.com/tiktok/creator/manage/item_list/v1/?locale=es&aid=1988&pr
+VM275:121 🎯 +10 videos (total: 148) ← XHR https://www.tiktok.com/tiktok/creator/manage/item_list/v1/?locale=es&aid=1988&pr
+VM275:121 🎯 +10 videos (total: 158) ← XHR https://www.tiktok.com/tiktok/creator/manage/item_list/v1/?locale=es&aid=1988&pr
+VM275:121 🎯 +10 videos (total: 168) ← XHR https://www.tiktok.com/tiktok/creator/manage/item_list/v1/?locale=es&aid=1988&pr
+VM275:121 🎯 +10 videos (total: 178) ← XHR https://www.tiktok.com/tiktok/creator/manage/item_list/v1/?locale=es&aid=1988&pr
+VM275:121 🎯 +10 videos (total: 188) ← XHR https://www.tiktok.com/tiktok/creator/manage/item_list/v1/?locale=es&aid=1988&pr
+VM275:121 🎯 +10 videos (total: 198) ← XHR https://www.tiktok.com/tiktok/creator/manage/item_list/v1/?locale=es&aid=1988&pr
+VM275:121 🎯 +10 videos (total: 208) ← XHR https://www.tiktok.com/tiktok/creator/manage/item_list/v1/?locale=es&aid=1988&pr
+VM275:121 🎯 +10 videos (total: 218) ← XHR https://www.tiktok.com/tiktok/creator/manage/item_list/v1/?locale=es&aid=1988&pr
+VM275:121 🎯 +10 videos (total: 228) ← XHR https://www.tiktok.com/tiktok/creator/manage/item_list/v1/?locale=es&aid=1988&pr
+VM275:121 🎯 +10 videos (total: 238) ← XHR https://www.tiktok.com/tiktok/creator/manage/item_list/v1/?locale=es&aid=1988&pr
+VM275:121 🎯 +10 videos (total: 248) ← XHR https://www.tiktok.com/tiktok/creator/manage/item_list/v1/?locale=es&aid=1988&pr
+VM275:121 🎯 +10 videos (total: 258) ← XHR https://www.tiktok.com/tiktok/creator/manage/item_list/v1/?locale=es&aid=1988&pr
+VM275:121 🎯 +7 videos (total: 265) ← XHR https://www.tiktok.com/tiktok/creator/manage/item_list/v1/?locale=es&aid=1988&pr
+AUTOTOK_STATUS()
+VM275:136 
+📊 AutoTok Interceptor — 265 videos capturados
+VM275:137    Respuestas interceptadas: 21
+VM275:139    Últimas fuentes:
+VM275:141      2026-03-10T07:51:15.306Z | +10 | https://www.tiktok.com/tiktok/creator/manage/item_list/v1/?locale=es&a
+VM275:141      2026-03-10T07:51:22.381Z | +10 | https://www.tiktok.com/tiktok/creator/manage/item_list/v1/?locale=es&a
+VM275:141      2026-03-10T07:51:31.012Z | +10 | https://www.tiktok.com/tiktok/creator/manage/item_list/v1/?locale=es&a
+VM275:141      2026-03-10T07:51:41.211Z | +10 | https://www.tiktok.com/tiktok/creator/manage/item_list/v1/?locale=es&a
+VM275:141      2026-03-10T07:51:47.970Z | +7 | https://www.tiktok.com/tiktok/creator/manage/item_list/v1/?locale=es&a
+265
+AUTOTOK_JSON()
+VM275:203 [
+  {
+    "postId": "7614805855501978882",
+    "title": "Por menos de 10€ en Taza de café inteligente con tapa 🔥 Toca el carrito naranja antes que termine la oferta. taza autom",
+    "createTime": "1772960155",
+    "views": "0",
+    "likes": 0,
+    "comments": "0",
+    "shares": "0",
+    "duration": 13840
+  },
+  {
+    "postId": "7614805212439629078",
+    "title": "10€ de descuento en Arrancador EIGOTRAV 🔥 Últimas unidades con este cupón. arrancador bateria oferta coche #arrancadorc",
+    "createTime": "1772960008",
+    "views": "0",
+    "likes": 0,
+    "comments": "0",
+    "shares": "0",
+    "duration": 19209
+  },
+  {
+    "postId": "7614804139305880854",
+    "title": "Taza automática por menos de 10€ hoy 🔥 Activa el carrito antes que vuelva al precio completo. taza café automática taza",
+    "createTime": "1772959758",
+    "views": "578",
+    "likes": 0,
+    "comments": "0",
+    "shares": "0",
+    "duration": 17810
+  },
+  {
+    "postId": "7614591323949092118",
+    "title": "No llega a 22€ la Manta Eléctrica NIKLOK 🔥 Aprovecha antes que suba el precio. manta electrica oferta invierno #mantael",
+    "createTime": "1772910204",
+    "views": "0",
+    "likes": 0,
+    "comments": "0",
+    "shares": "0",
+    "duration": 16584
+  },
+  {
+    "postId": "7614590673861233942",
+    "title": "No llega a 40€ hoy el Proyector Magcubic 🔥 Activa el carrito antes que vuelva al precio completo. proyector portátil ba",
+    "createTime": "1772910051",
+    "views": "0",
+    "likes": 0,
+    "comments": "0",
+    "shares": "0",
+    "duration": 22431
+  },
+  {
+    "postId": "7614590045541960982",
+    "title": "Cupón de 10€ hoy en Arrancador EIGOTRAV 🔥 No dejes pasar esta oportunidad. arrancador coche eigotrav tiktok shop españa",
+    "createTime": "1772909905",
+    "views": "0",
+    "likes": 0,
+    "comments": "0",
+    "shares": "0",
+    "duration": 19209
+  },
+  {
+    "postId": "7614589366589246742",
+    "title": "34€ y pico no: Cepillo Eléctrico Alisador Landot por debajo + envío gratis 🔥 Últimas unidades a este precio. cepillo al",
+    "createTime": "1772909749",
+    "views": "0",
+    "likes": 0,
+    "comments": "0",
+    "shares": "0",
+    "duration": 16000
+  },
+  {
+    "postId": "7614588809077935382",
+    "title": "OFERTA: Por menos de 9€ en Power Bank Magnético 5000mAh 🔥 Últimas unidades a este precio. power bank oferta magsafe 500",
+    "createTime": "1772909619",
+    "views": "0",
+    "likes": 0,
+    "comments": "0",
+    "shares": "0",
+    "duration": 15084
+  },
+  {
+    "postId": "7614588233472593174",
+    "title": "No llega a 40€ el Proyector Magcubic 🔥 Toca el carrito naranja antes que termine la oferta. proyector magcubic proyecto",
+    "createTime": "1772909483",
+    "views": "0",
+    "likes": 0,
+    "comments": "0",
+    "shares": "0",
+    "duration": 19087
+  },
+  {
+    "postId": "7614586918847663382",
+    "title": "Hoy no llega a 34€ el Cepillo Alisador Landot + envío gratis 🔥 Activa el carrito antes que cambie el precio. landot ali",
+    "createTime": "1772909177",
+    "views": "0",
+    "likes": 0,
+    "comments": "0",
+    "shares": "0",
+    "duration": 15542
+  },
+  {
+    "postId": "7614586295305669910",
+    "title": "Por menos de 9€ hoy en Power Bank Magnético 5000mAh 🔥 Toca el carrito naranja ahora. powerbank 5000mah oferta magsafe #",
+    "createTime": "1772909032",
+    "views": "0",
+    "likes": 0,
+    "comments": "0",
+    "shares": "0",
+    "duration": 15875
+  },
+  {
+    "postId": "7614235021611666710",
+    "title": "Power Bank Magnético 5000mAh por debajo de 9€ 🔥 Activa el carrito antes que vuelva al precio completo. power bank magne",
+    "createTime": "1772827246",
+    "views": "0",
+    "likes": 0,
+    "comments": "0",
+    "shares": "0",
+    "duration": 15875
+  },
+  {
+    "postId": "7614234426762874134",
+    "title": "Por debajo de 9€ hoy en Power Bank Magnético 5000mAh 🔥 No dejes pasar esta oportunidad. powerbank magsafe oferta tiktok",
+    "createTime": "1772827106",
+    "views": "0",
+    "likes": 0,
+    "comments": "0",
+    "shares": "0",
+    "duration": 15084
+  },
+  {
+    "postId": "7614233174943616278",
+    "title": "10€ de cupón en Arrancador de Batería EIGOTRAV 🔥 Actívalo desde el carrito antes que termine la oferta. arrancador coch",
+    "createTime": "1772826816",
+    "views": "0",
+    "likes": 0,
+    "comments": "0",
+    "shares": "0",
+    "duration": 19209
+  },
+  {
+    "postId": "7614232494480641302",
+    "title": "Se queda por debajo de 40€ el Proyector Magcubic 🔥 Aprovecha antes que suba el precio. proyector mini magcubic precio #",
+    "createTime": "1772826657",
+    "views": "0",
+    "likes": 0,
+    "comments": "0",
+    "shares": "0",
+    "duration": 19087
+  },
+  {
+    "postId": "7614231888726740246",
+    "title": "15€ y pico no, se queda por debajo el Anillo Simson 🔥 Bloquéalo antes que cambie el precio. anillo inteligente oferta s",
+    "createTime": "1772826516",
+    "views": "0",
+    "likes": 0,
+    "comments": "0",
+    "shares": "0",
+    "duration": 15334
+  },
+  {
+    "postId": "7
+VM275:204 
+📋 265 videos. Click derecho → "Copy All" para copiar.
+(265) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, …]
+copy(JSON.stringify(AUTOTOK_JSON()))
+VM275:203 [
+  {
+    "postId": "7614805855501978882",
+    "title": "Por menos de 10€ en Taza de café inteligente con tapa 🔥 Toca el carrito naranja antes que termine la oferta. taza autom",
+    "createTime": "1772960155",
+    "views": "0",
+    "likes": 0,
+    "comments": "0",
+    "shares": "0",
+    "duration": 13840
+  },
+  {
+    "postId": "7614805212439629078",
+    "title": "10€ de descuento en Arrancador EIGOTRAV 🔥 Últimas unidades con este cupón. arrancador bateria oferta coche #arrancadorc",
+    "createTime": "1772960008",
+    "views": "0",
+    "likes": 0,
+    "comments": "0",
+    "shares": "0",
+    "duration": 19209
+  },
+  {
+    "postId": "7614804139305880854",
+    "title": "Taza automática por menos de 10€ hoy 🔥 Activa el carrito antes que vuelva al precio completo. taza café automática taza",
+    "createTime": "1772959758",
+    "views": "578",
+    "likes": 0,
+    "comments": "0",
+    "shares": "0",
+    "duration": 17810
+  },
+  {
+    "postId": "7614591323949092118",
+    "title": "No llega a 22€ la Manta Eléctrica NIKLOK 🔥 Aprovecha antes que suba el precio. manta electrica oferta invierno #mantael",
+    "createTime": "1772910204",
+    "views": "0",
+    "likes": 0,
+    "comments": "0",
+    "shares": "0",
+    "duration": 16584
+  },
+  {
+    "postId": "7614590673861233942",
+    "title": "No llega a 40€ hoy el Proyector Magcubic 🔥 Activa el carrito antes que vuelva al precio completo. proyector portátil ba",
+    "createTime": "1772910051",
+    "views": "0",
+    "likes": 0,
+    "comments": "0",
+    "shares": "0",
+    "duration": 22431
+  },
+  {
+    "postId": "7614590045541960982",
+    "title": "Cupón de 10€ hoy en Arrancador EIGOTRAV 🔥 No dejes pasar esta oportunidad. arrancador coche eigotrav tiktok shop españa",
+    "createTime": "1772909905",
+    "views": "0",
+    "likes": 0,
+    "comments": "0",
+    "shares": "0",
+    "duration": 19209
+  },
+  {
+    "postId": "7614589366589246742",
+    "title": "34€ y pico no: Cepillo Eléctrico Alisador Landot por debajo + envío gratis 🔥 Últimas unidades a este precio. cepillo al",
+    "createTime": "1772909749",
+    "views": "0",
+    "likes": 0,
+    "comments": "0",
+    "shares": "0",
+    "duration": 16000
+  },
+  {
+    "postId": "7614588809077935382",
+    "title": "OFERTA: Por menos de 9€ en Power Bank Magnético 5000mAh 🔥 Últimas unidades a este precio. power bank oferta magsafe 500",
+    "createTime": "1772909619",
+    "views": "0",
+    "likes": 0,
+    "comments": "0",
+    "shares": "0",
+    "duration": 15084
+  },
+  {
+    "postId": "7614588233472593174",
+    "title": "No llega a 40€ el Proyector Magcubic 🔥 Toca el carrito naranja antes que termine la oferta. proyector magcubic proyecto",
+    "createTime": "1772909483",
+    "views": "0",
+    "likes": 0,
+    "comments": "0",
+    "shares": "0",
+    "duration": 19087
+  },
+  {
+    "postId": "7614586918847663382",
+    "title": "Hoy no llega a 34€ el Cepillo Alisador Landot + envío gratis 🔥 Activa el carrito antes que cambie el precio. landot ali",
+    "createTime": "1772909177",
+    "views": "0",
+    "likes": 0,
+    "comments": "0",
+    "shares": "0",
+    "duration": 15542
+  },
+  {
+    "postId": "7614586295305669910",
+    "title": "Por menos de 9€ hoy en Power Bank Magnético 5000mAh 🔥 Toca el carrito naranja ahora. powerbank 5000mah oferta magsafe #",
+    "createTime": "1772909032",
+    "views": "0",
+    "likes": 0,
+    "comments": "0",
+    "shares": "0",
+    "duration": 15875
+  },
+  {
+    "postId": "7614235021611666710",
+    "title": "Power Bank Magnético 5000mAh por debajo de 9€ 🔥 Activa el carrito antes que vuelva al precio completo. power bank magne",
+    "createTime": "1772827246",
+    "views": "0",
+    "likes": 0,
+    "comments": "0",
+    "shares": "0",
+    "duration": 15875
+  },
+  {
+    "postId": "7614234426762874134",
+    "title": "Por debajo de 9€ hoy en Power Bank Magnético 5000mAh 🔥 No dejes pasar esta oportunidad. powerbank magsafe oferta tiktok",
+    "createTime": "1772827106",
+    "views": "0",
+    "likes": 0,
+    "comments": "0",
+    "shares": "0",
+    "duration": 15084
+  },
+  {
+    "postId": "7614233174943616278",
+    "title": "10€ de cupón en Arrancador de Batería EIGOTRAV 🔥 Actívalo desde el carrito antes que termine la oferta. arrancador coch",
+    "createTime": "1772826816",
+    "views": "0",
+    "likes": 0,
+    "comments": "0",
+    "shares": "0",
+    "duration": 19209
+  },
+  {
+    "postId": "7614232494480641302",
+    "title": "Se queda por debajo de 40€ el Proyector Magcubic 🔥 Aprovecha antes que suba el precio. proyector mini magcubic precio #",
+    "createTime": "1772826657",
+    "views": "0",
+    "likes": 0,
+    "comments": "0",
+    "shares": "0",
+    "duration": 19087
+  },
+  {
+    "postId": "7614231888726740246",
+    "title": "15€ y pico no, se queda por debajo el Anillo Simson 🔥 Bloquéalo antes que cambie el precio. anillo inteligente oferta s",
+    "createTime": "1772826516",
+    "views": "0",
+    "likes": 0,
+    "comments": "0",
+    "shares": "0",
+    "duration": 15334
+  },
+  {
+    "postId": "7
+VM275:204 
+📋 265 videos. Click derecho → "Copy All" para copiar.
+undefined

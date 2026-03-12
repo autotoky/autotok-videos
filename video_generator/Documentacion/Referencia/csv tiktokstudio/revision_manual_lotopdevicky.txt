@@ -1,0 +1,114 @@
+# Revisión manual — @lotopdevicky
+# 109 videos de TikTok sin match automático
+# Formato: POST_ID | FECHA | VIEWS | TÍTULO
+# Para asignar: UPDATE videos SET tiktok_post_id = 'POST_ID' WHERE video_id = 'VIDEO_ID';
+
+7559624636787576086 | 10 Oct 2025, 18:04 |   7,671 | A por ello!
+7562879587265318166 | 19 Oct 2025, 12:35 |   1,393 | Un pequeño cambio que dará a tu baño un aire nuevo!
+7580475660481694998 | 05 Dec 2025, 21:37 |      65 | Magsafe batería magnética inalámbrica  Carga rápida y en movimiento  Promoción d
+7580471907087043862 | 05 Dec 2025, 21:22 |      28 | Cable 4 en 1 de cristal armor Marca de calidad 🔥 cable de carga rápida 😎 Súper c
+7600066523855686934 | 27 Jan 2026, 16:39 |   2,586 | Chimenea Bioetanol. Sin olores. Sin humos. Efficient y elegante. Calienta tu hog
+7600329968639298838 | 28 Jan 2026, 09:42 |   8,918 | Decoración de salon. Estilo nòrdico sin ser excesivamente rùstico. Mesa de mader
+7600832982944894230 | 29 Jan 2026, 18:14 |     138 | Si estás cansado de tanta lluvia y frio, un buen subwoofer puede transformar ese
+7604547368133987606 | 08 Feb 2026, 18:27 |     889 | Pack ahorro con rebaja visible desde el primer paso. Aplica descuento automático
+7604547118447004950 | 08 Feb 2026, 18:26 |   1,264 | Cápsulas fáciles de tomar y con envío gratis activado desde la plataforma.#ofert
+7604546734286556438 | 08 Feb 2026, 18:25 |     361 | TikTok activa descuento del 30 % automáticamente en pedidos de más de 15 €.#ofer
+7604542757595516182 | 08 Feb 2026, 18:09 |   1,080 | Oferta escondida: el anillo baja de precio con ciertas combinaciones. Prueba has
+7604962975744675094 | 09 Feb 2026, 21:20 |     907 | Botella termo con pastillero incluido y diseños increíbles, elige la tuya y añdá
+7605299011460893974 | 10 Feb 2026, 19:04 |     796 | Oferta activa en TikTok Shop: aceite de orégano en cápsulas con descuento oculto
+7605298564444523798 | 10 Feb 2026, 19:02 |  13,347 | Diseño bonito y funcionalidad real. La botella bottle bottle ya está rebajada en
+7605298080174411030 | 10 Feb 2026, 19:00 |     376 | Talla + color activan rebaja oculta. TikTok Shop aplica el descuento al momento 
+7605297385421458710 | 10 Feb 2026, 18:58 |     537 | TikTok aplica descuento secreto sin código. Busca la talla que lo activa.#smartr
+7605296805252713750 | 10 Feb 2026, 18:55 |     838 | Aceite de orégano en formato cápsula, práctico y sin sabor. Aprovecha las oferta
+7605295144379665667 | 10 Feb 2026, 18:49 |     770 | Ideal para emergencias, este arrancador portátil está rebajado y en oferta hoy m
+7605294029365939478 | 10 Feb 2026, 18:45 |   1,890 | Pack de cápsulas de orégano con rebaja visible solo al pasar el mínimo de pedido
+7605292188854930710 | 10 Feb 2026, 18:37 |   1,028 | Pack de cápsulas de orégano con rebaja visible solo al pasar el mínimo de pedido
+7605205178794446102 | 10 Feb 2026, 13:00 |   1,077 | TikTok activa descuento del 30 % automáticamente en pedidos de más de 15 €.#tikt
+7605204005718887702 | 10 Feb 2026, 12:55 |   1,422 | Botella térmica para gimnasio, oficina o viajes. Diseño Top, capacidad 32oz y ah
+7605203271086525699 | 10 Feb 2026, 12:53 |     277 | TikTok Shop aplica automáticamente el cupón de descuento si el total supera 15 €
+7605197705266072854 | 10 Feb 2026, 12:31 |     804 | Terraza superior con césped artificial de 4 cms dos tumbonas, chimenea exterior 
+7605928969292041494 | 12 Feb 2026, 11:49 |     858 | Rebaja activa. Botella térmica cactus de 950ml con tapa práctica y estilo aesthe
+7605903323597638934 | 12 Feb 2026, 10:09 |     893 | anillo_simson_hookK_batch002_004Un smartring por menos de lo que imaginas y con 
+7605902889185217814 | 12 Feb 2026, 10:07 |     889 | Cápsulas de aceite de orégano disponibles por tiempo limitado con descuentos vis
+7605902500000025878 | 12 Feb 2026, 10:06 |     874 | Botella térmica para gimnasio, oficina o viajes. Diseño Top, capacidad 32oz y ah
+7605902204247035158 | 12 Feb 2026, 10:05 |   1,332 | ¡De locos! Lo tienes en TikTok Shop casi 20€ más barato que en Amazon. #accesori
+7605901669775232259 | 12 Feb 2026, 10:03 |   1,688 | Encontre el arrancador más vendido en Amazon... y en TikTok Shop es más barato! 
+7605901125576838422 | 12 Feb 2026, 10:01 |     763 | Botella de agua de diseño en TikTok Shop, tamaño grande y rebaja activa. Aprovec
+7605900322313211158 | 12 Feb 2026, 09:57 |     892 | ¿Sabias que puedes tener los mismo beneficios para la salud que el aceite de oré
+7605898858211626262 | 12 Feb 2026, 09:52 |     816 | ¡Más barato que Amazon! Casi 20€ menos menos en este booster con linterna y comp
+7605898387845598486 | 12 Feb 2026, 09:50 |   1,385 | Arrancador de batería de coche 6000A con compresor de aire, ahora con 6 € de des
+7605898063164525827 | 12 Feb 2026, 09:49 |     935 | TikTok aplica descuento secreto sin código. Busca la talla que lo activa. #acces
+7605897375156079894 | 12 Feb 2026, 09:46 |   1,205 | Cosas que necesitas para tu coche, arrancador de 600 amperios con una compresora
+7605896612132474134 | 12 Feb 2026, 09:43 |     795 | Ideal para amantes de la tecnología.Mezcla perfecta de estilo y funcionalidad. E
+7605895751880740118 | 12 Feb 2026, 09:40 |     845 | Diseñado para el uso diario, mejorando las actividades diarias con funciones int
+7605893324653759766 | 12 Feb 2026, 09:30 |   1,378 | TikTok Shop lo tiene con mejor precio que Amazon: 53 € frente a 69,89 €.#oferta 
+7605893000119684354 | 12 Feb 2026, 09:29 |   2,519 | Elige la talla adecuada y activa el descuento secreto en TikTok Shop. Algunas op
+7605892729012374806 | 12 Feb 2026, 09:28 |     572 | Precio reducido al seleccionar ciertas tallas y colores. Desbloquea la rebaja di
+7605891027550899478 | 12 Feb 2026, 09:21 |   1,438 | Mejor precio del mercado: este modelo cuesta casi 70 € en Amazon y aquí lo tiene
+7605890285213617430 | 12 Feb 2026, 09:18 |     844 | ¿Buscas una alternativa asequible a los smartwatch? ¡El anillo SIMSOM LAB es jus
+7605889236901858562 | 12 Feb 2026, 09:14 |   1,135 | Precio oculto activado por TikTok Shop si eliges bien la talla. Busca la mejor c
+7605888762606046486 | 12 Feb 2026, 09:13 |     735 | ¡Me encanta esta botella! Es genial por que puedes beber de dos maneras diferent
+7605887062444739862 | 12 Feb 2026, 09:06 |   1,356 | Booster 12V para gasolina y diésel, hasta 7.5L. Ahora con cupón activo en TikTok
+7605886650526338327 | 12 Feb 2026, 09:04 |   1,067 | ¡Este es uno de los mejores arrancadores portátiiles disponibles! Oferta doble a
+7605885157849025814 | 12 Feb 2026, 08:59 |   1,727 | Talla + color activan rebaja oculta. TikTok Shop aplica el descuento al momento 
+7605884516585966870 | 12 Feb 2026, 08:56 |     903 | ¡Si te obsesiona hacer un seguimiento de tus pasos y actividades, echale un vist
+7606815344019115286 | 14 Feb 2026, 21:08 |     305 | Aceite de orégano vivonu  Suplemento natural aceite de orégano con semilla negra
+7606813488962407702 | 14 Feb 2026, 21:01 |  12,945 | Paraguas automático con asa especial para cargar bolsas. Botón de abrir y cerrar
+7606811727396834583 | 14 Feb 2026, 20:54 |   1,114 | #NovoDoveCabelos  Súper taza de café inteligente Llévate la tuya hoy con súper d
+7606809699815623958 | 14 Feb 2026, 20:46 |     275 | Taza inteligente Producto top ventas! Tu café calentito y con espuma en cualquie
+7606808405772143894 | 14 Feb 2026, 20:41 |     857 | Licuadora batidora portatil  Perfecto para hacer zumos, batidos, smoothies Últim
+7606807337713650966 | 14 Feb 2026, 20:37 |     400 | Batidora portátil top en ventas de TikTok shop! Disfruta de tus batidos y smooth
+7607924172735679767 | 17 Feb 2026, 20:51 |   1,037 | Anillo Inteligente Fitness Tracker SIMSON con 40% OFF 🔥 Bloquéalo desde el carri
+7607923021310938390 | 17 Feb 2026, 20:47 |     889 | 40% menos en Anillo Inteligente Fitness Tracker SIMSON 🔥 Últimas unidades a este
+7607922148367240470 | 17 Feb 2026, 20:43 |     260 | Taza de café automática por menos de 5€ 🔥 Aprovecha antes que suba el precio. ta
+7607921104111406358 | 17 Feb 2026, 20:39 |     754 | Taza de café automática por menos de 5€ 🔥 Aprovecha antes que suba el precio. ta
+7607906876201782550 | 17 Feb 2026, 19:44 |     845 | 40% menos hoy en Anillo Inteligente SIMSON 🔥 Activa el carrito antes que vuelva 
+7607906491202276630 | 17 Feb 2026, 19:42 |     273 | 40% menos en Anillo Inteligente Fitness Tracker SIMSON 🔥 Últimas unidades a este
+7607904359862717699 | 17 Feb 2026, 19:34 |     254 | Por menos de 5€ hoy en Taza automática 🔥 No dejes pasar esta oportunidad. taza a
+7607903675318635798 | 17 Feb 2026, 19:31 |     255 | Por menos de 5€ en Taza de café inteligente con tapa 🔥 Toca el carrito naranja a
+7607901436638252310 | 17 Feb 2026, 19:23 |   1,437 | OFERTA: 40% de descuento en Anillo Inteligente SIMSON 🔥 Toca el carrito antes qu
+7607900950338063638 | 17 Feb 2026, 19:21 |     324 | 40% menos en Anillo Inteligente Fitness Tracker SIMSON 🔥 Últimas unidades a este
+7607898515011849494 | 17 Feb 2026, 19:11 |     798 | Por menos de 5€ en Taza de café inteligente con tapa 🔥 Toca el carrito naranja a
+7607898057954348310 | 17 Feb 2026, 19:10 |     777 | Por menos de 5€ hoy en Taza automática 🔥 No dejes pasar esta oportunidad. taza a
+7608708100266200342 | 19 Feb 2026, 23:33 |   1,552 | Anillo SIMSON LAB recargable para hombres y mujeres, rastreador de actividad con
+7608702577118563606 | 19 Feb 2026, 23:12 |   1,369 | Es perfecto para quienes viajan con frecuencia o necesitan un suplemento de magn
+7608697951212424470 | 19 Feb 2026, 22:54 |     342 | ¿Tiene dificultades para dormir? ¡Este producto es un **cambio de juego**! Llevo
+7608686504382188822 | 19 Feb 2026, 22:09 |  12,180 | Cepillo eléctrico Landot. Pelo rizado? 👩‍🦱 Alisa o riza en minutos con Landot. ¡
+7608663320110959894 | 19 Feb 2026, 20:39 |   1,132 | Nutralie magnesio  Promoción doble solo hoy! 25€ y además el envío gratis. No te
+7609041884878589206 | 20 Feb 2026, 21:08 |     815 | Power Bank Magnético 5000mAh por debajo de 7€ 🔥 Activa el carrito antes que vuel
+7609040727171026198 | 20 Feb 2026, 21:04 |     889 | No llega a 7€ el Power Bank Magnético 5000mAh 🔥 Carga rapida, ideal para viajes.
+7609038371435924758 | 20 Feb 2026, 20:55 |   8,188 | Por menos de 7€ hoy en Power Bank Magnético 5000mAh 🔥 Toca el carrito naranja ah
+7608975300034170134 | 20 Feb 2026, 16:50 |  14,100 | OFERTA: Por menos de 7€ en Power Bank Magnético 5000mAh 🔥 Últimas unidades a est
+7608928420076064022 | 20 Feb 2026, 13:48 |     250 | Batería MagSafe de 5000 mAH. Carga rápida sin cables. Ligera y portátil, ideal p
+7608924046813662486 | 20 Feb 2026, 13:31 |  11,096 | Como dice el refrán: “En Abril aguas mil” No te pierdas este paraguas automático
+7609328942163496214 | 21 Feb 2026, 15:42 |     267 | 300 cápsulas por menos de 21€ en Aceite de Orégano VivoNu 🔥 Últimas unidades a e
+7609328494211829014 | 21 Feb 2026, 15:40 |     786 | ¿Problemas para conciliar el sueño?. Aqui tienes una solución.: 500 noches por m
+7609327839850040598 | 21 Feb 2026, 15:38 |     963 | Producto natural con semilla negra. Antioxidante. 7 céntimos por cápsula hoy en 
+7609606911742283030 | 22 Feb 2026, 09:41 |   1,414 | No llega a 25€ hoy la Botella Bottle Bottle 🔥 Activa el carrito antes que vuelva
+7609605173329087766 | 22 Feb 2026, 09:34 |     278 | melatonina_aldous_500_lotopdevicky_batch002_video_006500 noches por menos de 22€
+7610123298189479190 | 23 Feb 2026, 19:05 |     833 | Batería MagSafe! Carga inalámbrica para tu móvil. Ideal para viajes y tu día a d
+7610110142524181782 | 23 Feb 2026, 18:14 |     289 | ¡Este es uno de los mejores **suplementos de colágeno** para el crecimiento del 
+7610105006062079254 | 23 Feb 2026, 17:54 |     792 | Paraguas para la lluvia. Resistente y con apertura y cierre automático. Tiene va
+7609972283741981974 | 23 Feb 2026, 09:19 |     802 | Aceite de orégano Vivonu favorece la salud digestiva,  ayudan a mantener el equi
+7609971234746551574 | 23 Feb 2026, 09:15 |     950 | Botella BOTTLE BOTTLE con dos sistemas de beber y escobilla limpiadora. Ideal pa
+7609970624747932950 | 23 Feb 2026, 09:12 |   1,200 | Auriculares bluetooth con cancelacion de ruido. Por debajo de 18€ hoy en Auricul
+7609969822213967126 | 23 Feb 2026, 09:09 |     784 | Botella termo.Mantiene tus bebidas calientes o frias. No llega a 25€ la Botella 
+7609969303537847554 | 23 Feb 2026, 09:07 |     803 | Powerbank magsafe ligera para tus viajes. No llega a 7€ el Power Bank Magnético 
+7609968905074773250 | 23 Feb 2026, 09:06 |     504 | ¿Problemas para conciliar el sueño? Melatonina Aldous te ayuda con tu descanso n
+7610465212386331926 | 24 Feb 2026, 17:12 |     842 | No llega a 40€ el Proyector Magcubic 🔥 Producto Top Pick TikTok Shop. Toca el ca
+7610464361823440151 | 24 Feb 2026, 17:08 |   1,340 | 10€ menos hoy en Arrancador EIGOTRAV 🔥 Activa el cupón antes de pagar. arrancado
+7610463795932171543 | 24 Feb 2026, 17:06 |     445 | No llega a 40€ el Proyector Magcubic 🔥 Toca el carrito naranja antes que termine
+7610461185477020950 | 24 Feb 2026, 16:56 |   1,565 | 10€ menos hoy en Arrancador EIGOTRAV 🔥 Activa el cupón antes de pagar. arrancado
+7610427131587202326 | 24 Feb 2026, 14:44 |     805 | Este producto contiene una amplia variedad de vitaminas y minerales. Llevo usánd
+7610881712708504854 | 25 Feb 2026, 20:08 |   1,667 | DR.DENT 42 tiras = 1,19€ por aplicación 🔥 No dejes pasar esta oportunidad. drden
+7610880176817278230 | 25 Feb 2026, 20:02 |     927 | 40€ y pico no, se queda por debajo el Proyector Magcubic 🔥 Últimas unidades disp
+7610879799715745027 | 25 Feb 2026, 20:00 |   4,149 | Aplica el cupón de 10€ en Arrancador EIGOTRAV 🔥 Bloquéalo antes que suba el prec
+7610878945969343766 | 25 Feb 2026, 19:57 |     838 | Se queda por debajo de 40€ el Proyector Magcubic 🔥 Aprovecha antes que suba el p
+7611258069292551446 | 26 Feb 2026, 20:28 |     260 | No llega a 40€ hoy el Proyector Magcubic 🔥 Activa el carrito antes que vuelva al
+7611257705055178006 | 26 Feb 2026, 20:27 |     770 | bateria_power_bank_5000_lotopdevicky_batch002_video_015Power Bank Magnético 5000
+7611845522088889622 | 28 Feb 2026, 10:28 |     859 | Se queda por debajo de 34€ el Cepillo Alisador Landot + envío gratis 🔥 Aprovecha
+7611844148877970710 | 28 Feb 2026, 10:23 |   1,047 | anilloNo llega a 15€ el Anillo Simson 🔥 Toca el carrito naranja antes que termin
+7611841472840600854 | 28 Feb 2026, 10:12 |     873 | Auriculares Bluetooth MS180 MINISO por debajo de 18€ 🔥 Activa el carrito antes q
+7611835745833192726 | 28 Feb 2026, 09:50 |     801 | No llega a 40€ el Proyector Magcubic 🔥 Toca el carrito naranja antes que termine
+7612216185215536406 | 01 Mar 2026, 10:26 |     254 | Menos de 40€ en Proyector Magcubic 🔥 Bloquéalo antes que cambie el precio. proye
+7612215345394273558 | 01 Mar 2026, 10:23 |     258 | No llega a 15€ hoy el Anillo Simson 🔥 No dejes pasar esta oportunidad. anillo in
