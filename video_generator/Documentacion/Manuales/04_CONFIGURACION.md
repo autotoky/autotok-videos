@@ -92,13 +92,15 @@ python scripts/db_config.py
 
 # Verificar datos
 python -c "
-from scripts.db_config import get_connection
-conn = get_connection()
-cursor = conn.cursor()
-cursor.execute('SELECT COUNT(*) FROM videos')
-print(f'Videos: {cursor.fetchone()[0]}')
+from scripts.db_config import db_connection
+with db_connection() as conn:
+    cursor = conn.cursor()
+    cursor.execute('SELECT COUNT(*) FROM videos')
+    print(f'Videos: {cursor.fetchone()[0]}')
 "
 ```
+
+> **QUA-102:** Todo el codigo activo usa `db_connection()` (context manager con auto-commit/rollback/close). `get_connection()` se mantiene solo para compatibility.
 
 ### Tablas principales
 
@@ -180,10 +182,11 @@ Acceso: `https://autotok-api-git-main-autotoky-6890s-projects.vercel.app/api/est
 | Pagina | Funcion |
 |--------|---------|
 | `/api/estado` | Estado de videos, desprogramar por fechas, editar fecha/hora |
-| `/api/formatos` | Formatos por producto, toggle activo/inactivo, material |
+| `/api/formatos` | Formatos por producto, toggle activo/inactivo, material, es_ia |
 | `/api/productos` | Lista de productos y estado comercial |
 | `/api/programar` | Programar calendario con simulacion |
 | `/api/cuentas` | Configuracion de cuentas (edicion inline) |
+| `/api/importar` | Importar videos externos al sistema (QUA-135) |
 | `/api/stats` | Estadisticas de engagement y ventas |
 
 ---
@@ -197,12 +200,28 @@ python scripts/verificacion_completa.py
 
 ---
 
+## Importar videos externos (QUA-135)
+
+**URL:** `/api/importar`
+
+Para videos grabados o editados manualmente (por Mar, Sara, etc.) que quieres programar y trackear estadisticas:
+
+1. Coloca el video en `SynologyDrive/{cuenta}/nombre_video.mp4`
+2. Abre panel `/api/importar`
+3. Selecciona cuenta y producto (formato y es_ia opcionales)
+4. Escribe nombre(s) de archivo (sin .mp4) — puedes anadir varios de golpe separados por coma
+5. Click "Importar" → videos quedan con estado "Generado" listos para programar
+
+Los videos importados se marcan con `origen = externo` en BD para distinguirlos de los generados automaticamente.
+
+---
+
 ## Workflow del equipo
 
 | Quien | Que hace | Frecuencia |
 |-------|----------|------------|
 | Carol | Research productos | Semanal |
-| Mar | Generar material IA (hooks, brolls) | Semanal |
+| Mar | Generar material IA (hooks, brolls) + grabar videos manuales | Semanal |
 | Sara | Gestionar formatos, generar videos, programar desde panel | Semanal/diario |
 | Operadora | Publicar con PUBLICAR.bat | Diario |
 
@@ -211,10 +230,11 @@ python scripts/verificacion_completa.py
 1. **Carol:** Research + seleccion productos
 2. **Sara:** Crear formatos en panel `/api/formatos`, asignar material
 3. **Mar:** Generar hooks/brolls/audios IA
-4. **Sara:** `cli.py` opcion 5 (generar videos) → panel `/api/programar` (programar calendario)
-5. **Operadora:** PUBLICAR.bat cada dia
-6. **Sara:** Panel `/api/estado` para monitorear + desprogramar si necesario
+4. **Sara:** `cli.py` opcion 5 (generar videos) + `/api/importar` (videos manuales de Mar)
+5. **Sara:** Panel `/api/programar` (programar calendario)
+6. **Operadora:** PUBLICAR.bat cada dia
+7. **Sara:** Panel `/api/estado` para monitorear + desprogramar si necesario
 
 ---
 
-**Ultima actualizacion:** 2026-03-12 (QUA-217: config cuentas en Turso, CLI reducido, panel cuentas)
+**Ultima actualizacion:** 2026-03-12 (QUA-135: importar videos externos, QUA-218: es_ia en formatos, QUA-102: db_connection)

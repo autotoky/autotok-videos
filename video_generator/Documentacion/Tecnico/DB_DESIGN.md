@@ -138,11 +138,12 @@ CREATE INDEX idx_productos_activo ON productos(activo);
 CREATE TABLE producto_bofs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     producto_id INTEGER NOT NULL,
-    
+
     -- Metadata
     version INTEGER DEFAULT 1,
     activo BOOLEAN DEFAULT 1,
-    
+    es_ia INTEGER DEFAULT 0,        -- QUA-218: 1 = contenido generado por IA
+
     -- Contenido completo (output Custom GPT)
     deal_math TEXT NOT NULL,
     guion_audio TEXT NOT NULL,
@@ -150,13 +151,13 @@ CREATE TABLE producto_bofs (
     overlay_line1 TEXT,
     overlay_line2 TEXT,
     hashtags TEXT NOT NULL,
-    
+
     -- Tracking de uso
     usado_count INTEGER DEFAULT 0,
-    
+
     -- Timestamps
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
+
     FOREIGN KEY (producto_id) REFERENCES productos(id)
 );
 
@@ -296,34 +297,41 @@ CREATE INDEX idx_formato_material_tipo ON formato_material(bof_id, tipo);
 ```sql
 CREATE TABLE videos (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    filename TEXT UNIQUE NOT NULL,
+    video_id TEXT UNIQUE NOT NULL,
     producto_id INTEGER NOT NULL,
     cuenta TEXT NOT NULL,
     batch_number INTEGER,
-    
+
     -- Material usado
     hook_id INTEGER,
-    broll_ids TEXT,
     audio_id INTEGER,
     bof_id INTEGER,
-    
-    -- Info pre-calculada (para Sheet)
-    hook_display TEXT,
-    deal_math TEXT,
-    seo_text TEXT,
-    hashtags TEXT,
-    overlay_text TEXT,
-    url_producto TEXT,
-    
+    variante_id INTEGER,
+
     -- Estado y calendario
-    estado TEXT DEFAULT 'Generado' CHECK(estado IN ('Generado', 'En Calendario', 'Borrador', 'Programado', 'Descartado', 'Violation')),
-    fecha_prog DATE,
-    hora TIME,
-    
+    estado TEXT DEFAULT 'Generado',
+    fecha_programada DATE,
+    hora_programada TIME,
+    programado_at TIMESTAMP,
+
+    -- Archivo
+    filepath TEXT,
+    duracion REAL,
+    filesize_mb REAL,
+
+    -- Metadata
+    es_ia INTEGER DEFAULT 0,
+    origen TEXT DEFAULT 'generado',   -- QUA-135: 'generado' | 'externo'
+
+    -- Publicacion
+    publish_attempts INTEGER DEFAULT 0,
+    last_error TEXT,
+    published_at TIMESTAMP,
+    tiktok_post_id TEXT,
+
     -- Timestamps
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
+
     FOREIGN KEY (producto_id) REFERENCES productos(id),
     FOREIGN KEY (hook_id) REFERENCES material(id),
     FOREIGN KEY (audio_id) REFERENCES audios(id),
@@ -338,10 +346,11 @@ CREATE INDEX idx_video_batch ON videos(batch_number);
 CREATE INDEX idx_video_bof ON videos(bof_id);
 ```
 
-**Para qué:** 
+**Para qué:**
 - Single source of truth para videos
-- Campos pre-calculados para exportar a Sheet sin JOINs
-- Tracking completo de material usado
+- Tracking completo de material usado y estado de publicacion
+- `origen`: distingue videos generados por el sistema vs importados manualmente (QUA-135)
+- `es_ia`: heredado del formato al generar, editable al importar
 
 ---
 

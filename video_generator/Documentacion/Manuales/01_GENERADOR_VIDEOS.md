@@ -156,6 +156,10 @@ En el modal de material:
 
 El generador lee `formato_material` para cada BOF y filtra el material disponible. Si un formato tiene asignaciones en formato_material, SOLO usa ese material. Si no tiene asignaciones (legacy), usa todo el material del producto.
 
+### Etiqueta IA (QUA-218)
+
+La etiqueta `es_ia` (contenido generado por inteligencia artificial) se gestiona a nivel de formato, NO se pregunta al generar. Se configura desde el panel `/api/formatos` con el checkbox "Contenido IA" en el modal de crear/editar. El generador hereda automaticamente el valor del formato seleccionado.
+
 ---
 
 ## Gestion de formatos (BOFs)
@@ -219,4 +223,4 @@ El JSON del BOF puede llamarse como quieras — solo contiene la info del BOF, N
 
 ---
 
-**Ultima actualizacion:** 2026-03-11 (QUA-201: material por formato, QUA-208: editable grupo/start_time)
+**Ultima actualizacion:** 2026-03-12 (QUA-218: es_ia automatico por formato)
