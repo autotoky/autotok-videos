@@ -12,7 +12,7 @@ import shutil
 from pathlib import Path
 from config import *
 from utils import *
-from scripts.db_config import get_connection
+from scripts.db_config import get_connection, db_connection
 from logger import get_logger
 
 logger = get_logger(__name__)

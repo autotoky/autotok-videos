@@ -14,7 +14,7 @@ import os
 # Añadir parent directory al path
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
-from scripts.db_config import get_connection
+from scripts.db_config import db_connection
 from config import get_producto_paths
 from utils import get_files_from_dir, extract_broll_group
 from pathlib import Path
@@ -50,20 +50,18 @@ def validate_producto(producto_nombre):
     stats = {}
     
     # 1. Verificar producto existe en DB
-    conn = get_connection()
-    cursor = conn.cursor()
-    
-    cursor.execute("SELECT id FROM productos WHERE nombre = ?", (producto_nombre,))
-    row = cursor.fetchone()
-    
+    with db_connection() as conn:
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT id FROM productos WHERE nombre = ?", (producto_nombre,))
+        row = cursor.fetchone()
+
     if row:
         producto_id = row['id']
         print(f"[OK] Producto en DB: {producto_nombre} (ID: {producto_id})")
     else:
         print(f"[INFO] Producto no existe en DB (se creará al importar BOF)")
         producto_id = None
-    
-    conn.close()
     
     # 2. Verificar carpetas existen
     if not os.path.exists(paths["proyecto_dir"]):

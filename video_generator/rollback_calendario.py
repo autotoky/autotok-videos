@@ -20,7 +20,7 @@ from datetime import datetime
 
 sys.path.insert(0, os.path.dirname(__file__))
 
-from scripts.db_config import get_connection
+from scripts.db_config import db_connection
 
 
 # ═══════════════════════════════════════════════════════════
@@ -45,7 +45,7 @@ def get_videos_en_calendario(cuenta, video_ids=None, fecha_desde=None, ultima=Fa
     """
     estados = "('En Calendario', 'Descartado', 'Violation', 'Borrador', 'Programado')"
 
-    with get_connection() as conn:
+    with db_connection() as conn:
         cursor = conn.cursor()
 
         if video_ids:
@@ -161,7 +161,7 @@ def rollback_db(cuenta, videos):
         int: Número de registros actualizados
     """
     updated = 0
-    with get_connection() as conn:
+    with db_connection() as conn:
         cursor = conn.cursor()
         for v in videos:
             cursor.execute("""
@@ -173,7 +173,6 @@ def rollback_db(cuenta, videos):
                 WHERE id = ?
             """, (v['id'],))
             updated += cursor.rowcount
-        conn.commit()
     return updated
 
 
@@ -245,7 +244,7 @@ def rollback_calendario(cuenta, video_ids=None, fecha_desde=None, ultima=False,
 
     # Registrar en historial
     try:
-        with get_connection() as conn:
+        with db_connection() as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='historial_rollbacks'")
             if cursor.fetchone():
@@ -255,7 +254,6 @@ def rollback_calendario(cuenta, video_ids=None, fecha_desde=None, ultima=False,
                     INSERT INTO historial_rollbacks (cuenta, fecha, video_ids, num_videos)
                     VALUES (?, ?, ?, ?)
                 """, (cuenta, now, video_ids_str, len(videos)))
-                conn.commit()
     except Exception as e:
         print(f"[WARNING] No se pudo registrar en historial: {e}")
 

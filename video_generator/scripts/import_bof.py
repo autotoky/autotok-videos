@@ -16,7 +16,7 @@ from pathlib import Path
 # AÃ±adir parent directory al path
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
-from scripts.db_config import get_connection
+from scripts.db_config import db_connection
 
 
 def validate_bof_json(data):
@@ -95,67 +95,64 @@ def import_bof(producto_nombre, json_file):
     print("[OK] JSON validado correctamente")
     
     # Conectar a DB
-    conn = get_connection()
-    cursor = conn.cursor()
-    
     try:
-        # 1. Obtener o crear producto
-        cursor.execute("SELECT id FROM productos WHERE nombre = ?", (producto_nombre,))
-        row = cursor.fetchone()
-        
-        if row:
-            producto_id = row['id']
-            print(f"[INFO] Producto encontrado: {producto_nombre} (ID: {producto_id})")
-        else:
-            cursor.execute(
-                "INSERT INTO productos (nombre) VALUES (?)",
-                (producto_nombre,)
-            )
-            producto_id = cursor.lastrowid
-            print(f"[INFO] Producto creado: {producto_nombre} (ID: {producto_id})")
-        
-        # 2. Insertar BOF
-        cursor.execute("""
-            INSERT INTO producto_bofs (
-                producto_id, deal_math, guion_audio, hashtags, url_producto
-            ) VALUES (?, ?, ?, ?, ?)
-        """, (
-            producto_id,
-            data['deal_math'],
-            data['guion_audio'],
-            data['hashtags'],
-            data['url_producto']
-        ))
-        
-        bof_id = cursor.lastrowid
-        print(f"\n[OK] BOF creado (ID: {bof_id})")
-        print(f"  Deal: {data['deal_math']}")
-        print(f"  Guion: {data['guion_audio'][:50]}...")
-        print(f"  Hashtags: {data['hashtags']}")
-        print(f"  URL: {data['url_producto']}")
-        
-        # 3. Insertar variantes
-        print(f"\n[INFO] Insertando {len(data['variantes'])} variantes...")
-        
-        for i, variante in enumerate(data['variantes'], 1):
+        with db_connection() as conn:
+            cursor = conn.cursor()
+
+            # 1. Obtener o crear producto
+            cursor.execute("SELECT id FROM productos WHERE nombre = ?", (producto_nombre,))
+            row = cursor.fetchone()
+
+            if row:
+                producto_id = row['id']
+                print(f"[INFO] Producto encontrado: {producto_nombre} (ID: {producto_id})")
+            else:
+                cursor.execute(
+                    "INSERT INTO productos (nombre) VALUES (?)",
+                    (producto_nombre,)
+                )
+                producto_id = cursor.lastrowid
+                print(f"[INFO] Producto creado: {producto_nombre} (ID: {producto_id})")
+
+            # 2. Insertar BOF
             cursor.execute("""
-                INSERT INTO variantes_overlay_seo (
-                    bof_id, overlay_line1, overlay_line2, seo_text
-                ) VALUES (?, ?, ?, ?)
+                INSERT INTO producto_bofs (
+                    producto_id, deal_math, guion_audio, hashtags, url_producto
+                ) VALUES (?, ?, ?, ?, ?)
             """, (
-                bof_id,
-                variante['overlay_line1'],
-                variante.get('overlay_line2', ''),
-                variante['seo_text']
+                producto_id,
+                data['deal_math'],
+                data['guion_audio'],
+                data['hashtags'],
+                data['url_producto']
             ))
-            
-            print(f"  {i}. {variante['overlay_line1']} / {variante.get('overlay_line2', '(sin lÃ­nea 2)')}")
-        
-        # Commit
-        conn.commit()
-        
+
+            bof_id = cursor.lastrowid
+            print(f"\n[OK] BOF creado (ID: {bof_id})")
+            print(f"  Deal: {data['deal_math']}")
+            print(f"  Guion: {data['guion_audio'][:50]}...")
+            print(f"  Hashtags: {data['hashtags']}")
+            print(f"  URL: {data['url_producto']}")
+
+            # 3. Insertar variantes
+            print(f"\n[INFO] Insertando {len(data['variantes'])} variantes...")
+
+            for i, variante in enumerate(data['variantes'], 1):
+                cursor.execute("""
+                    INSERT INTO variantes_overlay_seo (
+                        bof_id, overlay_line1, overlay_line2, seo_text
+                    ) VALUES (?, ?, ?, ?)
+                """, (
+                    bof_id,
+                    variante['overlay_line1'],
+                    variante.get('overlay_line2', ''),
+                    variante['seo_text']
+                ))
+
+                print(f"  {i}. {variante['overlay_line1']} / {variante.get('overlay_line2', '(sin línea 2)')}")
+
         print(f"\n{'='*60}")
-        print(f"  âœ… BOF IMPORTADO CORRECTAMENTE")
+        print(f"  ✅ BOF IMPORTADO CORRECTAMENTE")
         print(f"{'='*60}")
         print(f"\n[STATS] Resumen:")
         print(f"  Producto: {producto_nombre}")
@@ -165,18 +162,14 @@ def import_bof(producto_nombre, json_file):
         print(f"  1. Registrar audios: python scripts/register_audio.py {producto_nombre} audio.mp3 --bof-id {bof_id}")
         print(f"  2. Escanear material: python scripts/scan_material.py {producto_nombre}")
         print(f"  3. Generar videos: python main.py --producto {producto_nombre} --batch 10 --cuenta lotopdevicky\n")
-        
+
         return True
-        
+
     except Exception as e:
-        conn.rollback()
         print(f"\n[ERROR] Error al importar BOF: {e}")
         import traceback
         traceback.print_exc()
         return False
-    
-    finally:
-        conn.close()
 
 
 def main():

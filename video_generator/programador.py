@@ -28,18 +28,16 @@ import random
 # Añadir parent al path
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
-from scripts.db_config import get_connection
+from scripts.db_config import db_connection
 from config import OUTPUT_DIR
 
 
 def load_cuenta_config(cuenta_nombre):
     """Carga configuración de cuenta desde Turso (cuentas_config)."""
-    conn = get_connection()
-    cursor = conn.cursor()
-
-    cursor.execute("SELECT * FROM cuentas_config WHERE nombre = ?", (cuenta_nombre,))
-    row = cursor.fetchone()
-    conn.close()
+    with db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM cuentas_config WHERE nombre = ?", (cuenta_nombre,))
+        row = cursor.fetchone()
 
     if row:
         return dict(row)
@@ -59,69 +57,67 @@ def get_videos_disponibles(cuenta, producto_filter=None):
     Returns:
         list[dict]: Videos con estado_comercial y max_videos_test del producto
     """
-    conn = get_connection()
-    cursor = conn.cursor()
+    with db_connection() as conn:
+        cursor = conn.cursor()
 
-    query = """
-        SELECT
-            v.id,
-            v.video_id,
-            v.filepath,
-            p.nombre as producto,
-            p.id as producto_id,
-            p.estado_comercial,
-            p.max_videos_test,
-            h.filename as hook,
-            h.id as hook_id,
-            b.deal_math,
-            b.gancho,
-            var.seo_text,
-            b.hashtags,
-            b.url_producto
-        FROM videos v
-        JOIN productos p ON v.producto_id = p.id
-        JOIN material h ON v.hook_id = h.id
-        JOIN producto_bofs b ON v.bof_id = b.id
-        JOIN variantes_overlay_seo var ON v.variante_id = var.id
-        WHERE v.cuenta = ? AND v.estado = 'Generado'
-    """
-    params = [cuenta]
+        query = """
+            SELECT
+                v.id,
+                v.video_id,
+                v.filepath,
+                p.nombre as producto,
+                p.id as producto_id,
+                p.estado_comercial,
+                p.max_videos_test,
+                h.filename as hook,
+                h.id as hook_id,
+                b.deal_math,
+                b.gancho,
+                var.seo_text,
+                b.hashtags,
+                b.url_producto
+            FROM videos v
+            JOIN productos p ON v.producto_id = p.id
+            JOIN material h ON v.hook_id = h.id
+            JOIN producto_bofs b ON v.bof_id = b.id
+            JOIN variantes_overlay_seo var ON v.variante_id = var.id
+            WHERE v.cuenta = ? AND v.estado = 'Generado'
+        """
+        params = [cuenta]
 
-    if producto_filter:
-        query += " AND p.nombre = ?"
-        params.append(producto_filter)
+        if producto_filter:
+            query += " AND p.nombre = ?"
+            params.append(producto_filter)
 
-    query += " ORDER BY v.created_at ASC LIMIT 200"
+        query += " ORDER BY v.created_at ASC LIMIT 200"
 
-    cursor.execute(query, params)
+        cursor.execute(query, params)
+        videos = [dict(row) for row in cursor.fetchall()]
 
-    videos = [dict(row) for row in cursor.fetchall()]
-    conn.close()
     return videos
 
 
 def get_videos_ya_programados(cuenta):
     """Obtiene videos ya programados (para distancia hook)"""
-    conn = get_connection()
-    cursor = conn.cursor()
+    with db_connection() as conn:
+        cursor = conn.cursor()
 
-    cursor.execute("""
-        SELECT video_id, fecha_programada, hook_id, producto_id
-        FROM videos
-        WHERE cuenta = ? AND estado IN ('En Calendario', 'Borrador', 'Programado')
-        ORDER BY fecha_programada ASC, hora_programada ASC
-    """, (cuenta,))
+        cursor.execute("""
+            SELECT video_id, fecha_programada, hook_id, producto_id
+            FROM videos
+            WHERE cuenta = ? AND estado IN ('En Calendario', 'Borrador', 'Programado')
+            ORDER BY fecha_programada ASC, hora_programada ASC
+        """, (cuenta,))
 
-    programados = []
-    for row in cursor.fetchall():
-        programados.append({
-            'video_id': row['video_id'],
-            'fecha': row['fecha_programada'],
-            'hook_id': row['hook_id'],
-            'producto_id': row['producto_id']
-        })
+        programados = []
+        for row in cursor.fetchall():
+            programados.append({
+                'video_id': row['video_id'],
+                'fecha': row['fecha_programada'],
+                'hook_id': row['hook_id'],
+                'producto_id': row['producto_id']
+            })
 
-    conn.close()
     return programados
 
 
@@ -133,21 +129,21 @@ def get_videos_acumulados_testing(cuenta):
     Returns:
         dict: {producto_id: count} con videos en cualquier estado post-generado
     """
-    conn = get_connection()
-    cursor = conn.cursor()
+    with db_connection() as conn:
+        cursor = conn.cursor()
 
-    cursor.execute("""
-        SELECT v.producto_id, COUNT(*) as total
-        FROM videos v
-        JOIN productos p ON v.producto_id = p.id
-        WHERE v.cuenta = ?
-        AND p.estado_comercial = 'testing'
-        AND v.estado IN ('En Calendario', 'Borrador', 'Programado')
-        GROUP BY v.producto_id
-    """, (cuenta,))
+        cursor.execute("""
+            SELECT v.producto_id, COUNT(*) as total
+            FROM videos v
+            JOIN productos p ON v.producto_id = p.id
+            WHERE v.cuenta = ?
+            AND p.estado_comercial = 'testing'
+            AND v.estado IN ('En Calendario', 'Borrador', 'Programado')
+            GROUP BY v.producto_id
+        """, (cuenta,))
 
-    result = {row['producto_id']: row['total'] for row in cursor.fetchall()}
-    conn.close()
+        result = {row['producto_id']: row['total'] for row in cursor.fetchall()}
+
     return result
 
 
@@ -157,16 +153,16 @@ def get_horas_ocupadas(cuenta, fecha):
     Returns:
         list[datetime]: Horas ya ocupadas como objetos datetime
     """
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("""
-        SELECT hora_programada FROM videos
-        WHERE cuenta = ? AND fecha_programada = ?
-        AND estado IN ('En Calendario', 'Borrador', 'Programado')
-        AND hora_programada IS NOT NULL
-    """, (cuenta, fecha))
-    horas = [row['hora_programada'] for row in cursor.fetchall()]
-    conn.close()
+    with db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT hora_programada FROM videos
+            WHERE cuenta = ? AND fecha_programada = ?
+            AND estado IN ('En Calendario', 'Borrador', 'Programado')
+            AND hora_programada IS NOT NULL
+        """, (cuenta, fecha))
+        horas = [row['hora_programada'] for row in cursor.fetchall()]
+
     return horas
 
 
@@ -741,14 +737,13 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
 
     # ── Protección anti-duplicados: consultar BD (no Sheet) ──
     # Un video con estado != 'Generado' ya está en uso o descartado
-    conn_dup = get_connection()
-    cursor_dup = conn_dup.cursor()
-    cursor_dup.execute("""
-        SELECT video_id FROM videos
-        WHERE cuenta = ? AND estado != 'Generado'
-    """, (cuenta,))
-    videos_no_disponibles = {row['video_id'] for row in cursor_dup.fetchall()}
-    conn_dup.close()
+    with db_connection() as conn_dup:
+        cursor_dup = conn_dup.cursor()
+        cursor_dup.execute("""
+            SELECT video_id FROM videos
+            WHERE cuenta = ? AND estado != 'Generado'
+        """, (cuenta,))
+        videos_no_disponibles = {row['video_id'] for row in cursor_dup.fetchall()}
     if videos_no_disponibles:
         print(f"[INFO] {len(videos_no_disponibles)} videos ya usados/descartados en BD (se excluirán)")
 
@@ -770,17 +765,16 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
 
         # Pre-cargar productos ya programados para este día (de tandas anteriores)
         productos_usados_hoy = {}
-        conn_dia = get_connection()
-        cursor_dia = conn_dia.cursor()
-        cursor_dia.execute("""
-            SELECT producto_id, COUNT(*) as cnt FROM videos
-            WHERE cuenta = ? AND fecha_programada = ?
-            AND estado IN ('En Calendario', 'Borrador', 'Programado')
-            GROUP BY producto_id
-        """, (cuenta, fecha_str))
-        for row_dia in cursor_dia.fetchall():
-            productos_usados_hoy[row_dia['producto_id']] = row_dia['cnt']
-        conn_dia.close()
+        with db_connection() as conn_dia:
+            cursor_dia = conn_dia.cursor()
+            cursor_dia.execute("""
+                SELECT producto_id, COUNT(*) as cnt FROM videos
+                WHERE cuenta = ? AND fecha_programada = ?
+                AND estado IN ('En Calendario', 'Borrador', 'Programado')
+                GROUP BY producto_id
+            """, (cuenta, fecha_str))
+            for row_dia in cursor_dia.fetchall():
+                productos_usados_hoy[row_dia['producto_id']] = row_dia['cnt']
 
         videos_ya_hoy = sum(productos_usados_hoy.values())
         if videos_ya_hoy:
@@ -1003,47 +997,44 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
     # ── Actualizar BD (Turso) ──
     print(f"[SYNC] Actualizando base de datos...")
 
-    conn = get_connection()
-    cursor = conn.cursor()
-
     videos_programados_ids = []
     programado_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # Migrar columna si no existe (para BD existentes)
     try:
-        cursor.execute("SELECT programado_at FROM videos LIMIT 1")
+        with db_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT programado_at FROM videos LIMIT 1")
     except Exception:
-        cursor.execute("ALTER TABLE videos ADD COLUMN programado_at TIMESTAMP")
-        conn.commit()
+        with db_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("ALTER TABLE videos ADD COLUMN programado_at TIMESTAMP")
 
     try:
-        for item in calendario:
-            video = item['video']
-            fecha = item['fecha']
-            hora = item['hora']
+        with db_connection() as conn:
+            cursor = conn.cursor()
+            for item in calendario:
+                video = item['video']
+                fecha = item['fecha']
+                hora = item['hora']
 
-            # Actualizar DB
-            cursor.execute("""
-                UPDATE videos
-                SET estado = 'En Calendario',
-                    fecha_programada = ?,
-                    hora_programada = ?,
-                    programado_at = ?
-                WHERE id = ?
-            """, (fecha, hora, programado_at, video['id']))
+                # Actualizar DB
+                cursor.execute("""
+                    UPDATE videos
+                    SET estado = 'En Calendario',
+                        fecha_programada = ?,
+                        hora_programada = ?,
+                        programado_at = ?
+                    WHERE id = ?
+                """, (fecha, hora, programado_at, video['id']))
 
-            videos_programados_ids.append(video['video_id'])
+                videos_programados_ids.append(video['video_id'])
 
-            # QUA-151: Ya no movemos archivos. El video se queda donde se generó.
-            # El filepath en BD no cambia. El estado se gestiona solo en BD/Turso.
-
-        conn.commit()
-        conn.close()
+                # QUA-151: Ya no movemos archivos. El video se queda donde se generó.
+                # El filepath en BD no cambia. El estado se gestiona solo en BD/Turso.
 
     except KeyboardInterrupt:
         print(f"\n\n[!] Programación interrumpida! Deshaciendo {len(videos_programados_ids)} videos...")
-        conn.rollback()
-        conn.close()
 
         try:
             from rollback_calendario import rollback_calendario as do_rollback
@@ -1056,11 +1047,10 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
             print("[OK] Rollback completado. No se han perdido datos.")
         except ImportError:
             # QUA-148: rollback_calendario eliminado, revertir directamente en BD
-            with get_connection() as rconn:
+            with db_connection() as rconn:
                 rcur = rconn.cursor()
                 for vid in videos_programados_ids:
                     rcur.execute("UPDATE videos SET estado='Generado', fecha_programada=NULL, hora_programada=NULL WHERE video_id=?", (vid,))
-                rconn.commit()
             print(f"[OK] {len(videos_programados_ids)} videos revertidos a Generado.")
         return False
 
@@ -1096,14 +1086,12 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
     # Borramos esos resultados antes de importar.
     if videos_programados_ids:
         try:
-            clean_conn = get_connection()
-            clean_cur = clean_conn.cursor()
-            for vid in videos_programados_ids:
-                clean_cur.execute(
-                    "DELETE FROM resultados WHERE video_id = ?", (vid,)
-                )
-            clean_conn.commit()
-            clean_conn.close()
+            with db_connection() as clean_conn:
+                clean_cur = clean_conn.cursor()
+                for vid in videos_programados_ids:
+                    clean_cur.execute(
+                        "DELETE FROM resultados WHERE video_id = ?", (vid,)
+                    )
             print(f"[OK] Limpiados resultados previos de {len(videos_programados_ids)} videos (QUA-189)")
         except Exception as e:
             # No es crítico — la tabla puede no existir en SQLite local

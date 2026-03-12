@@ -27,7 +27,7 @@ project_dir = script_dir.parent if script_dir.name == 'scripts' else script_dir
 sys.path.insert(0, str(project_dir))
 sys.path.insert(0, str(script_dir))
 
-from db_config import get_connection
+from db_config import db_connection
 from config import get_producto_paths
 from utils import get_files_from_dir, get_video_duration, extract_broll_group, extract_hook_start_time
 
@@ -90,15 +90,14 @@ def importar_bof(producto_nombre, producto_dir):
     guion_audio = bof_data.get('guion_audio', '')
     
     # Verificar si ya existe un BOF con el mismo guion_audio
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("""
-        SELECT COUNT(*) as count FROM producto_bofs pb
-        JOIN productos p ON pb.producto_id = p.id
-        WHERE p.nombre = ? AND pb.guion_audio = ?
-    """, (producto_nombre, guion_audio))
-    count = cursor.fetchone()['count']
-    conn.close()
+    with db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT COUNT(*) as count FROM producto_bofs pb
+            JOIN productos p ON pb.producto_id = p.id
+            WHERE p.nombre = ? AND pb.guion_audio = ?
+        """, (producto_nombre, guion_audio))
+        count = cursor.fetchone()['count']
     
     if count > 0:
         print(f"[OK] BOF ya importado (guion ya existe en BD)")
@@ -136,25 +135,24 @@ def escanear_material(producto_nombre):
     print(f"{'='*60}\n")
     
     paths = get_producto_paths(producto_nombre)
-    
-    conn = get_connection()
-    cursor = conn.cursor()
-    
+
     try:
-        # Obtener o crear producto
-        cursor.execute("SELECT id FROM productos WHERE nombre = ?", (producto_nombre,))
-        row = cursor.fetchone()
-        
-        if row:
-            producto_id = row['id']
-            print(f"[OK] Producto en BD: {producto_nombre} (ID: {producto_id})")
-        else:
-            cursor.execute("INSERT INTO productos (nombre) VALUES (?)", (producto_nombre,))
-            producto_id = cursor.lastrowid
-            conn.commit()
-            print(f"[OK] Producto creado: {producto_nombre} (ID: {producto_id})")
-        
-        # HOOKS
+        with db_connection() as conn:
+            cursor = conn.cursor()
+
+            # Obtener o crear producto
+            cursor.execute("SELECT id FROM productos WHERE nombre = ?", (producto_nombre,))
+            row = cursor.fetchone()
+
+            if row:
+                producto_id = row['id']
+                print(f"[OK] Producto en BD: {producto_nombre} (ID: {producto_id})")
+            else:
+                cursor.execute("INSERT INTO productos (nombre) VALUES (?)", (producto_nombre,))
+                producto_id = cursor.lastrowid
+                print(f"[OK] Producto creado: {producto_nombre} (ID: {producto_id})")
+
+            # HOOKS
         print(f"\n--- Escaneando HOOKS ---")
         hooks = get_files_from_dir(paths["hooks_dir"], ['.mp4', '.mov'])
         print(f"[INFO] Encontrados: {len(hooks)} hooks")
@@ -282,16 +280,12 @@ def escanear_material(producto_nombre):
         print(f"  python main.py --producto {producto_nombre} --batch 20 --cuenta CUENTA\n")
         
         return True
-        
+
     except Exception as e:
-        conn.rollback()
         print(f"\n[ERROR] {e}")
         import traceback
         traceback.print_exc()
         return False
-        
-    finally:
-        conn.close()
 
 
 def main():

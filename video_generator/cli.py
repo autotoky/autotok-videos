@@ -19,7 +19,7 @@ from datetime import datetime, timedelta
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 try:
-    from scripts.db_config import get_connection
+    from scripts.db_config import db_connection
 except ImportError:
     print("Error: No se puede importar db_config")
     print("   Asegurate de ejecutar desde la raiz del proyecto")
@@ -88,7 +88,7 @@ def make_progress_bar(current, total, width=30):
 
 def get_productos_lista():
     """Obtiene lista de productos de la BD"""
-    with get_connection() as conn:
+    with db_connection() as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT id, nombre FROM productos ORDER BY nombre")
         return cursor.fetchall()
@@ -161,7 +161,7 @@ def seleccionar_o_crear_producto():
                     return prod['nombre']
 
             # Crear en BD
-            with get_connection() as conn:
+            with db_connection() as conn:
                 cursor = conn.cursor()
                 cursor.execute("INSERT INTO productos (nombre) VALUES (?)", (nombre,))
                 conn.commit()
@@ -420,7 +420,7 @@ def generar_videos():
 
     # Preguntar si quiere forzar un BOF concreto
     bof_id = None
-    with get_connection() as conn:
+    with db_connection() as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT id FROM productos WHERE nombre = ?", (producto,))
         row = cursor.fetchone()
@@ -498,7 +498,7 @@ def generar_videos_multiples():
     print()
 
     # Obtener productos con material completo
-    with get_connection() as conn:
+    with db_connection() as conn:
         cursor = conn.cursor()
 
         cursor.execute("""
@@ -630,7 +630,7 @@ def _auto_sync_lifecycle():
 
     data_rows = rows[1:]
 
-    with get_connection() as conn:
+    with db_connection() as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT id, nombre, estado_comercial FROM productos")
         productos_bd = {row['nombre'].lower(): dict(row) for row in cursor.fetchall()}
@@ -667,7 +667,7 @@ def _verificar_post_programacion(cuentas):
     for cuenta in cuentas:
         print(f"\n  Verificando {cuenta}...")
 
-        with get_connection() as conn:
+        with db_connection() as conn:
             cursor = conn.cursor()
 
             # Videos 'En Calendario' en BD
@@ -710,16 +710,17 @@ def _verificar_post_programacion(cuentas):
                 print(f"  [WARNING] {sin_fecha}/{total} videos sin fecha programada")
 
         # Verificar que no hay horas duplicadas el mismo día
-        cursor_dup = get_connection().cursor()
-        cursor_dup.execute("""
-            SELECT fecha_programada, hora_programada, COUNT(*) as cnt
-            FROM videos
-            WHERE cuenta = ? AND estado IN ('En Calendario', 'Borrador', 'Programado')
-            AND hora_programada IS NOT NULL
-            GROUP BY fecha_programada, hora_programada
-            HAVING cnt > 1
-        """, (cuenta,))
-        duplicados = cursor_dup.fetchall()
+        with db_connection() as dup_conn:
+            cursor_dup = dup_conn.cursor()
+            cursor_dup.execute("""
+                SELECT fecha_programada, hora_programada, COUNT(*) as cnt
+                FROM videos
+                WHERE cuenta = ? AND estado IN ('En Calendario', 'Borrador', 'Programado')
+                AND hora_programada IS NOT NULL
+                GROUP BY fecha_programada, hora_programada
+                HAVING cnt > 1
+            """, (cuenta,))
+            duplicados = cursor_dup.fetchall()
 
         if duplicados:
             problemas_total += len(duplicados)
@@ -761,7 +762,7 @@ def deshacer_programacion():
             return
 
     # Mostrar programaciones actuales agrupadas por rango de fechas
-    with get_connection() as conn:
+    with db_connection() as conn:
         cursor = conn.cursor()
 
         cursor.execute("""
@@ -1191,11 +1192,10 @@ def publicar_tiktok():
         return
 
     # Seleccionar cuenta
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT DISTINCT nombre FROM cuentas_config WHERE activa = 1 ORDER BY nombre")
-    cuentas = [row['nombre'] for row in cursor.fetchall()]
-    conn.close()
+    with db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT DISTINCT nombre FROM cuentas_config WHERE activa = 1 ORDER BY nombre")
+        cuentas = [row['nombre'] for row in cursor.fetchall()]
 
     if not cuentas:
         print("[ERROR] No hay cuentas activas configuradas")

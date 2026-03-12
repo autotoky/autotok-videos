@@ -18,7 +18,7 @@ import glob
 # Añadir parent directory al path
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
-from scripts.db_config import get_connection
+from scripts.db_config import db_connection
 
 
 # Límites de caracteres
@@ -96,85 +96,79 @@ def reimport_bof(bof_data, filename, test_mode=False):
         return False
     
     bof_id = bof_data['bof_id']
-    
+
     if test_mode:
         print(f"\n[TEST] {filename}")
         print(f"  BOF ID: {bof_id}")
         print(f"  Producto: {bof_data['producto']}")
         print(f"  Variantes: {len(bof_data['variantes'])}")
         return True
-    
-    conn = get_connection()
-    cursor = conn.cursor()
-    
+
     try:
-        # Verificar que el BOF existe
-        cursor.execute("SELECT id FROM producto_bofs WHERE id = ?", (bof_id,))
-        if not cursor.fetchone():
-            print(f"\n❌ BOF ID {bof_id} no existe en la BD")
-            return False
-        
-        # Actualizar BOF principal
-        cursor.execute("""
-            UPDATE producto_bofs
-            SET deal_math = ?,
-                guion_audio = ?,
-                hashtags = ?,
-                url_producto = ?
-            WHERE id = ?
-        """, (
-            bof_data.get('deal_math'),
-            bof_data.get('guion_audio'),
-            bof_data.get('hashtags', ''),
-            bof_data.get('url_producto', ''),
-            bof_id
-        ))
-        
-        # Actualizar variantes
-        variantes_actualizadas = 0
-        for var in bof_data['variantes']:
-            variante_id = var['variante_id']
-            
-            # Verificar que la variante existe y pertenece al BOF correcto
+        with db_connection() as conn:
+            cursor = conn.cursor()
+
+            # Verificar que el BOF existe
+            cursor.execute("SELECT id FROM producto_bofs WHERE id = ?", (bof_id,))
+            if not cursor.fetchone():
+                print(f"\n❌ BOF ID {bof_id} no existe en la BD")
+                return False
+
+            # Actualizar BOF principal
             cursor.execute("""
-                SELECT id FROM variantes_overlay_seo 
-                WHERE id = ? AND bof_id = ?
-            """, (variante_id, bof_id))
-            
-            if cursor.fetchone():
+                UPDATE producto_bofs
+                SET deal_math = ?,
+                    guion_audio = ?,
+                    hashtags = ?,
+                    url_producto = ?
+                WHERE id = ?
+            """, (
+                bof_data.get('deal_math'),
+                bof_data.get('guion_audio'),
+                bof_data.get('hashtags', ''),
+                bof_data.get('url_producto', ''),
+                bof_id
+            ))
+
+            # Actualizar variantes
+            variantes_actualizadas = 0
+            for var in bof_data['variantes']:
+                variante_id = var['variante_id']
+
+                # Verificar que la variante existe y pertenece al BOF correcto
                 cursor.execute("""
-                    UPDATE variantes_overlay_seo
-                    SET overlay_line1 = ?,
-                        overlay_line2 = ?,
-                        seo_text = ?
-                    WHERE id = ?
-                """, (
-                    var.get('overlay_line1'),
-                    var.get('overlay_line2', ''),
-                    var.get('seo_text'),
-                    variante_id
-                ))
-                variantes_actualizadas += 1
-            else:
-                print(f"   ⚠️ Variante ID {variante_id} no encontrada (saltando)")
-        
-        conn.commit()
-        
+                    SELECT id FROM variantes_overlay_seo
+                    WHERE id = ? AND bof_id = ?
+                """, (variante_id, bof_id))
+
+                if cursor.fetchone():
+                    cursor.execute("""
+                        UPDATE variantes_overlay_seo
+                        SET overlay_line1 = ?,
+                            overlay_line2 = ?,
+                            seo_text = ?
+                        WHERE id = ?
+                    """, (
+                        var.get('overlay_line1'),
+                        var.get('overlay_line2', ''),
+                        var.get('seo_text'),
+                        variante_id
+                    ))
+                    variantes_actualizadas += 1
+                else:
+                    print(f"   ⚠️ Variante ID {variante_id} no encontrada (saltando)")
+
         print(f"\n✅ {filename}")
         print(f"   BOF ID: {bof_id} actualizado")
         print(f"   Variantes actualizadas: {variantes_actualizadas}/{len(bof_data['variantes'])}")
-        
+
         return True
-        
+
     except Exception as e:
-        conn.rollback()
         print(f"\n❌ Error al reimportar {filename}: {e}")
         import traceback
         traceback.print_exc()
         return False
-    
-    finally:
-        conn.close()
 
 
 def reimport_all_bofs(input_dir="bofs_editable", test_mode=False):

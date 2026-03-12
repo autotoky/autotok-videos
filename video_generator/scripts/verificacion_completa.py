@@ -20,7 +20,7 @@ from datetime import datetime
 from collections import defaultdict
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-from scripts.db_config import get_connection
+from scripts.db_config import db_connection
 from config import OUTPUT_DIR, DRIVE_SYNC_PATH
 
 # ═══════════════════════════════════════════════════════════
@@ -113,22 +113,21 @@ def read_sheet(cuenta):
 
 def read_bd(cuenta):
     """Lee videos de la BD para una cuenta. Returns {video_id: {estado, fecha, hora, filepath, batch}}"""
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("""
-        SELECT video_id, estado, fecha_programada, hora_programada, filepath, batch_number
-        FROM videos WHERE cuenta = ?
-    """, (cuenta,))
-    videos = {}
-    for r in cursor.fetchall():
-        videos[r["video_id"]] = {
-            "estado": r["estado"],
-            "fecha": r["fecha_programada"],
-            "hora": r["hora_programada"],
-            "filepath": r["filepath"],
-            "batch": r["batch_number"],
-        }
-    conn.close()
+    with db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT video_id, estado, fecha_programada, hora_programada, filepath, batch_number
+            FROM videos WHERE cuenta = ?
+        """, (cuenta,))
+        videos = {}
+        for r in cursor.fetchall():
+            videos[r["video_id"]] = {
+                "estado": r["estado"],
+                "fecha": r["fecha_programada"],
+                "hora": r["hora_programada"],
+                "filepath": r["filepath"],
+                "batch": r["batch_number"],
+            }
     return videos
 
 
@@ -350,16 +349,13 @@ def fix_cuenta(cuenta, errores):
 
         # --- Actualizar BD para que coincida con el estado real ---
         if tipo == "ESTADO_MISMATCH_LOCAL":
-            conn = get_connection()
-            cursor = conn.cursor()
-            for vid, carpeta, esperado, estado_bd in datos:
-                # QUA-151: Ya no inferimos estado desde carpeta.
-                # La BD (Turso) es la fuente de verdad.
-                print(f"    [SKIP] {vid}: ESTADO_MISMATCH_LOCAL ya no aplica (QUA-151)")
-                fixed += 1
-
-            conn.commit()
-            conn.close()
+            with db_connection() as conn:
+                cursor = conn.cursor()
+                for vid, carpeta, esperado, estado_bd in datos:
+                    # QUA-151: Ya no inferimos estado desde carpeta.
+                    # La BD (Turso) es la fuente de verdad.
+                    print(f"    [SKIP] {vid}: ESTADO_MISMATCH_LOCAL ya no aplica (QUA-151)")
+                    fixed += 1
 
         # --- FALTA_DRIVE ya no aplica (QUA-151) ---
         elif tipo == "FALTA_DRIVE":
@@ -379,85 +375,82 @@ def fix_cuenta(cuenta, errores):
 
         # --- Registrar en BD archivos locales sin registro (solo raíz = Generado) ---
         elif tipo == "LOCAL_SIN_BD":
-            conn = get_connection()
-            cursor = conn.cursor()
+            with db_connection() as conn:
+                cursor = conn.cursor()
 
-            # Obtener placeholders por producto
-            cursor.execute("SELECT id, nombre FROM productos")
-            productos_db = {r["nombre"]: r["id"] for r in cursor.fetchall()}
+                # Obtener placeholders por producto
+                cursor.execute("SELECT id, nombre FROM productos")
+                productos_db = {r["nombre"]: r["id"] for r in cursor.fetchall()}
 
-            placeholders = {}
-            for nombre_bd, prod_id in productos_db.items():
-                ph = {}
-                cursor.execute(
-                    "SELECT id FROM producto_bofs WHERE producto_id = ? LIMIT 1",
-                    (prod_id,),
-                )
-                r = cursor.fetchone()
-                ph["bof"] = r["id"] if r else None
-                if ph["bof"]:
+                placeholders = {}
+                for nombre_bd, prod_id in productos_db.items():
+                    ph = {}
                     cursor.execute(
-                        "SELECT id FROM variantes_overlay_seo WHERE bof_id = ? LIMIT 1",
-                        (ph["bof"],),
+                        "SELECT id FROM producto_bofs WHERE producto_id = ? LIMIT 1",
+                        (prod_id,),
                     )
                     r = cursor.fetchone()
-                    ph["var"] = r["id"] if r else None
+                    ph["bof"] = r["id"] if r else None
+                    if ph["bof"]:
+                        cursor.execute(
+                            "SELECT id FROM variantes_overlay_seo WHERE bof_id = ? LIMIT 1",
+                            (ph["bof"],),
+                        )
+                        r = cursor.fetchone()
+                        ph["var"] = r["id"] if r else None
+                        cursor.execute(
+                            "SELECT id FROM audios WHERE bof_id = ? LIMIT 1",
+                            (ph["bof"],),
+                        )
+                        r = cursor.fetchone()
+                        ph["aud"] = r["id"] if r else None
+                    else:
+                        ph["var"] = None
+                        ph["aud"] = None
                     cursor.execute(
-                        "SELECT id FROM audios WHERE bof_id = ? LIMIT 1",
-                        (ph["bof"],),
+                        "SELECT id FROM material WHERE producto_id = ? AND tipo = 'hook' LIMIT 1",
+                        (prod_id,),
                     )
                     r = cursor.fetchone()
-                    ph["aud"] = r["id"] if r else None
-                else:
-                    ph["var"] = None
-                    ph["aud"] = None
-                cursor.execute(
-                    "SELECT id FROM material WHERE producto_id = ? AND tipo = 'hook' LIMIT 1",
-                    (prod_id,),
-                )
-                r = cursor.fetchone()
-                ph["hook"] = r["id"] if r else None
-                placeholders[nombre_bd] = ph
+                    ph["hook"] = r["id"] if r else None
+                    placeholders[nombre_bd] = ph
 
-            for vid, info in datos.items():
-                if info["carpeta"] != "raiz":
-                    print(f"    [SKIP] {vid}: en carpeta {info['carpeta']}, requiere revisión manual")
-                    continue
+                for vid, info in datos.items():
+                    if info["carpeta"] != "raiz":
+                        print(f"    [SKIP] {vid}: en carpeta {info['carpeta']}, requiere revisión manual")
+                        continue
 
-                # Extraer producto del video_id (formato: producto_cuenta_batchXXX_video_XXX)
-                producto_nombre = None
-                for pname in sorted(productos_db.keys(), key=len, reverse=True):
-                    if vid.startswith(pname + "_"):
-                        producto_nombre = pname
-                        break
+                    # Extraer producto del video_id (formato: producto_cuenta_batchXXX_video_XXX)
+                    producto_nombre = None
+                    for pname in sorted(productos_db.keys(), key=len, reverse=True):
+                        if vid.startswith(pname + "_"):
+                            producto_nombre = pname
+                            break
 
-                if not producto_nombre or producto_nombre not in placeholders:
-                    print(f"    [SKIP] {vid}: producto no identificado")
-                    continue
+                    if not producto_nombre or producto_nombre not in placeholders:
+                        print(f"    [SKIP] {vid}: producto no identificado")
+                        continue
 
-                ph = placeholders[producto_nombre]
-                if not all([ph.get("bof"), ph.get("var"), ph.get("hook"), ph.get("aud")]):
-                    print(f"    [SKIP] {vid}: faltan FKs para {producto_nombre}")
-                    continue
+                    ph = placeholders[producto_nombre]
+                    if not all([ph.get("bof"), ph.get("var"), ph.get("hook"), ph.get("aud")]):
+                        print(f"    [SKIP] {vid}: faltan FKs para {producto_nombre}")
+                        continue
 
-                prod_id = productos_db[producto_nombre]
-                filepath = str(BASE_LOCAL / cuenta / f"{vid}.mp4")
+                    prod_id = productos_db[producto_nombre]
+                    filepath = str(BASE_LOCAL / cuenta / f"{vid}.mp4")
 
-                try:
-                    cursor.execute(
-                        """INSERT INTO videos
-                        (video_id, producto_id, cuenta, bof_id, variante_id, hook_id, audio_id,
-                         estado, filepath, batch_number, created_at)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, 'Generado', ?, 1, datetime('now'))""",
-                        (vid, prod_id, cuenta, ph["bof"], ph["var"], ph["hook"], ph["aud"], filepath),
-                    )
-                    print(f"    [FIX] {vid}: registrado en BD como Generado")
-                    fixed += 1
-                except Exception as e:
-                    print(f"    [!] Error registrando {vid}: {e}")
-
-            conn.commit()
-            conn.close()
+                    try:
+                        cursor.execute(
+                            """INSERT INTO videos
+                            (video_id, producto_id, cuenta, bof_id, variante_id, hook_id, audio_id,
+                             estado, filepath, batch_number, created_at)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, 'Generado', ?, 1, datetime('now'))""",
+                            (vid, prod_id, cuenta, ph["bof"], ph["var"], ph["hook"], ph["aud"], filepath),
+                        )
+                        print(f"    [FIX] {vid}: registrado en BD como Generado")
+                        fixed += 1
+                    except Exception as e:
+                        print(f"    [!] Error registrando {vid}: {e}")
 
         # --- Casos que NO se reparan automáticamente ---
         elif tipo in ("SHEET_SIN_BD", "BD_CAL_SIN_SHEET", "ESTADO_MISMATCH_SHEET", "BD_SIN_LOCAL"):

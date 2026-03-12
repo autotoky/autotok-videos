@@ -10,12 +10,12 @@ import sys
 import os
 from config import validate_config, show_config, get_producto_paths, DEFAULT_PRODUCTO
 from generator import VideoGenerator
-from scripts.db_config import get_connection
+from scripts.db_config import db_connection
 
 
 def list_productos():
     """Lista productos disponibles en DB"""
-    with get_connection() as conn:
+    with db_connection() as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT nombre FROM productos ORDER BY nombre")
         return [row['nombre'] for row in cursor.fetchall()]
@@ -107,7 +107,7 @@ Ejemplos:
     paths = get_producto_paths(producto)
     
     # Verificar que producto existe en DB
-    with get_connection() as conn:
+    with db_connection() as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT id FROM productos WHERE nombre = ?", (producto,))
         if not cursor.fetchone():
@@ -124,7 +124,7 @@ Ejemplos:
         print(f"\n[BATCH] Producto: {producto}")
         print(f"[CUENTA] {args.cuenta}")
 
-        with get_connection() as conn:
+        with db_connection() as conn:
             cursor = conn.cursor()
 
             # Material disponible

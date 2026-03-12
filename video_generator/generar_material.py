@@ -37,9 +37,9 @@ from config import (
 )
 
 try:
-    from scripts.db_config import get_connection
+    from scripts.db_config import db_connection
 except ImportError:
-    get_connection = None
+    db_connection = None
 
 
 # ═══════════════════════════════════════════════════════════
