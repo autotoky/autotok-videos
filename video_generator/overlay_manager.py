@@ -24,21 +24,34 @@ def escape_text_for_ffmpeg(text):
         'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u',
         'Ñ': 'N', 'ñ': 'n',
         'Ü': 'U', 'ü': 'u',
+        'à': 'a', 'è': 'e', 'ì': 'i', 'ò': 'o', 'ù': 'u',
+        'â': 'a', 'ê': 'e', 'î': 'i', 'ô': 'o', 'û': 'u',
+        'ä': 'a', 'ë': 'e', 'ï': 'i', 'ö': 'o',
+        'ç': 'c', 'Ç': 'C',
         '¿': '', '¡': '',
+        '—': '-', '–': '-', '―': '-',
+        '«': '', '»': '',
+        '\u201c': '', '\u201d': '', '\u2018': '', '\u2019': '',
+        '…': '...',
         '%': ' porciento',
         '&': 'y',
         '€': 'EUR',
         '$': 'USD',
-        '°': ' grados'
+        '£': 'GBP',
+        '°': ' grados',
+        '×': 'x',
     }
-    
+
     for old, new in replacements.items():
         text = text.replace(old, new)
-    
-    # Escapar caracteres especiales de FFmpeg
+
+    # Escapar caracteres especiales de FFmpeg drawtext
     text = text.replace("'", "\\'")
     text = text.replace(":", "\\:")
     text = text.replace(",", "\\,")
+    text = text.replace(";", "\\;")
+    text = text.replace("[", "\\[")
+    text = text.replace("]", "\\]")
     
     return text
 

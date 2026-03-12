@@ -4,7 +4,7 @@ create_db.py - Script para crear la base de datos SQLite de Autotok
 Versión: 1.0
 Fecha: 2026-02-09
 
-Crea el schema completo con 7 tablas.
+Crea el schema completo con 8 tablas.
 """
 
 import sqlite3
@@ -207,7 +207,25 @@ def create_database():
     cursor.execute("CREATE INDEX idx_video_batch ON videos(batch_number)")
     cursor.execute("CREATE INDEX idx_video_bof ON videos(bof_id)")
     
-    # TABLA 6: combinaciones_usadas
+    # TABLA 6: formato_material (QUA-201)
+    print("   🔗 Creando tabla: formato_material")
+    cursor.execute("""
+        CREATE TABLE formato_material (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            bof_id INTEGER NOT NULL,
+            material_id INTEGER,
+            audio_id INTEGER,
+            tipo TEXT NOT NULL CHECK(tipo IN ('hook', 'broll', 'audio')),
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (bof_id) REFERENCES producto_bofs(id),
+            FOREIGN KEY (material_id) REFERENCES material(id),
+            FOREIGN KEY (audio_id) REFERENCES audios(id)
+        )
+    """)
+    cursor.execute("CREATE INDEX idx_formato_material_bof ON formato_material(bof_id)")
+    cursor.execute("CREATE INDEX idx_formato_material_tipo ON formato_material(bof_id, tipo)")
+
+    # TABLA 7: combinaciones_usadas
     print("   🔒 Creando tabla: combinaciones_usadas")
     cursor.execute("""
         CREATE TABLE combinaciones_usadas (
@@ -262,7 +280,7 @@ def create_database():
     conn.close()
     
     print(f"\n✅ Base de datos creada exitosamente: {DB_PATH}")
-    print(f"   Tablas creadas: 7")
+    print(f"   Tablas creadas: 8")
     print(f"   Tamaño: {os.path.getsize(DB_PATH) / 1024:.2f} KB")
     
     return True
@@ -285,6 +303,7 @@ def verify_database():
         'audios',
         'material',
         'videos',
+        'formato_material',
         'combinaciones_usadas',
         'cuentas_config'
     ]

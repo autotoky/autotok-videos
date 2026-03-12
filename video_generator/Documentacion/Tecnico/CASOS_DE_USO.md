@@ -29,7 +29,7 @@
 | 12 | Programar desde fecha especifica | ✅ Cubierto | — | --fecha-inicio YYYY-MM-DD |
 | 13 | Rollback tanda completa | ✅ Cubierto | — | rollback_calendario.py v3.0 --ultima. QUA-151: solo revierte BD, no mueve ficheros |
 | 14 | Rollback por fecha | ✅ Cubierto | — | rollback_calendario.py v3.0 --fecha-desde. QUA-151: solo revierte BD |
-| 15 | Cambiar videos individuales sin rollback del dia entero | ❌ No cubierto | Pendiente (relacionado con QUA-155) | Hay que diseñar flujo |
+| 15 | Cambiar videos individuales sin rollback del dia entero | ✅ Cubierto | — | Dashboard /api/estado: boton "Quitar" devuelve un video a Generado (limpia fecha, hora, error, intentos). El video vuelve al pool y el programador lo recoge en la siguiente ejecucion. Funciona desde cualquier estado: Programado, Error, Descartado, Violation, En Calendario |
 | 16 | Descartar video y reemplazo automatico | ✅ Cubierto | — | Marcar Descartado → sync → reemplazo |
 | 17 | Marcar Violation y reemplazo | ✅ Cubierto | — | Mismo flujo que descarte |
 | 18 | Ver stock de videos disponibles por producto/cuenta | ❌ No cubierto | QUA-166 | Necesita vista en dashboard Vercel |
@@ -61,7 +61,7 @@
 |---|-------------|--------|--------|-------|
 | 30 | Diagnosticar por que fallo un video | ✅ Cubierto | — | Email + JSON tienen error y suggestion. Suficiente por ahora |
 | 31 | Reintentar video con error | ✅ Cubierto | — | Relanzar PUBLICAR.bat |
-| 32 | Descartar video con error y reemplazo | ⚠️ Parcial | Relacionado con QUA-155 | Proceso manual multi-paso. Debe ser automatico desde un unico punto |
+| 32 | Descartar video con error y reemplazo | ✅ Cubierto | — | Dos opciones desde dashboard /api/estado: (1) Cambiar estado a Descartado con motivo → sync lo reemplaza automaticamente. (2) Boton "Quitar" → devuelve el mismo video a Generado limpio, el programador lo reprograma |
 | 33 | Corregir datos de un video y reintentar | ❌ No cubierto | QUA-170 | Caso habitual. No hay flujo definido |
 
 ## GESTIONAR PRODUCTOS — Sara
@@ -112,8 +112,8 @@
 
 | Estado | Cantidad | Porcentaje |
 |--------|----------|------------|
-| ✅ Cubierto | 21 | 42% |
-| ⚠️ Parcial / UX pobre | 14 | 28% |
+| ✅ Cubierto | 23 | 46% |
+| ⚠️ Parcial / UX pobre | 12 | 24% |
 | ❌ No cubierto | 15 | 30% |
 | **Total** | **50** | |
 
@@ -130,12 +130,12 @@
 
 | Caso | Mejora | Ticket |
 |------|--------|--------|
-| #15 | Editar programacion sin rollback completo | Pendiente |
-| #32 | Descarte automatico desde un unico punto | QUA-155 |
+| #15 | ~~Editar programacion sin rollback completo~~ | ✅ Resuelto: boton "Quitar" en dashboard |
+| #32 | ~~Descarte automatico desde un unico punto~~ | ✅ Resuelto: dashboard + boton "Quitar" |
 | #33 | Corregir datos de video y reintentar | QUA-170 |
 | #5 | Flujo guiado para alta de producto | QUA-165 |
 | #23 | Verificacion de escaparate antes de publicar | QUA-171 |
 
 ---
 
-**Ultima actualizacion:** 2026-03-08
+**Ultima actualizacion:** 2026-03-10

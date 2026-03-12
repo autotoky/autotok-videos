@@ -1,6 +1,6 @@
 # INSTRUCCIONES DE TRABAJO PARA CLAUDE
 
-**Version:** 2.1
+**Version:** 2.2
 **Fecha:** 2026-03-08
 **Proyecto:** AutoTok — Sistema de generacion y publicacion automatica de videos TikTok
 
@@ -219,7 +219,7 @@ El documento `Tecnico/CASOS_DE_USO.md` y su diagrama visual `FLUJOS_CASOS_DE_USO
 | Archivo | Funcion |
 |---------|---------|
 | `tiktok_publisher.py` | Publicacion automatica en TikTok Studio |
-| `publicar_facil.py` | Wrapper amigable para operadoras (lee lote, valida, publica) |
+| `publicar_facil.py` | Wrapper amigable para operadoras — multi-lote: muestra todos los lotes pendientes (A, B, C...), la operadora elige cuales publicar, y se ejecutan sin interrupcion |
 | `PUBLICAR.bat` | Doble-click para que las operadoras lancen la publicacion |
 | `INSTALAR.bat` | Instalacion inicial en PC de operadora |
 | `scripts/setup_operadora.py` | Setup de cuenta, Chrome y login TikTok |
@@ -239,7 +239,8 @@ El documento `Tecnico/CASOS_DE_USO.md` y su diagrama visual `FLUJOS_CASOS_DE_USO
 |---------|---------|
 | `scripts/sheet_sync.py` | Sync centralizado BD↔Sheet (legacy) |
 | `scripts/lote_manager.py` | Export/import lotes JSON + comunicacion con API |
-| `scripts/api_client.py` | Cliente para API Vercel (lotes, resultados, versiones) |
+| `api_client.py` | Cliente para API Vercel (lotes, resultados, versiones, descarte). Incluye `obtener_todos_lotes()` para multi-lote |
+| `scripts/api_client.py` | (Copia en scripts/ — referencia legacy) |
 | `scripts/migrar_a_synology.py` | Migracion one-time de videos a estructura plana Synology (QUA-151) |
 | `drive_sync.py` | **DEPRECATED (QUA-151)** — Todas las funciones son no-ops. Conservado por backward compatibility |
 | `VERSION` | Version del sistema para check de actualizacion en operadoras |
@@ -273,8 +274,15 @@ El documento `Tecnico/CASOS_DE_USO.md` y su diagrama visual `FLUJOS_CASOS_DE_USO
 
 ### Programacion y lotes
 8. **Opcion 7 del CLI (programar calendario).** Programa videos y exporta lotes a API. QUA-151: ya no mueve archivos ni copia a Drive. El video se queda donde se genero.
-9. **Lotes JSON usan rutas relativas.** El filepath en los lotes es relativo a la carpeta de la cuenta. QUA-151: con estructura plana, la ruta es simplemente `{video_id}.mp4`. El publisher lo resuelve usando `drive_path/cuenta/` de config_operadora.json.
-10. **productos_escaparate en config_publisher.json** mapea nombre_producto → termino de busqueda. PERO la busqueda real en TikTok Shop es por PRODUCT ID extraido de la URL, NO por el texto de productos_escaparate. No inventar terminos de busqueda.
+9. **Lotes JSON usan rutas relativas.** El filepath en los lotes es relativo a la carpeta de la cuenta. QUA-151: con estructura plana, la ruta es simplemente `{video_id}.mp4`. El publisher lo resuelve usando `drive_path/cuenta/` de config_operadora.json. **CRITICO:** si se insertan lotes manualmente via API/Turso, SIEMPRE usar rutas relativas (solo el nombre del archivo), NUNCA rutas absolutas de un PC concreto.
+10. **Adaptacion de filepath cross-PC (QUA-184).** `tiktok_publisher.py` tiene cadena de fallbacks para resolver filepath: (1) ruta relativa completa `drive_path/cuenta/filepath`, (2) fallback por filename `drive_path/cuenta/os.path.basename(filepath)` — util con estructura plana Synology, (3) ruta absoluta adaptada con `drive_path`, (4) `filepath_original` directo. Detecta paths Windows con regex `^[A-Za-z]:[/\\]` (ya que `os.path.isabs` no funciona para paths Windows en Linux). Ademas, `_find_chrome()` auto-detecta Chrome en `Program Files`, `Program Files (x86)` y `%LOCALAPPDATA%`, y `get_cuenta_config()` verifica que el chrome_path existe antes de usarlo.
+11. **config_operadora.json es per-PC (QUA-184).** Se guarda en `%LOCALAPPDATA%\AutoTok\config_operadora.json`, fuera de Synology Drive. Cada PC tiene su propia config independiente. `_find_config_operadora()` busca: (1) LOCALAPPDATA, (2) kevin/ (legacy fallback). `setup_operadora.py` guarda en ambos sitios (LOCALAPPDATA + kevin/ backup). El publisher carga config una sola vez por video via `_load_config_operadora(lote_path)`.
+11. **productos_escaparate en config_publisher.json** mapea nombre_producto → termino de busqueda. PERO la busqueda real en TikTok Shop es por PRODUCT ID extraido de la URL, NO por el texto de productos_escaparate. No inventar terminos de busqueda.
+
+### Multi-lote (publicar_facil.py)
+12. **Flujo multi-lote hibrido (QUA-184).** `buscar_todos_lotes_pendientes()` busca en AMBAS fuentes (API + local) y hace merge por fecha. API gana en conflictos (resultados mas frescos). Local complementa con lotes que solo existen en disco (sincronizados via Synology pero no exportados a API). Los muestra al operador con letras (A, B, C...). El operador elige cuales publicar. Luego publica secuencialmente SIN mas intervencion. Al final muestra resumen acumulado.
+13. **API lotes: retry de errores.** El endpoint GET /api/lotes busca lotes de los ultimos 7 dias (no solo del dia actual). Cuenta como "pendiente" cualquier video sin resultado O con estado=Error. Esto permite reintentar automaticamente videos que fallaron en dias anteriores.
+14. **TikTok requiere 15-20 minutos de margen** para programar videos. Si se intenta programar con menos margen, TikTok rechaza la hora. Ticket QUA-175 abierto para resolver esto (pendiente decision de approach).
 
 ### Arquitectura de almacenamiento (QUA-151)
 11. **Los videos NO se mueven entre carpetas.** El estado vive SOLO en la BD (Turso). Un video se genera en `SynologyDrive/{cuenta}/{video_id}.mp4` y permanece ahi para siempre, independientemente de su estado (Generado, En Calendario, Programado, Descartado, Violation).
@@ -291,4 +299,4 @@ El documento `Tecnico/CASOS_DE_USO.md` y su diagrama visual `FLUJOS_CASOS_DE_USO
 
 ---
 
-**Ultima actualizacion:** 2026-03-08
+**Ultima actualizacion:** 2026-03-10 (QUA-184: config LOCALAPPDATA per-PC, busqueda hibrida API+local)

@@ -28,7 +28,8 @@ def run_cmd(cmd, description):
     print(f"{'─'*50}")
     print(f"  $ {cmd}")
 
-    result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+    result = subprocess.run(cmd, shell=True, capture_output=True, text=True,
+                           encoding='utf-8', errors='replace')
 
     if result.returncode == 0:
         print(f"  ✅ OK")
@@ -130,10 +131,8 @@ def check_config():
 
     print(f"\n  Cuentas configuradas: {len(cuentas)}")
     for nombre, cfg in cuentas.items():
-        profile = cfg.get('chrome_profile', '')
-        exists = os.path.exists(profile) if profile else False
-        status = "✅" if exists else "❌ no existe"
-        print(f"    - {nombre}: {profile} [{status}]")
+        operadora = cfg.get('operadora', '?')
+        print(f"    - {nombre} ({operadora})")
 
     print("  ✅ Config OK")
     return True

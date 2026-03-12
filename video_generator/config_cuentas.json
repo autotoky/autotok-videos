@@ -6,7 +6,7 @@
     "activa": true,
     "videos_por_dia": 3,
     "max_mismo_hook_por_dia": 0,
-    "max_mismo_producto_por_dia": 1,
+    "max_mismo_producto_por_dia": 2,
     "horarios": {
       "inicio": "08:00",
       "fin": "23:50",

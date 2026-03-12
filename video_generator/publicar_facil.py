@@ -243,6 +243,11 @@ def buscar_todos_lotes_pendientes(cuenta, drive_path):
         except Exception:
             pass  # Si falla la BD, usar datos tal cual (backward compatible)
 
+    # Filtrar lotes con fecha anterior a hoy (no se puede publicar en el pasado)
+    from datetime import datetime
+    hoy = datetime.now().strftime('%Y-%m-%d')
+    lotes_por_fecha = {f: info for f, info in lotes_por_fecha.items() if f >= hoy}
+
     # Devolver ordenados por fecha
     return sorted(lotes_por_fecha.values(), key=lambda x: x['fecha'])
 

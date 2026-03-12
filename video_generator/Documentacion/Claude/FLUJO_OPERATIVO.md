@@ -2,7 +2,7 @@
 
 **Propósito:** Este documento describe cómo funciona el proyecto en la práctica diaria. Debe leerse al inicio de cada sesión para asegurar que las propuestas y decisiones técnicas contemplan la realidad operativa.
 
-**Última actualización:** 2026-03-08
+**Última actualización:** 2026-03-09 (QUA-184: Chrome auto-detección, filepath resiliente)
 
 ---
 
@@ -149,6 +149,10 @@ Cuando las operadoras publican desde su PC (sin BD):
 ### Detalles técnicos del perfil Chrome
 
 El publisher usa un perfil dedicado por cuenta en `%LOCALAPPDATA%\AutoTok_Chrome\{cuenta}`. No copia el perfil del usuario — crea un directorio limpio. La sesión se guarda tras el primer login y persiste.
+
+**Chrome auto-detección (QUA-184):** `_find_chrome()` busca chrome.exe en `Program Files`, `Program Files (x86)` y `%LOCALAPPDATA%`. Si `config_publisher.json` tiene un chrome_path que no existe en el PC actual, `get_cuenta_config()` cae automáticamente al resultado de `_find_chrome()`.
+
+**Filepath resiliente (QUA-184):** El publisher resuelve rutas de video con fallback por filename: si la ruta relativa del lote no existe, extrae solo el nombre del archivo y busca en `drive_path/cuenta/`. Esto funciona con la estructura plana de Synology (QUA-151).
 
 ---
 

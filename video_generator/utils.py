@@ -37,19 +37,19 @@ def generate_overlay_image(line1, line2, style_name, font_path, output_path):
         # Configuracion de estilos
         styles = {
             'blanco_amarillo': {
-                'y_pos': 180,
+                'y_pos': 300,
                 'fontsize': 120,
                 'line1': {'color': 'white', 'stroke_color': (0, 128, 128), 'stroke_width': 25},
                 'line2': {'color': (255, 189, 213), 'stroke_color': (227, 0, 82), 'stroke_width': 15, 'shadow_color': (0, 255, 255, 180), 'shadow_offset': (3, 0), 'y_offset': 110}
             },
             'cajas_rojo_blanco': {
-                'y_pos': 180,
+                'y_pos': 300,
                 'fontsize': 70,
                 'line1': {'color': 'white', 'box_color': (220, 20, 20, 240), 'padding': 25},
                 'line2': {'color': 'black', 'stroke_color': 'black', 'stroke_width': 1,'box_color': (255, 255, 255, 240), 'padding': 25, 'y_offset': 110}
             },
             'borde_glow': {
-               'y_pos': 180,
+               'y_pos': 300,
                'fontsize': 90,
                'line1': {'color': 'white', 'stroke_color': 'black', 'stroke_width': 15, 'y_offset': 110,},
                'line2': {'color': 'white','stroke_color': (138, 43, 226, 190), 'stroke_width': 40, 'y_offset': 110, 'y_pos': 800}

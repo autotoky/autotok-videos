@@ -13,8 +13,13 @@ from pathlib import Path
 
 # Rutas principales — se pueden sobreescribir con variables de entorno
 # para usar en diferentes equipos sin editar código
+# QUA-201: RECURSOS_BASE migra de Google Drive a Synology
+# Synology permite acceso desde cualquier PC con SynologyDrive instalado
+SYNOLOGY_DRIVE_PATH = os.environ.get("AUTOTOK_SYNOLOGY_PATH", r"C:\Users\gasco\SynologyDrive")
+RECURSOS_BASE = os.environ.get("AUTOTOK_RECURSOS_DIR", os.path.join(SYNOLOGY_DRIVE_PATH, "recursos_videos"))
+
+# DEPRECATED (QUA-201): Google Drive ya no se usa para recursos
 GOOGLE_DRIVE_PATH = os.environ.get("AUTOTOK_DRIVE_PATH", r"G:\Mi unidad")
-RECURSOS_BASE = os.environ.get("AUTOTOK_RECURSOS_DIR", os.path.join(GOOGLE_DRIVE_PATH, "recursos_videos"))
 
 # QUA-151: OUTPUT_DIR apunta directamente a Synology Drive
 # Los videos se generan en OUTPUT_DIR/{cuenta}/{video_id}.mp4 y NO se mueven.

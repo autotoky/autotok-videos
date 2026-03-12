@@ -343,8 +343,8 @@ class ImageInpainter:
             try:
                 import torch
                 torch.cuda.empty_cache()
-            except Exception:
-                pass
+            except Exception as e:
+                log.debug(f"CUDA cache clear falló (no crítico): {e}")
 
 
 # ═══════════════════════════════════════════════════════════

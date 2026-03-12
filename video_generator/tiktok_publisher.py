@@ -201,8 +201,9 @@ def get_cuenta_config(cuenta):
     config = load_publisher_config()
     cuenta_config = config.get('cuentas', {}).get(cuenta, {})
 
-    # Chrome path: verificar que existe, si no auto-detectar
-    chrome_path = config.get('chrome_path', CHROME_PATH)
+    # QUA-184: chrome_path prioridad → config_operadora (per-PC) > config_publisher > auto-detect
+    config_op = _load_config_operadora()
+    chrome_path = (config_op or {}).get('chrome_path') or config.get('chrome_path', CHROME_PATH)
     if not os.path.exists(chrome_path):
         chrome_path = _find_chrome()
 

@@ -75,9 +75,13 @@ Se crea automaticamente con INSTALAR.bat:
 ```json
 {
   "cuenta": "ofertastrendy20",
-  "drive_path": "G:/Mi unidad/material_programar"
+  "drive_path": "C:\\Users\\Sara-Yeast\\SynologyDrive",
+  "api_url": "https://autotok-api-git-main-autotoky-6890s-projects.vercel.app",
+  "api_key": "API_KEY_AQUI"
 }
 ```
+
+**IMPORTANTE (QUA-184):** Este archivo esta dentro de `kevin/` en Synology Drive, lo que significa que se sincroniza a TODOS los PCs. Si se cambia para un PC, se sobreescribe en los demas. Solucion definitiva pendiente: mover a `%LOCALAPPDATA%\AutoTok\config_operadora.json` (fuera de Synology). Mientras tanto, hay que cambiarlo manualmente cada vez que se publica desde un PC diferente.
 
 ---
 
@@ -257,4 +261,4 @@ cp autotok.db backups/autotok_$(date +%Y%m%d).db
 
 ---
 
-**Ultima actualizacion:** 2026-03-08 (QUA-151: Synology plano + QUA-155: Turso BD unica)
+**Ultima actualizacion:** 2026-03-09 (QUA-184: nota sobre config_operadora.json compartido via Synology)

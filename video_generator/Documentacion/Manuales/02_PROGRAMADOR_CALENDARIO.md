@@ -1,7 +1,7 @@
 # MANUAL: PROGRAMADOR DE CALENDARIO
 
-**Version:** 2.0
-**Fecha:** 2026-03-08
+**Version:** 3.0
+**Fecha:** 2026-03-11
 **Para:** Sara
 
 ---
@@ -9,6 +9,31 @@
 ## Que hace
 
 Genera un calendario de publicaciones de TikTok distribuyendo videos generados en franjas horarias, respetando reglas por cuenta (videos/dia, no repetir hook mismo dia, distancia entre hooks). Actualiza estados en la BD (Turso) y opcionalmente escribe en Google Sheet (legacy). QUA-151: Ya NO mueve archivos ni copia a Drive.
+
+Disponible en **dos interfaces**: CLI (programador.py) y dashboard web (/api/programar).
+
+---
+
+## Programar desde dashboard web (RECOMENDADO)
+
+**URL:** `https://autotok-api-git-main-autotoky-6890s-projects.vercel.app/api/programar`
+
+Acceso protegido por PIN (el mismo que el dashboard de estado).
+
+### Pasos
+
+1. Seleccionar cuenta (carga config automaticamente)
+2. Configurar: dias, fecha inicio, videos/dia, filtro producto (opcional)
+3. Click "Simular" → preview calendario con estadisticas
+4. Revisar distribucion: top_seller / validated / testing
+5. Click "Programar" para ejecutar (actualiza BD directamente)
+
+### Ventajas sobre CLI
+
+- No requiere terminal ni acceso al PC local
+- Preview visual tipo calendario antes de ejecutar
+- Estadisticas de distribucion por lifecycle
+- Accesible desde cualquier dispositivo
 
 ---
 
@@ -192,6 +217,21 @@ C:\Users\gasco\SynologyDrive\
 
 ---
 
+## Editar fecha/hora desde dashboard estado (QUA-209)
+
+**URL:** `/api/estado`
+
+Para cambiar la fecha u hora de un video ya programado:
+
+1. Ir al dashboard de estado
+2. Click en la fecha del video → aparece input date, editar y pulsar Enter o click fuera
+3. Click en la hora del video → aparece input time, editar y pulsar Enter o click fuera
+4. Feedback visual: borde verde = guardado OK
+
+**Nota:** No se puede editar fecha/hora de videos con estado "Programado" que ya tienen tiktok_post_id (ya publicados en TikTok).
+
+---
+
 ## Troubleshooting
 
 **"No hay suficientes videos para la semana"** → Generar mas videos con `main.py --batch`
@@ -204,4 +244,4 @@ C:\Users\gasco\SynologyDrive\
 
 ---
 
-**Ultima actualizacion:** 2026-03-08 (QUA-151: estructura plana Synology, sin movimiento de archivos)
+**Ultima actualizacion:** 2026-03-11 (QUA-193: programador web, QUA-209: fecha/hora editable)
