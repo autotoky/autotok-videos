@@ -70,7 +70,7 @@ Sara: programador.py → auto-import resultados → BD + Sheet actualizados
 3. Seguir instrucciones:
    - Seleccionar cuenta
    - Detecta chrome.exe automaticamente
-   - Configurar ruta de Google Drive
+   - Configurar ruta de Synology Drive
    - Se abre Chrome para hacer login en TikTok (una sola vez)
 4. La sesion queda guardada — no hay que volver a loguearse
 
@@ -210,7 +210,7 @@ python programador.py --cuenta ofertastrendy20 --dias 7
 
 1. **Chrome instalado** — El publisher usa el Chrome real del sistema (no Chromium de Playwright)
 2. **Sesion TikTok guardada** — Se configura una vez durante INSTALAR.bat (login en tiktok.com)
-3. **Google Drive sincronizado** — Los JSONs de lote y los videos deben estar disponibles localmente
+3. **Synology Drive sincronizado** — Los videos deben estar disponibles localmente. Los lotes se obtienen via API
 4. **Python embebido** — Incluido en la carpeta `python/` (no necesita instalacion global)
 
 ---

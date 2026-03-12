@@ -17,12 +17,12 @@ Este manual describe como instalar AutoTok en el PC de una operadora y como usar
 Antes de empezar la instalacion, asegurarse de que el PC tiene:
 - Windows 10 o superior
 - Google Chrome instalado (cualquier version reciente)
-- Google Drive Desktop instalado y configurado (con acceso a la carpeta material_programar)
+- Synology Drive instalado y configurado
 - Conexion a internet
 
 En el lado de Sara:
 - La cuenta de la operadora debe estar configurada en config_publisher.json (campo `cuentas`)
-- Debe haber videos programados y lotes JSON exportados en Drive
+- Debe haber videos programados (lotes se obtienen automaticamente via API)
 
 ---
 
@@ -70,7 +70,7 @@ El script interactivo pregunta:
 
 2. **Chrome** — Detecta automaticamente la ruta de chrome.exe. Si no lo encuentra, pide la ruta manualmente.
 
-3. **Google Drive** — Detecta automaticamente la carpeta material_programar. Si no la encuentra, la operadora pega la ruta.
+3. **Synology Drive** — Detecta automaticamente la carpeta de videos. Si no la encuentra, la operadora pega la ruta.
 
 4. **Login en TikTok** — Se abre Chrome con un perfil limpio dedicado a AutoTok. La operadora debe:
    - Iniciar sesion en tiktok.com (NO en TikTok Studio)

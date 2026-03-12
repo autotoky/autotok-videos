@@ -158,16 +158,13 @@ El generador lee `formato_material` para cada BOF y filtra el material disponibl
 
 ---
 
-## Gestion de BOFs
+## Gestion de formatos (BOFs)
 
-### Desde CLI interactivo
+### Desde panel web (RECOMENDADO)
 
-```bash
-python cli.py
-# → Opcion 21: Gestionar BOFs de producto
-```
+Panel `/api/formatos` → click en badge "Activo"/"Inactivo" para cambiar estado directamente.
 
-Permite activar/desactivar BOFs individuales. Un BOF desactivado no se usa para generar videos nuevos pero se mantiene en BD para integridad referencial con videos historicos.
+Permite activar/desactivar formatos individuales. Un formato desactivado no se usa para generar videos nuevos pero se mantiene en BD para integridad referencial con videos historicos.
 
 ### Forzar BOF especifico
 
@@ -181,22 +178,18 @@ python main.py --producto PRODUCTO --batch 20 --cuenta CUENTA --bof-id 5
 
 **Contexto:** Cuando un producto cambia de precio hay que reemplazar TODOS los videos existentes porque el BOF contiene el precio en deal_math, guion de audio y overlays.
 
-**Prerrequisitos:** JSON del nuevo BOF preparado, audios nuevos grabados, Carol ha marcado como "Descartado" en Sheet los videos con precio viejo.
+**Prerrequisitos:** JSON del nuevo BOF preparado, audios nuevos grabados.
 
-| Paso | Accion | CLI |
-|------|--------|-----|
-| 1 | Sincronizar Sheet (elegir N, sin reemplazar) — Para que los descartados por Carol se reflejen en BD | Opcion 9 → N |
-| 2 | Desactivar BOF viejo | Opcion 21 |
-| 3 | Descartar videos "Generado" del BOF viejo (repetir por cuenta) | Opcion 6 |
-| 4 | Colocar JSON nuevo como bof_generado.json, escanear material | Opcion 1 |
-| 5 | Registrar audios nuevos (naming: `bof{NUEVO_ID}_audio.mp3`), escanear | Opcion 1 |
-| 6 | Generar videos nuevos para ambas cuentas | Opcion 4 |
-| 7 | Sincronizar con reemplazo (elegir P, producto concreto) | Opcion 9 → P |
-| 8 | Verificar en Sheet, Drive y CLI | Sheet + Drive + Opcion 10 |
+| Paso | Accion | Donde |
+|------|--------|-------|
+| 1 | Desactivar formato viejo | Panel `/api/formatos` → click badge Inactivo |
+| 2 | Descartar videos "Generado" del formato viejo | Panel `/api/estado` o `/api/descarte` |
+| 3 | Crear nuevo formato con nuevo BOF | Panel `/api/formatos` → boton Crear |
+| 4 | Asignar material (hooks, brolls, audios) al nuevo formato | Panel `/api/formatos` → boton Material |
+| 5 | Generar videos nuevos | `cli.py` opcion 4 o 5 |
+| 6 | Programar | Panel `/api/programar` |
 
-**Notas:** El BOF viejo NO se borra, queda inactivo. Audios viejos se quedan vinculados al BOF inactivo. El paso 1 es critico: sin el, la BD no sabe que Carol ha descartado videos. Tiempo estimado: 1-2 horas.
-
-**Issues relacionados:** QUA-67, QUA-68, QUA-69
+**Notas:** El formato viejo NO se borra, queda inactivo. Tiempo estimado: 30-60 minutos.
 
 ---
 

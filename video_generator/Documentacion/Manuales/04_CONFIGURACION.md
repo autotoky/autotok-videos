@@ -1,7 +1,7 @@
 # MANUAL: CONFIGURACION Y SETUP
 
-**Version:** 1.0
-**Fecha:** 2026-03-03
+**Version:** 2.0
+**Fecha:** 2026-03-12
 **Para:** Sara
 
 ---
@@ -14,63 +14,35 @@ Parametros principales:
 
 | Parametro | Descripcion | Ejemplo |
 |-----------|-------------|---------|
-| `GOOGLE_DRIVE_PATH` | Ruta a recursos en Drive (material) | `G:\Mi unidad\recursos_videos` |
-| `OUTPUT_DIR` | Ruta Synology donde se generan/almacenan videos (QUA-151) | `C:\Users\gasco\SynologyDrive` |
-| `DRIVE_SYNC_PATH` | **DEPRECATED** — igual a OUTPUT_DIR | `C:\Users\gasco\SynologyDrive` |
+| `RECURSOS_BASE` | Ruta a material (hooks/brolls/audios) en Synology | `C:\Users\gasco\SynologyDrive\recursos_videos` |
+| `OUTPUT_DIR` | Ruta Synology donde se generan/almacenan videos | `C:\Users\gasco\SynologyDrive` |
 | `BATCH_SIZE` | Videos por lote por defecto | `20` |
 | `USE_BROLL_GROUPS` | Usar grupos de brolls (True/False) | `True` |
-| `SHEET_URL_PROD` | ID de Google Sheet produccion (legacy) | `1QCb4xY...` |
-| `SHEET_URL_TEST` | ID de Google Sheet test (legacy) | `...` |
 
-> **QUA-151:** Los videos se generan directamente en `OUTPUT_DIR/{cuenta}/{video_id}.mp4` (Synology) y permanecen ahi para siempre. No hay movimiento de archivos entre carpetas.
+> `GOOGLE_DRIVE_PATH` y `DRIVE_SYNC_PATH` estan deprecated desde QUA-151. Todo el material vive en Synology.
 
-```bash
-# Ver configuracion actual
-python main.py --config
+### Configuracion de cuentas — Turso (tabla cuentas_config)
 
-# Editar
-notepad config.py
-```
+Las 3 cuentas (totokydeals, ofertastrendy20, lotopdevicky) se gestionan desde la tabla `cuentas_config` en Turso. Se editan desde el panel web `/api/cuentas`.
 
-### config_cuentas.json — Configuracion por cuenta TikTok
+| Campo | Descripcion |
+|-------|-------------|
+| `nombre` | Nombre de la cuenta TikTok (clave primaria) |
+| `activa` | 1 = activa, 0 = inactiva |
+| `videos_por_dia` | Maximo videos a programar por dia |
+| `max_mismo_hook_por_dia` | Limite hooks repetidos por dia (0 = sin limite) |
+| `max_mismo_producto_por_dia` | Limite videos del mismo producto por dia |
+| `distancia_minima_hook` | Horas minimas entre el mismo hook |
+| `gap_minimo_horas` | Horas minimas entre publicaciones |
+| `horario_inicio` / `horario_fin` | Ventana horaria de publicacion |
+| `overlay_style` | Estilo visual del overlay (blanco_amarillo, cajas_rojo_blanco, borde_glow) |
+| `pct_top_seller` / `pct_validated` / `pct_testing` | Distribucion de slots por estado comercial (%) |
 
-3 cuentas activas: totokydeals, ofertastrendy20, lotopdevicky.
-
-```json
-{
-  "totokydeals": {
-    "nombre": "Totoky Deals",
-    "overlay_style": "blanco_amarillo",
-    "activa": true,
-    "videos_por_dia": 3,
-    "max_mismo_hook_por_dia": 0,
-    "max_mismo_producto_por_dia": 1,
-    "horarios": { "inicio": "08:00", "fin": "23:50", "zona_horaria": "Europe/Madrid" }
-  },
-  "ofertastrendy20": {
-    "nombre": "Ofertas Trendy 2.0",
-    "overlay_style": "cajas_rojo_blanco",
-    "activa": true,
-    "videos_por_dia": 20,
-    "max_mismo_hook_por_dia": 0,
-    "max_mismo_producto_por_dia": 2,
-    "horarios": { "inicio": "06:00", "fin": "02:00", "zona_horaria": "Europe/Madrid" }
-  },
-  "lotopdevicky": {
-    "nombre": "Lo Top de Vicky",
-    "overlay_style": "borde_glow",
-    "activa": true,
-    "videos_por_dia": 10,
-    "max_mismo_hook_por_dia": 0,
-    "max_mismo_producto_por_dia": 2,
-    "horarios": { "inicio": "06:00", "fin": "02:00", "zona_horaria": "Europe/Madrid" }
-  }
-}
-```
+> **QUA-217:** El archivo `config_cuentas.json` ya no se usa como fallback. La unica fuente de verdad es Turso.
 
 ### config_operadora.json — Config del PC operadora
 
-Se crea automaticamente con INSTALAR.bat:
+Ubicacion oficial: `%LOCALAPPDATA%\AutoTok\config_operadora.json` (per-PC, fuera de Synology).
 
 ```json
 {
@@ -81,7 +53,21 @@ Se crea automaticamente con INSTALAR.bat:
 }
 ```
 
-**IMPORTANTE (QUA-184):** Este archivo esta dentro de `kevin/` en Synology Drive, lo que significa que se sincroniza a TODOS los PCs. Si se cambia para un PC, se sobreescribe en los demas. Solucion definitiva pendiente: mover a `%LOCALAPPDATA%\AutoTok\config_operadora.json` (fuera de Synology). Mientras tanto, hay que cambiarlo manualmente cada vez que se publica desde un PC diferente.
+> **QUA-184:** Cada PC tiene su propio config_operadora.json en LOCALAPPDATA. No se sincroniza via Synology. Se crea con `python scripts/setup_operadora.py` o con INSTALAR.bat.
+
+### config_publisher.json — Config de publicacion
+
+```json
+{
+  "chrome_path": "...",
+  "cuentas": ["ofertastrendy20", "lotopdevicky", "totokydeals"],
+  "textos_promo": [...],
+  "productos_escaparate": [...],
+  "email": "..."
+}
+```
+
+Se edita manualmente. Controla que cuentas puede publicar el PC y los textos promocionales.
 
 ---
 
@@ -89,20 +75,19 @@ Se crea automaticamente con INSTALAR.bat:
 
 ### Turso (cloud) — Fuente de verdad unica
 
-Desde 2026-03-08 (QUA-155), toda la BD vive en Turso cloud. `db_config.py` v4.1 conecta via HTTP API (zero deps extra).
+Desde QUA-155, toda la BD vive en Turso cloud. `db_config.py` v4.1 conecta via HTTP API (zero deps).
 
 **Config:** `turso_config.json` en la raiz de `video_generator/`:
 ```json
 {
     "sync_url": "libsql://autotok-autotok.aws-eu-west-1.turso.io",
-    "auth_token": "TOKEN_AQUI",
-    "local_replica": "autotok_replica.db"
+    "auth_token": "TOKEN_AQUI"
 }
 ```
 > Este archivo esta en .gitignore (contiene auth token)
 
 ```bash
-# Verificar conexion a Turso
+# Verificar conexion
 python scripts/db_config.py
 
 # Verificar datos
@@ -115,53 +100,35 @@ print(f'Videos: {cursor.fetchone()[0]}')
 "
 ```
 
-### Fallback SQLite local
+### Tablas principales
 
-Si `turso_config.json` no existe (ej: PC operadora), `db_config.py` cae a SQLite local (`autotok.db`). El codigo es 100% compatible — no necesita cambios.
-
-### Migraciones
-
-```bash
-# Migracion v4: estado_comercial + lifecycle_priority
-python scripts/migrate_v4.py
-
-# Migracion v4 fix: Violation en CHECK constraint
-python scripts/migrate_v4_fix_violation.py
-```
+| Tabla | Contenido |
+|-------|-----------|
+| `videos` | Todos los videos generados con estado, fechas, cuenta |
+| `productos` | Productos con estado_comercial y lifecycle |
+| `producto_bofs` | Formatos (deal math + gancho + variantes) |
+| `variantes_overlay_seo` | Variantes de overlay y SEO text |
+| `material` | Hooks, brolls, audios registrados |
+| `formato_material` | Vincula material a formatos individuales |
+| `cuentas_config` | Configuracion de cuentas TikTok |
+| `video_stats` | Engagement de videos (views, likes, etc) |
+| `video_sales` | Ventas por video/fecha |
+| `historial` | Log de operaciones |
+| `resultados` | Resultados de publicacion |
+| `lotes` | Lotes de publicacion |
 
 Documentacion completa del schema en `Documentacion/Tecnico/DB_DESIGN.md`.
 
 ---
 
-## Google Sheets
+## Almacenamiento — Synology Drive
 
-### Sheet de Calendario (produccion)
-
-ID: `1QCb4xYKoLJPaMrGaBW311VQIyDg2Xa08V5DmsD2H81g`
-
-Contiene la programacion de videos con estados. Es el "panel de control" visible para todo el equipo.
-
-### Sheet de Productos
-
-URL: `https://docs.google.com/spreadsheets/d/18b5aQZUby4JHYpnrlZPyisC-aW21z44VKxFJk_3dviQ/`
-
-Columna B = nombre producto, Columna E = estado comercial. Se usa para sync lifecycle (Opcion 11 del CLI).
-
-### Credenciales Google
-
-El sistema usa una service account para acceder a las Sheets. El archivo de credenciales debe estar configurado en `config.py` o como variable de entorno.
-
----
-
-## Almacenamiento de videos — Synology Drive (QUA-151)
-
-### Estructura plana
+### Videos (estructura plana, QUA-151)
 
 ```
 C:\Users\gasco\SynologyDrive\
 ├── ofertastrendy20/
-│   ├── video1.mp4        ← plano, sin subcarpetas
-│   ├── video2.mp4
+│   ├── video1.mp4
 │   └── ...
 ├── lotopdevicky/
 │   └── ...
@@ -169,21 +136,21 @@ C:\Users\gasco\SynologyDrive\
     └── ...
 ```
 
-> **QUA-151:** Los videos se generan en `SynologyDrive/{cuenta}/{video_id}.mp4` y permanecen ahi para siempre. No hay subcarpetas por estado ni por fecha. El estado vive SOLO en la BD (Turso). `drive_sync.py` esta deprecado (no-ops). `mover_videos.py` esta deprecado.
+> Los videos se generan en `SynologyDrive/{cuenta}/{video_id}.mp4` y permanecen ahi para siempre. No hay subcarpetas. El estado vive SOLO en la BD.
 
-### Estructura material (Google Drive — sin cambios)
+### Material (Synology, QUA-201)
 
 ```
-G:\Mi unidad\recursos_videos\
+C:\Users\gasco\SynologyDrive\recursos_videos\
 ├── melatonina_aldous_500comp/
-│   ├── input_producto.json
-│   ├── bof_generado.json
 │   ├── hooks/
 │   ├── brolls/
 │   └── audios/
 └── cable_goojodoq_65w/
     └── ...
 ```
+
+> Migrado de Google Drive a Synology. Las asociaciones material-formato se gestionan desde el panel `/api/formatos` (tabla `formato_material`).
 
 ---
 
@@ -195,70 +162,59 @@ python cli.py
 
 | Opcion | Accion |
 |--------|--------|
-| 1 | Escanear material |
-| 2 | Validar material |
-| 3 | Generar videos (un producto) |
-| 4 | Generar videos (multiples productos) |
-| 5 | Ver estado productos |
-| 6 | Descartar videos por filtro |
-| 7 | Programar calendario |
-| 8 | Listar productos BD |
-| 9 | Sincronizar estados (mover_videos) |
-| 10 | Deshacer programacion (rollback) |
-| 11 | Sync lifecycle desde Sheet |
-| 12 | Backup BD |
-| 21 | Gestionar BOFs de producto |
+| 4 | Generar videos (1 producto) |
+| 5 | Generar videos (multiples productos) |
+| 8 | Deshacer programacion (rollback) |
+| 15 | Generar fondos IA |
+| 16 | Revisar material IA |
+| 20 | Publicar en TikTok |
+
+> **QUA-217:** El CLI se redujo de 21 a 6 opciones. Las funciones eliminadas (programar, descartar, estado, gestionar productos, etc.) se cubren desde el panel web.
+
+---
+
+## Panel web (Dashboard)
+
+Acceso: `https://autotok-api-git-main-autotoky-6890s-projects.vercel.app/api/estado`
+
+| Pagina | Funcion |
+|--------|---------|
+| `/api/estado` | Estado de videos, desprogramar por fechas, editar fecha/hora |
+| `/api/formatos` | Formatos por producto, toggle activo/inactivo, material |
+| `/api/productos` | Lista de productos y estado comercial |
+| `/api/programar` | Programar calendario con simulacion |
+| `/api/cuentas` | Configuracion de cuentas (edicion inline) |
+| `/api/stats` | Estadisticas de engagement y ventas |
 
 ---
 
 ## Diagnostico
 
 ```bash
-# Ver estado de videos de una cuenta
-python diagnostico.py CUENTA
-
-# Corregir paths mal formados
-python fix_paths.py CUENTA
-
-# Estadisticas de un producto
-python main.py --producto PRODUCTO --cuenta CUENTA --stats
+# Verificar integridad completa del sistema
+python scripts/verificacion_completa.py
 ```
 
 ---
 
-## Workflow completo del equipo
-
-### Roles
+## Workflow del equipo
 
 | Quien | Que hace | Frecuencia |
 |-------|----------|------------|
-| Carol | Research productos, revisar videos en Sheet | Semanal |
+| Carol | Research productos | Semanal |
 | Mar | Generar material IA (hooks, brolls) | Semanal |
-| Sara | Generar BOF, generar videos, programar calendario | Semanal/diario |
+| Sara | Gestionar formatos, generar videos, programar desde panel | Semanal/diario |
 | Operadora | Publicar con PUBLICAR.bat | Diario |
 
 ### Flujo semanal
 
-1. **Carol:** Research + seleccion productos en Sheet Productos
-2. **Sara:** Crear input_producto.json + generar BOF
+1. **Carol:** Research + seleccion productos
+2. **Sara:** Crear formatos en panel `/api/formatos`, asignar material
 3. **Mar:** Generar hooks/brolls/audios IA
-4. **Sara:** Escanear material → generar videos → programar calendario
+4. **Sara:** `cli.py` opcion 5 (generar videos) → panel `/api/programar` (programar calendario)
 5. **Operadora:** PUBLICAR.bat cada dia
-6. **Sara:** Reprogramar cuando sea necesario (auto-import + auto-export)
+6. **Sara:** Panel `/api/estado` para monitorear + desprogramar si necesario
 
 ---
 
-## Backups
-
-```bash
-# Desde CLI
-python cli.py
-# → Opcion 12: Backup BD
-
-# Manual
-cp autotok.db backups/autotok_$(date +%Y%m%d).db
-```
-
----
-
-**Ultima actualizacion:** 2026-03-09 (QUA-184: nota sobre config_operadora.json compartido via Synology)
+**Ultima actualizacion:** 2026-03-12 (QUA-217: config cuentas en Turso, CLI reducido, panel cuentas)
