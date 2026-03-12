@@ -69,19 +69,19 @@ def sanitize_filename(name):
 class VideoGenerator:
     """Generador de videos TikTok con sistema de variantes por BOF"""
     
-    def __init__(self, producto=None, cuenta=None, bof_id=None, es_ia=False):
+    def __init__(self, producto=None, cuenta=None, bof_id=None, es_ia=None):
         """
         Args:
             producto: Nombre del producto
             cuenta: Nombre de la cuenta TikTok
             bof_id: ID de BOF específico a usar (None = auto-selección de BOFs activos)
-            es_ia: Si True, marca los videos como contenido generado por IA
+            es_ia: DEPRECATED — se lee del formato (producto_bofs.es_ia). Ignorado.
         """
         self.paths = get_producto_paths(producto)
         self.producto = self.paths["producto"]
         self.cuenta = cuenta
         self.force_bof_id = bof_id
-        self.es_ia = es_ia
+        self.es_ia = False  # Se actualiza por BOF en _select_bof()
         self.temp_dir = None
         
         # Conectar a DB
@@ -132,14 +132,14 @@ class VideoGenerator:
 
         if self.force_bof_id:
             self.cursor.execute(f"""
-                SELECT id, deal_math, gancho, guion_audio, hashtags, url_producto, veces_usado
+                SELECT id, deal_math, gancho, guion_audio, hashtags, url_producto, veces_usado, es_ia
                 FROM producto_bofs
                 {bof_filter}
                 ORDER BY veces_usado ASC, RANDOM()
             """, (self.producto_id, self.force_bof_id))
         else:
             self.cursor.execute(f"""
-                SELECT id, deal_math, gancho, guion_audio, hashtags, url_producto, veces_usado
+                SELECT id, deal_math, gancho, guion_audio, hashtags, url_producto, veces_usado, es_ia
                 FROM producto_bofs
                 {bof_filter}
                 ORDER BY veces_usado ASC, RANDOM()
@@ -262,6 +262,8 @@ class VideoGenerator:
             if not fm.get('audios'):
                 logger.warning(f"BOF {bof_id}: sin audios asignados, saltando")
                 continue
+            # QUA-218: es_ia se hereda del formato
+            self.es_ia = bool(bof.get('es_ia', 0))
             return bof
 
         return None

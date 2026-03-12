@@ -360,6 +360,53 @@ class ProgressTracker:
 
 # ═══════════════════════════════════════════════════════════
 # FUNCIONES DE MENU
+
+def _run_generation_with_progress(productos_list, cuentas, cantidad, bof_id=None):
+    """Ejecuta generacion con contador de progreso integrado.
+
+    Args:
+        productos_list: Lista de dicts con al menos 'nombre'
+        cuentas: Lista de nombres de cuenta
+        cantidad: Videos por producto por cuenta
+        bof_id: ID de BOF específico a usar (None = auto-selección)
+    """
+    from config import validate_config
+    from generator import VideoGenerator
+
+    if not validate_config():
+        print("\n[!] Configura config.py antes de continuar")
+        input("\nPresiona Enter para continuar...")
+        return
+
+    total_productos = len(productos_list)
+    total_videos = total_productos * len(cuentas) * cantidad
+
+    tracker = ProgressTracker(total_videos, total_productos, len(cuentas))
+
+    for idx, producto_info in enumerate(productos_list, 1):
+        nombre = producto_info['nombre'] if hasattr(producto_info, '__getitem__') and not isinstance(producto_info, str) else producto_info
+
+        for cuenta in cuentas:
+            tracker.set_context(nombre, cuenta, idx)
+
+            try:
+                with VideoGenerator(nombre, cuenta=cuenta, bof_id=bof_id) as generator:
+                    results = generator.generate_batch(
+                        batch_size=cantidad,
+                        progress_callback=tracker.on_video_progress
+                    )
+            except Exception as e:
+                print(f"\n[ERROR] Error generando {nombre} / {cuenta}: {e}")
+                remaining = cantidad - (tracker.videos_completados % cantidad if tracker.videos_completados % cantidad != 0 else 0)
+                for _ in range(remaining):
+                    tracker.videos_completados += 1
+                    tracker.videos_fallidos += 1
+                    tracker.errores.append((f"{nombre}_{cuenta}", str(e)))
+
+    tracker.print_summary()
+    input("\nPresiona Enter para continuar...")
+
+
 def generar_videos():
     """Genera videos para un producto"""
     clear_screen()
@@ -434,19 +481,14 @@ def generar_videos():
         input("\nPresiona Enter para continuar...")
         return
 
-    # Preguntar si los videos contienen IA (QUA-39)
-    print()
-    ia_input = input("Contienen contenido generado por IA? (S/N, default N): ").strip().upper()
-    es_ia = ia_input == 'S'
-
     print()
     bof_msg = f" (BOF forzado: {bof_id})" if bof_id else " (auto)"
-    ia_msg = " [IA]" if es_ia else ""
-    print(f"Generando {cantidad} videos de {producto}{bof_msg}{ia_msg}")
+    print(f"Generando {cantidad} videos de {producto}{bof_msg}")
     print(f"Cuentas: {', '.join(cuentas)}")
+    print("(es_ia se hereda automaticamente del formato)")
     print()
 
-    _run_generation_with_progress([{"nombre": producto}], cuentas, cantidad, bof_id=bof_id, es_ia=es_ia)
+    _run_generation_with_progress([{"nombre": producto}], cuentas, cantidad, bof_id=bof_id)
 
 def generar_videos_multiples():
     """Genera videos para multiples productos en batch"""
@@ -549,11 +591,7 @@ def generar_videos_multiples():
     print("=" * 60)
     print()
 
-    # Preguntar si los videos contienen IA (QUA-39)
-    ia_input = input("Contienen contenido generado por IA? (S/N, default N): ").strip().upper()
-    es_ia = ia_input == 'S'
-    if es_ia:
-        print("  [IA] Videos se marcarán como contenido generado por IA")
+    print("(es_ia se hereda automaticamente del formato)")
     print()
 
     confirmacion = input("Continuar? (SI para confirmar): ").strip()
@@ -563,7 +601,7 @@ def generar_videos_multiples():
         input("\nPresiona Enter para continuar...")
         return
 
-    _run_generation_with_progress(productos_seleccionados, cuentas, cantidad, es_ia=es_ia)
+    _run_generation_with_progress(productos_seleccionados, cuentas, cantidad)
 
 def _auto_sync_lifecycle():
     """Sync lifecycle silencioso: lee Sheet Productos y actualiza estado_comercial en BD."""
