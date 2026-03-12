@@ -1,12 +1,35 @@
-# 📊 ESTADO ACTUAL EJECUTIVO - AUTOTOK v4.7
+# 📊 ESTADO ACTUAL EJECUTIVO - AUTOTOK v4.8
 
 **Fecha:** 2026-03-12
-**Versión:** 4.7
-**Estado:** Sistema auditado y limpio — sin Sheet, sin legacy fallbacks, panel web completo
+**Versión:** 4.8
+**Estado:** es_ia automático por formato, importación de videos externos, codebase migrada a db_connection
 
 ---
 
-## 🎉 **ÚLTIMOS LOGROS (2026-03-12)**
+## 🎉 **ÚLTIMOS LOGROS (2026-03-12, sesión 2)**
+
+### **QUA-218 COMPLETADO — es_ia migrado de CLI a formato:**
+- ✅ **es_ia en producto_bofs** — cada formato declara si usa contenido IA (16 migrados)
+- ✅ **Generator hereda es_ia** del formato automáticamente, sin preguntar al operador
+- ✅ **Checkbox y badge IA** en panel formatos (crear/editar, ambas vistas)
+- ✅ **_run_generation_with_progress restaurada** — función perdida en rewrite QUA-217
+
+### **QUA-135 COMPLETADO — Importar videos externos:**
+- ✅ **Panel `/api/importar`** — registrar videos grabados/editados fuera del sistema
+- ✅ **Columna `origen`** en tabla videos ('generado' vs 'externo')
+- ✅ Selección cuenta/producto/formato, bulk import, check duplicados en tiempo real
+- ✅ Videos importados compatibles con programador y publisher
+
+### **QUA-102 COMPLETADO — Migración db_connection:**
+- ✅ **13 archivos activos migrados** de get_connection() a db_connection() context manager
+- ✅ Archivos deprecated no tocados (no aplica)
+
+### **Dashboard: 6 páginas**
+- Estado (calendario), Formatos, Productos, Programar, Cuentas, **Importar** (nuevo)
+
+---
+
+## 🎉 **LOGROS ANTERIORES (2026-03-12, sesión 1)**
 
 ### **QUA-217 COMPLETADO — Audit completo + limpieza del sistema:**
 - ✅ **33 archivos deprecated** movidos (15 raiz → deprecated/, 18 scripts → scripts/deprecated/)
