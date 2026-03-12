@@ -118,30 +118,14 @@ class VideoGenerator:
         self.close()
     
     def _load_material(self):
-        """Carga hooks, brolls, audios y BOFs desde DB"""
+        """Carga hooks, brolls, audios y BOFs desde DB.
+
+        QUA-201: Si el formato tiene material asignado en formato_material,
+        usa SOLO ese material. Si no tiene asignaciones, error (no fallback).
+        """
         logger.info(f"Cargando material para producto: {self.producto}")
 
-        # Hooks
-        self.cursor.execute("""
-            SELECT id, filename, filepath, start_time, duracion, veces_usado
-            FROM material
-            WHERE producto_id = ? AND tipo = 'hook'
-            ORDER BY veces_usado ASC, RANDOM()
-        """, (self.producto_id,))
-        self.hooks = [dict(row) for row in self.cursor.fetchall()]
-        logger.info(f"   Hooks:  {len(self.hooks)} encontrados")
-
-        # Brolls
-        self.cursor.execute("""
-            SELECT id, filename, filepath, grupo, duracion, veces_usado
-            FROM material
-            WHERE producto_id = ? AND tipo = 'broll'
-            ORDER BY veces_usado ASC, RANDOM()
-        """, (self.producto_id,))
-        self.brolls = [dict(row) for row in self.cursor.fetchall()]
-        logger.info(f"   Brolls: {len(self.brolls)} encontrados")
-
-        # BOFs (solo activos)
+        # BOFs (solo activos) — cargar primero para saber si tienen material asignado
         bof_filter = "WHERE producto_id = ? AND activo = 1"
         if self.force_bof_id:
             bof_filter = "WHERE producto_id = ? AND id = ?"
@@ -166,57 +150,181 @@ class VideoGenerator:
         else:
             logger.info(f"   BOFs:   {len(self.bofs)} activos encontrados")
 
-        if not self.hooks:
-            raise ValueError(f"[ERROR] No hooks en DB para: {self.producto}")
-        if not self.brolls:
-            raise ValueError(f"[ERROR] No brolls en DB para: {self.producto}")
         if not self.bofs:
             if self.force_bof_id:
                 raise ValueError(f"[ERROR] BOF ID {self.force_bof_id} no encontrado para: {self.producto}")
             raise ValueError(f"[ERROR] No BOFs activos en DB para: {self.producto}")
-    
-    def _select_bof(self):
-        """Selecciona BOF menos usado con audios disponibles"""
-        for bof in self.bofs:
-            # Verificar si tiene audios
-            self.cursor.execute("""
-                SELECT COUNT(*) as total
-                FROM audios
-                WHERE bof_id = ?
-            """, (bof['id'],))
-            
-            if self.cursor.fetchone()['total'] > 0:
-                return bof
-        
-        return None
-    
-    def _select_audio(self, bof_id):
-        """Selecciona audio del BOF, menos usado"""
-        self.cursor.execute("""
-            SELECT id, filename, filepath, duracion, veces_usado
-            FROM audios
-            WHERE bof_id = ?
-            ORDER BY veces_usado ASC, RANDOM()
-            LIMIT 1
-        """, (bof_id,))
-        
-        row = self.cursor.fetchone()
-        return dict(row) if row else None
-    
-    def _select_hook(self):
-        """Selecciona hook menos usado"""
-        # Recargar para obtener contadores actualizados
+
+        # QUA-201: Cargar mapa de material asignado por formato
+        self._formato_material = {}  # bof_id -> {hooks: [ids], brolls: [ids], audios: [ids]}
+        try:
+            bof_ids = [str(b['id']) for b in self.bofs]
+            placeholders = ','.join(['?' for _ in bof_ids])
+            self.cursor.execute(f"""
+                SELECT bof_id, material_id, audio_id, tipo
+                FROM formato_material
+                WHERE bof_id IN ({placeholders})
+            """, tuple(bof_ids))
+            for row in self.cursor.fetchall():
+                bof_id = row['bof_id']
+                if bof_id not in self._formato_material:
+                    self._formato_material[bof_id] = {'hooks': [], 'brolls': [], 'audios': []}
+                if row['tipo'] == 'hook' and row['material_id']:
+                    self._formato_material[bof_id]['hooks'].append(row['material_id'])
+                elif row['tipo'] == 'broll' and row['material_id']:
+                    self._formato_material[bof_id]['brolls'].append(row['material_id'])
+                elif row['tipo'] == 'audio' and row['audio_id']:
+                    self._formato_material[bof_id]['audios'].append(row['audio_id'])
+            logger.info(f"   Formato-material: {len(self._formato_material)} formatos con material asignado")
+        except Exception as e:
+            # tabla formato_material puede no existir en BD legacy
+            logger.warning(f"   formato_material no disponible ({e}), usando material completo del producto")
+            self._formato_material = {}
+
+        # Hooks — cargar todos del producto (filtrado por formato se hace en _select_hook)
         self.cursor.execute("""
             SELECT id, filename, filepath, start_time, duracion, veces_usado
             FROM material
             WHERE producto_id = ? AND tipo = 'hook'
             ORDER BY veces_usado ASC, RANDOM()
-            LIMIT 1
         """, (self.producto_id,))
-        
-        row = self.cursor.fetchone()
-        return dict(row) if row else None
+        self.hooks = [dict(row) for row in self.cursor.fetchall()]
+        for h in self.hooks:
+            self._resolve_filepath(h, 'hook')
+        logger.info(f"   Hooks:  {len(self.hooks)} encontrados")
+
+        # Brolls
+        self.cursor.execute("""
+            SELECT id, filename, filepath, grupo, duracion, veces_usado
+            FROM material
+            WHERE producto_id = ? AND tipo = 'broll'
+            ORDER BY veces_usado ASC, RANDOM()
+        """, (self.producto_id,))
+        self.brolls = [dict(row) for row in self.cursor.fetchall()]
+        for b in self.brolls:
+            self._resolve_filepath(b, 'broll')
+        logger.info(f"   Brolls: {len(self.brolls)} encontrados")
+
+        if not self.hooks:
+            raise ValueError(f"[ERROR] No hooks en DB para: {self.producto}")
+        if not self.brolls:
+            raise ValueError(f"[ERROR] No brolls en DB para: {self.producto}")
     
+    def _resolve_filepath(self, item, tipo):
+        """Resuelve filepath si está vacío, usando RECURSOS_BASE + producto + tipo + filename.
+        QUA-201: material registrado desde dashboard no tiene filepath, solo filename."""
+        fp = item.get('filepath', '')
+        if fp and os.path.isabs(fp):
+            return  # Ya tiene ruta absoluta
+        filename = item.get('filename', '')
+        if not filename:
+            return
+        # Determinar subdirectorio: hooks, brolls, audios
+        if tipo == 'hook':
+            subdir = self.paths['hooks_dir']
+        elif tipo == 'broll':
+            subdir = self.paths['brolls_dir']
+        elif tipo == 'audio':
+            subdir = self.paths['audios_dir']
+        else:
+            return
+        item['filepath'] = os.path.join(subdir, filename)
+
+    def _get_formato_ids(self, bof_id, tipo):
+        """QUA-201: Devuelve IDs de material asignado al formato.
+        QUA-217: Ya no hay fallback legacy — error si no tiene asignaciones."""
+        fm = self._formato_material.get(bof_id)
+        if not fm:
+            return []  # Sin asignaciones → error en el caller
+        ids = fm.get(tipo + 's', [])  # 'hooks', 'brolls', 'audios'
+        return ids if ids else []
+
+    def _select_bof(self):
+        """Selecciona BOF menos usado con audios disponibles.
+
+        QUA-201: Si un formato tiene material asignado, verifica que tiene
+        hooks, brolls Y audios asignados. Si no, lo salta con warning.
+        """
+        for bof in self.bofs:
+            bof_id = bof['id']
+
+            # QUA-201/217: Verificar que tiene material asignado y completo
+            if bof_id not in self._formato_material:
+                logger.warning(f"BOF {bof_id}: sin material asignado en formato_material, saltando")
+                continue
+            fm = self._formato_material[bof_id]
+            if not fm.get('hooks'):
+                logger.warning(f"BOF {bof_id}: sin hooks asignados, saltando")
+                continue
+            if not fm.get('brolls'):
+                logger.warning(f"BOF {bof_id}: sin brolls asignados, saltando")
+                continue
+            if not fm.get('audios'):
+                logger.warning(f"BOF {bof_id}: sin audios asignados, saltando")
+                continue
+            return bof
+
+        return None
+
+    def _select_audio(self, bof_id):
+        """Selecciona audio del BOF, menos usado.
+
+        QUA-201: Si formato tiene audios asignados, filtra por ellos.
+        """
+        audio_ids = self._get_formato_ids(bof_id, 'audio')
+
+        if not audio_ids:
+            logger.error(f"No hay audios asignados para BOF {bof_id} en formato_material")
+            return None
+
+        placeholders = ','.join(['?' for _ in audio_ids])
+        self.cursor.execute(f"""
+            SELECT id, filename, filepath, duracion, veces_usado
+            FROM audios
+            WHERE producto_id = ? AND id IN ({placeholders})
+            ORDER BY veces_usado ASC, RANDOM()
+            LIMIT 1
+        """, (self.producto_id, *audio_ids))
+
+        row = self.cursor.fetchone()
+        if row:
+            item = dict(row)
+            self._resolve_filepath(item, 'audio')
+            return item
+        return None
+
+    def _select_hook(self, bof_id=None):
+        """Selecciona hook menos usado.
+
+        QUA-201: Si formato tiene hooks asignados, filtra por ellos.
+        """
+        hook_ids = self._get_formato_ids(bof_id, 'hook') if bof_id else None
+
+        if hook_ids:
+            placeholders = ','.join(['?' for _ in hook_ids])
+            self.cursor.execute(f"""
+                SELECT id, filename, filepath, start_time, duracion, veces_usado
+                FROM material
+                WHERE producto_id = ? AND tipo = 'hook' AND id IN ({placeholders})
+                ORDER BY veces_usado ASC, RANDOM()
+                LIMIT 1
+            """, (self.producto_id, *hook_ids))
+        else:
+            self.cursor.execute("""
+                SELECT id, filename, filepath, start_time, duracion, veces_usado
+                FROM material
+                WHERE producto_id = ? AND tipo = 'hook'
+                ORDER BY veces_usado ASC, RANDOM()
+                LIMIT 1
+            """, (self.producto_id,))
+
+        row = self.cursor.fetchone()
+        if row:
+            item = dict(row)
+            self._resolve_filepath(item, 'hook')
+            return item
+        return None
+
     def _select_variante(self, bof_id, hook_id, audio_id, brolls_ids):
         """
         Selecciona variante disponible comprobando la combinación COMPLETA.
@@ -252,39 +360,47 @@ class VideoGenerator:
         row = self.cursor.fetchone()
         return dict(row) if row else None
     
-    def _select_brolls(self, num_brolls, hook_grupo=None):
+    def _select_brolls(self, num_brolls, hook_grupo=None, bof_id=None):
         """
-        Selecciona múltiples brolls evitando grupos repetidos
-        
+        Selecciona múltiples brolls evitando grupos repetidos.
+
+        QUA-201: Si formato tiene brolls asignados, filtra por ellos.
+
         Args:
             num_brolls: Cantidad de brolls a seleccionar
             hook_grupo: Grupo del hook (para evitarlo si usa grupos)
-        
+            bof_id: ID del formato (para filtrar por material asignado)
+
         Returns:
             list: Lista de dicts con info de brolls
         """
         selected = []
         used_groups = set()
-        
+
         if hook_grupo and USE_BROLL_GROUPS:
             used_groups.add(hook_grupo)
-        
-        available = self.brolls.copy()
+
+        # QUA-201: Filtrar por material asignado si existe
+        broll_ids = self._get_formato_ids(bof_id, 'broll') if bof_id else None
+        if broll_ids:
+            available = [b for b in self.brolls if b['id'] in broll_ids]
+        else:
+            available = self.brolls.copy()
         random.shuffle(available)
-        
+
         for broll in available:
             if len(selected) >= num_brolls:
                 break
-            
+
             grupo = broll['grupo']
-            
+
             if USE_BROLL_GROUPS and grupo:
                 if grupo in used_groups:
                     continue
                 used_groups.add(grupo)
-            
+
             selected.append(broll)
-        
+
         return selected
     
     def _calculate_num_brolls(self, audio_duration):
@@ -509,16 +625,16 @@ class VideoGenerator:
                 logger.error(f"No hay audios para BOF {bof['id']}")
                 continue
 
-            # 3. Seleccionar Hook
-            hook = self._select_hook()
+            # 3. Seleccionar Hook (QUA-201: filtrado por formato si aplica)
+            hook = self._select_hook(bof_id=bof['id'])
             if not hook:
                 logger.error("No hay hooks disponibles")
                 break
 
-            # 4. Seleccionar Brolls (antes de variante para comprobar combo completa)
+            # 4. Seleccionar Brolls (QUA-201: filtrado por formato si aplica)
             num_brolls = self._calculate_num_brolls(audio['duracion'])
             hook_grupo = extract_broll_group(hook['filename']) if USE_BROLL_GROUPS else None
-            brolls = self._select_brolls(num_brolls, hook_grupo)
+            brolls = self._select_brolls(num_brolls, hook_grupo, bof_id=bof['id'])
 
             if len(brolls) < num_brolls:
                 logger.warning(f"No hay suficientes brolls ({len(brolls)}/{num_brolls})")

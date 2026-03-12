@@ -32,12 +32,10 @@ ARCHIVOS = [
     'INSTALAR.bat',
     'PUBLICAR.bat',
     'logger.py',
-    'drive_sync.py',          # deprecated pero incluido por compatibilidad
 ]
 
 CARPETAS = [
     'scripts/setup_operadora.py',
-    'scripts/sheet_sync.py',
     'scripts/email_notifier.py',
     'scripts/lote_manager.py',
     'scripts/db_config.py',

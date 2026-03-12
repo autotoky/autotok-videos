@@ -1,12 +1,69 @@
-# 📊 ESTADO ACTUAL EJECUTIVO - AUTOTOK v4.5
+# 📊 ESTADO ACTUAL EJECUTIVO - AUTOTOK v4.7
 
-**Fecha:** 2026-03-10
-**Versión:** 4.5
-**Estado:** Sistema completo con config per-PC y búsqueda híbrida de lotes
+**Fecha:** 2026-03-12
+**Versión:** 4.7
+**Estado:** Sistema auditado y limpio — sin Sheet, sin legacy fallbacks, panel web completo
 
 ---
 
-## 🎉 **ÚLTIMOS LOGROS (2026-03-10 — sesión 2)**
+## 🎉 **ÚLTIMOS LOGROS (2026-03-12)**
+
+### **QUA-217 COMPLETADO — Audit completo + limpieza del sistema:**
+- ✅ **33 archivos deprecated** movidos (15 raiz → deprecated/, 18 scripts → scripts/deprecated/)
+- ✅ **sheet_sync ELIMINADO** completamente — Turso es única fuente de verdad, sin Google Sheet
+- ✅ **CLI reducido** de 21 opciones a 6 (58.5% menos código, de 3079 a 1278 líneas)
+- ✅ **Legacy fallback eliminado** en generator.py — formato_material obligatorio, sin fallback bof_id
+- ✅ **Config cuentas migrada a Turso** — tabla cuentas_config poblada, JSON fallback eliminado
+- ✅ **Panel `/api/cuentas`** — gestión de configuración de cuentas desde web (edición inline)
+- ✅ **Toggle activo/inactivo** en panel formatos — click directo en badge sin modal
+- ✅ **Desprogramar por fechas** en panel estado — modal con cuenta + rango de fechas, bulk rollback
+
+---
+
+## 🎉 **LOGROS ANTERIORES (2026-03-11)**
+
+### **QUA-201 COMPLETADO — Material management per formato (7 fases):**
+- ✅ **Tabla `formato_material`**: vincula hooks, brolls y audios a formatos individuales
+- ✅ **Migración rutas**: RECURSOS_BASE de Google Drive a Synology
+- ✅ **Modal de material**: checkboxes por hooks/brolls/audios, botones "Todos", indicador capacidad
+- ✅ **File picker**: botón "+ Añadir" para registrar material nuevo desde dashboard
+- ✅ **Generador actualizado**: `_load_material()` filtra por formato_material, fallback legacy
+- ✅ **Migración legacy**: 970 asociaciones migradas (75 audios + 275 hooks + ~620 brolls)
+
+### **QUA-208 COMPLETADO — Editable grupo/start_time en modal material:**
+- ✅ Inputs inline para grupo (brolls) y start_time (hooks + brolls) en modal material
+- ✅ `saveMeta()` con feedback visual + auto-regroup on change
+
+### **QUA-70 CERRADO — Pipeline end-to-end con formato_material:**
+- ✅ 4 fixes en cadena: CLI audio count → generator _select_audio → .pyc cache → _resolve_filepath
+- ✅ Video generado correctamente con nuevo sistema de material por formato
+
+### **QUA-209 COMPLETADO — Fecha/hora editable en dashboard estado:**
+- ✅ Click en fecha/hora → input inline, guarda on blur/Enter
+- ✅ Protección para videos ya publicados (con tiktok_post_id)
+
+### **QUA-193 COMPLETADO — Programador web:**
+- ✅ Nueva página `/api/programar` con algoritmo completo de scheduling
+- ✅ Simulación dry-run con preview calendario + estadísticas
+- ✅ Ejecución directa desde dashboard (UPDATE masivo en Turso)
+- ✅ Distribución lifecycle (top_seller/validated/testing) configurable
+
+### **QUA-200 — Edit formato + view variantes:**
+- ✅ Modal de edición + panel expandible con variantes, audios, hashtags, guión
+
+### **QUA-202 parte 1 — Campo gancho en formatos:**
+- ✅ Separación deal (oferta matemática) vs gancho (narrativo)
+- ⏳ Parte 2 pendiente: generación overlay/SEO diferenciada
+
+### **Otros fixes de sesión:**
+- ✅ QUA-199: Ghost state fix (escaparate failure → Error, not En Calendario)
+- ✅ QUA-203/204: Fix OOM en estado page + programador (LIMIT + filtro fecha)
+- ✅ QUA-36: Redesign ventas tab (spreadsheet inline editable)
+- ✅ QUA-184 fix definitivo: config_operadora en LOCALAPPDATA
+
+---
+
+## 🎉 **LOGROS ANTERIORES (2026-03-10 — sesión 2)**
 
 ### **QUA-189 — Video fantasma con estado Programado en nueva programación:**
 - ✅ Root cause: `importar_resultados()` aplicaba resultados viejos de tabla `resultados` a videos recién programados
@@ -210,7 +267,7 @@
 - ✅ Gestión de estados (Generado → Calendario → Programado → Descartado/Violation)
 - ✅ Rollback robusto v3.0 (solo BD, sin movimiento de archivos)
 - ✅ Notificaciones email con errores categorizados
-- ✅ Google Sheet como backup opcional (legacy, en proceso de eliminación)
+- ✅ Google Sheet ELIMINADA — no hay código activo que escriba en Sheet (QUA-217)
 
 ---
 
@@ -324,16 +381,17 @@ Sara: programador.py → auto-import resultados de API → BD actualizada
 
 ## 📈 **PRODUCCIÓN ACTUAL**
 
-**Material listo:** 8-9 productos completos
+**Material listo:** 25 productos, 27 formatos con material asignado via formato_material
 **Cuentas activas:** 3 (ofertastrendy20, lotopdevicky, totokydeals)
-**Videos en BD:** 1600+ (migrados a Synology)
-**Almacenamiento:** Synology Drive con backup RAID
+**Videos en BD:** 1670+ (migrados a Synology)
+**Almacenamiento:** Synology Drive con backup RAID (RECURSOS_BASE migrado de Google Drive)
 **BD:** Turso cloud (fuente única de verdad)
+**Dashboard:** 5 páginas (estado, formatos, stats, programar, cuentas) — gestión completa desde web
 **Sistema:** Operativo y estable
 
 ---
 
-**Última actualización:** 2026-03-10
+**Última actualización:** 2026-03-11
 
 
 ---
@@ -348,49 +406,39 @@ Todos con datos reales del documento de ejemplos:
 
 ---
 
-## 🚧 **EN CURSO — Panel de Formatos (QUA-70/185/186)**
+## ✅ **COMPLETADO — Panel de Formatos (QUA-70/185/186/201/208)**
 
-### Cambio estratégico: todo al panel web
-Sara definió migrar toda la gestión posible al panel web. Primera fase: **Formatos + Variantes + Multi-link**.
-
-### Decisiones clave:
-- BOF → **Formato** (UI), BD mantiene `producto_bofs` para compat
-- Cada URL = cada formato (resuelve multi-link QUA-186 sin tabla extra)
-- `bof_generator.py` descartado como módulo. Solo se portan: overlay (6 vars), SEO (12 templates), hashtags (max 7)
-- Guion audio = input manual. Audios = dropdown de BD (solo voz humana)
-- Materiales: migrar de Google Drive a Synology
-
-### DB ya aplicado:
-- `ALTER TABLE producto_bofs ADD COLUMN precio TEXT`
-- `ALTER TABLE productos ADD COLUMN marca TEXT`
+### Cambio estratégico: todo al panel web — LOGRADO
+Sara definió migrar toda la gestión posible al panel web. Resultado: gestión completa de formatos, variantes, material y programación desde dashboard.
 
 ### Implementado:
-- [x] `/api/formatos.py` — CRUD + auto-generación overlay/SEO/hashtags (commit `80bd190`)
-- [x] Extensión UI `/productos` con gestión inline de formatos + variantes editables
-- [x] Dropdown de audios registrados + campo marca en productos
-
-### Pendiente:
-- [ ] Migración materiales de Google Drive a Synology + script registro
-- [ ] Testing por Sara: crear formato nuevo, editar variantes, verificar auto-generación
+- [x] `/api/formatos.py` — CRUD + auto-generación overlay/SEO/hashtags
+- [x] Gestión inline de formatos + variantes editables
+- [x] Material por formato: modal con checkboxes, file picker, edición grupo/start_time
+- [x] Migración materiales de Google Drive a Synology (RECURSOS_BASE actualizado)
+- [x] Pipeline end-to-end: formato → material → generación → publicación
+- [x] `/api/programar.py` — Programador web con simulación y ejecución
+- [x] `/api/estado.py` — Fecha/hora editables inline
 
 ---
 
 ## 🔮 **PRÓXIMOS PASOS**
 
-1. ✅ **QUA-189**: Fix video fantasma en programación (commit a62e1dd)
-2. ✅ **QUA-190**: Fix diferencias lotes/panel — 3 capas (commits 2d851c6, c51bb63, e6a6438)
-3. ✅ **QUA-192**: Navegación unificada + rediseño visual (commits a28ac4d, 23d0814)
-4. ✅ **QUA-193**: Análisis viabilidad programar desde web (pendiente UX por Sara)
-5. ✅ **QUA-184 fix definitivo**: Implementado. Pendiente testing en PC operadora
-6. ✅ **QUA-183 lotop+trendy**: Import completado. Pendiente: captura totokydeals, import de pendientes restantes
-7. ✅ **QUA-36 Fase 2**: Dashboard stats v2.0 + scraper diario implementados. Pendiente: Task Scheduler + primer scrape
-8. 🚧 **QUA-70/185/186**: Gestión de Formatos en panel — EN CURSO
-9. ⏳ **QUA-193**: Programar desde dashboard (coexistir con CLI)
-10. ⏳ **QUA-36 Fase 3**: Gráficos de tendencia, exportar datos
-11. ⏳ **QUA-175**: TikTok requiere 15-20 min de antelación para programar (valorar solución)
-12. ⏳ **QUA-173**: Dashboard: permitir devolver video a estado Generado
-13. ⏳ **Materiales**: Migrar de Google Drive a Synology + gestión desde panel
+1. ✅ **QUA-189**: Fix video fantasma en programación
+2. ✅ **QUA-190**: Fix diferencias lotes/panel — 3 capas
+3. ✅ **QUA-192**: Navegación unificada + rediseño visual
+4. ✅ **QUA-193**: Programador web completo con simulación y ejecución
+5. ✅ **QUA-184**: Config operadora per-PC (fix definitivo)
+6. ✅ **QUA-183**: Import histórico completado (lotop + trendy + totoky)
+7. ✅ **QUA-36 Fase 2**: Dashboard stats v2.0 + scraper diario
+8. ✅ **QUA-70/185/186/201/208**: Panel formatos completo + material por formato + generación OK
+9. ✅ **QUA-209**: Fecha/hora editable en dashboard estado
+10. ✅ **QUA-217**: Audit completo — limpieza, Sheet eliminada, panel cuentas, toggle formatos, desprogramar
+11. ⏳ **QUA-202 parte 2**: Generación overlay/SEO diferenciada entre formatos narrativos y de oferta
+12. ⏳ **QUA-36 Fase 3**: Gráficos de tendencia, exportar datos
+13. ⏳ **QUA-175**: TikTok requiere 15-20 min de antelación para programar (valorar solución)
+14. ⏳ **QUA-173**: Dashboard: permitir devolver video a estado Generado
 
 ---
 
-**Última actualización:** 2026-03-10
+**Última actualización:** 2026-03-12

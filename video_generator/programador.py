@@ -23,12 +23,8 @@ Reglas adicionales:
 
 import sys
 import os
-import json
 from datetime import datetime, timedelta
 import random
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
-
 # Añadir parent al path
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
@@ -36,15 +32,8 @@ from scripts.db_config import get_connection
 from config import OUTPUT_DIR
 
 
-# Google Sheets config
-SCOPES = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-CREDENTIALS_FILE = 'credentials.json'
-SHEET_URL_TEST = 'https://docs.google.com/spreadsheets/d/1NeepTinvfUrYDP0t9jIqzUe_d2wjfNYQpuxII22Mej8/'
-SHEET_URL_PROD = 'https://docs.google.com/spreadsheets/d/1QCb4xYKoLJPaMrGaBW311VQIyDg2Xa08V5DmsD2H81g/'
-
-
 def load_cuenta_config(cuenta_nombre):
-    """Carga configuración de cuenta desde DB, fallback a JSON."""
+    """Carga configuración de cuenta desde Turso (cuentas_config)."""
     conn = get_connection()
     cursor = conn.cursor()
 
@@ -55,32 +44,9 @@ def load_cuenta_config(cuenta_nombre):
     if row:
         return dict(row)
 
-    # Fallback: leer JSON y mapear campos al formato que espera el código
-    try:
-        with open('config_cuentas.json', 'r', encoding='utf-8') as f:
-            cuentas = json.load(f)
-    except FileNotFoundError:
-        return {}
-
-    raw = cuentas.get(cuenta_nombre, {})
-    if not raw:
-        return {}
-
-    # Mapear estructura JSON → formato plano que usa el programador
-    horarios = raw.get('horarios', {})
-    return {
-        'nombre': raw.get('nombre', cuenta_nombre),
-        'videos_por_dia': raw.get('videos_por_dia', 5),
-        'max_mismo_producto_por_dia': raw.get('max_mismo_producto_por_dia', 2),
-        'max_mismo_hook_por_dia': raw.get('max_mismo_hook_por_dia', 1),
-        'distancia_minima_hook': raw.get('distancia_minima_hook', 12),
-        'gap_minimo_horas': raw.get('gap_minimo_horas', 1.0),
-        'horario_inicio': horarios.get('inicio', '08:00'),
-        'horario_fin': horarios.get('fin', '21:30'),
-        'pct_top_seller': raw.get('pct_top_seller', 40),
-        'pct_validated': raw.get('pct_validated', 40),
-        'pct_testing': raw.get('pct_testing', 20),
-    }
+    print(f"[ERROR] Cuenta '{cuenta_nombre}' no encontrada en cuentas_config (Turso)")
+    print(f"  → Usa el panel web /api/cuentas para crear la cuenta")
+    return {}
 
 
 def get_videos_disponibles(cuenta, producto_filter=None):
@@ -773,18 +739,6 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
     distancia_seo = min(distancia_seo, distancia_minima_hook)  # nunca más que la distancia de hooks
     print(f"[INFO] SEO texts únicos: {len(seos_unicos)} → distancia SEO: {distancia_seo}")
 
-    # QUA-148: Sheet ya no es obligatoria — conexión opcional
-    sheet = None
-    if not dry_run:
-        try:
-            creds = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, SCOPES)
-            client = gspread.authorize(creds)
-            sheet_url = SHEET_URL_TEST if test_mode else SHEET_URL_PROD
-            sheet = client.open_by_url(sheet_url).sheet1
-            print(f"[OK] Conectado a Google Sheets ({'TEST' if test_mode else 'PROD'})")
-        except Exception as e:
-            print(f"[INFO] Google Sheets no disponible (legacy, no afecta): {e}")
-
     # ── Protección anti-duplicados: consultar BD (no Sheet) ──
     # Un video con estado != 'Generado' ya está en uso o descartado
     conn_dup = get_connection()
@@ -1046,13 +1000,12 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
         # Devolver el calendario simulado para que cli.py pueda mostrarlo
         return calendario
 
-    # ── Actualizar DB, ficheros, Sheet, Drive ──
-    print(f"[SYNC] Actualizando base de datos y Google Sheets...")
+    # ── Actualizar BD (Turso) ──
+    print(f"[SYNC] Actualizando base de datos...")
 
     conn = get_connection()
     cursor = conn.cursor()
 
-    rows_to_append = []
     videos_programados_ids = []
     programado_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
@@ -1069,8 +1022,6 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
             fecha = item['fecha']
             hora = item['hora']
 
-            fecha_sheet = datetime.strptime(fecha, "%Y-%m-%d").strftime("%d-%m-%Y")
-
             # Actualizar DB
             cursor.execute("""
                 UPDATE videos
@@ -1085,25 +1036,6 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
 
             # QUA-151: Ya no movemos archivos. El video se queda donde se generó.
             # El filepath en BD no cambia. El estado se gestiona solo en BD/Turso.
-
-            # Verificar que el archivo existe
-            en_carpeta = video['filepath'] and os.path.exists(video['filepath'])
-
-            # Preparar row para Sheet (columna L = en_carpeta)
-            rows_to_append.append([
-                cuenta,
-                video['producto'],
-                fecha_sheet,
-                hora,
-                video['video_id'],
-                video['hook'],
-                video['deal_math'],
-                video['seo_text'],
-                video['hashtags'],
-                video['url_producto'],
-                'En Calendario',
-                en_carpeta
-            ])
 
         conn.commit()
         conn.close()
@@ -1132,42 +1064,7 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
             print(f"[OK] {len(videos_programados_ids)} videos revertidos a Generado.")
         return False
 
-    # QUA-148: Sheet append opcional
-    if sheet is not None:
-        import time
-        import logging
-
-        log_dir = os.path.join(os.path.dirname(__file__), 'logs')
-        os.makedirs(log_dir, exist_ok=True)
-        sheet_logger = logging.getLogger('sheet_sync')
-        if not sheet_logger.handlers:
-            fh = logging.FileHandler(os.path.join(log_dir, 'sheet_writes.log'), encoding='utf-8')
-            fh.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] %(message)s'))
-            sheet_logger.addHandler(fh)
-            sheet_logger.setLevel(logging.INFO)
-
-        max_reintentos = 3
-        sheet_ok = False
-        for intento in range(1, max_reintentos + 1):
-            try:
-                sheet.append_rows(rows_to_append, value_input_option='USER_ENTERED')
-                print(f"[OK] {len(rows_to_append)} filas añadidas a Google Sheets")
-                sheet_logger.info(f"OK: {len(rows_to_append)} filas escritas para {cuenta} (intento {intento})")
-                sheet_ok = True
-                break
-            except Exception as e:
-                sheet_logger.warning(f"FALLO intento {intento}/{max_reintentos} para {cuenta}: {e}")
-                print(f"[WARNING] Error escribiendo en Sheet (intento {intento}/{max_reintentos}): {e}")
-                if intento < max_reintentos:
-                    wait_secs = intento * 5
-                    print(f"  Reintentando en {wait_secs}s...")
-                    time.sleep(wait_secs)
-
-        if not sheet_ok:
-            sheet_logger.error(f"FALLO DEFINITIVO: {len(rows_to_append)} filas NO escritas para {cuenta}")
-            print(f"[WARNING] No se pudieron escribir las filas en Sheet (no crítico)")
-    else:
-        print(f"[INFO] {len(rows_to_append)} videos guardados en Turso (Sheet legacy no conectada)")
+    print(f"\n  [OK] {len(calendario)} videos guardados en Turso")
 
     print(f"\n{'='*60}")
     print(f"  CALENDARIO GENERADO")
@@ -1187,7 +1084,7 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
             fecha_inicio=fechas_cal[0] if fechas_cal else None,
             fecha_fin=fechas_cal[-1] if fechas_cal else None,
             dias=dias,
-            detalles=f"sheet_ok={sheet_ok}" if 'sheet_ok' in dir() else None
+            detalles=None
         )
     except Exception as e:
         print(f"[WARNING] No se pudo registrar en historial: {e}")

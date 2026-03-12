@@ -183,6 +183,7 @@ def rollback_db(cuenta, videos):
 
 def rollback_calendario(cuenta, video_ids=None, fecha_desde=None, ultima=False,
                         test_mode=False, skip_sheet=False, skip_files=False):
+    # NOTE: test_mode, skip_sheet, skip_files kept for backward compat but ignored (QUA-217)
     """Ejecuta rollback completo de una programacion de calendario.
 
     QUA-151: Ya no mueve ficheros ni toca Drive. Solo revierte BD y opcionalmente Sheet.
@@ -234,25 +235,12 @@ def rollback_calendario(cuenta, video_ids=None, fecha_desde=None, ultima=False,
     # QUA-151: Los archivos no se mueven — el filepath en BD se mantiene
     print(f"  (QUA-151: archivos no se mueven, filepath sin cambios)")
 
-    # [2/2] Sheet (legacy, opcional)
-    if not skip_sheet:
-        print(f"\n[2/2] Limpiando Google Sheet...")
-        try:
-            filas = rollback_sheet(cuenta, videos, test_mode=test_mode)
-            result["filas_sheet"] = filas
-            print(f"  {filas} filas borradas")
-        except Exception as e:
-            print(f"  [!] Error limpiando Sheet: {e}")
-    else:
-        print(f"\n[2/2] Sheet: omitido (skip_sheet)")
-
     # Resumen final
     print()
     print("=" * 60)
     print(f"  [OK] ROLLBACK COMPLETADO")
     print(f"  Videos revertidos:   {result['videos_revertidos']}")
     print(f"  DB actualizados:     {result['db_actualizados']}")
-    print(f"  Filas Sheet:         {result['filas_sheet']}")
     print("=" * 60)
 
     # Registrar en historial
@@ -274,58 +262,6 @@ def rollback_calendario(cuenta, video_ids=None, fecha_desde=None, ultima=False,
     return result
 
 
-def rollback_sheet(cuenta, videos, test_mode=False):
-    """Borra filas de Google Sheet correspondientes a los videos."""
-    try:
-        import gspread
-        from google.oauth2.service_account import Credentials
-    except ImportError:
-        print("  [!] gspread no disponible, no se puede limpiar Sheet")
-        return 0
-
-    SCOPES = [
-        "https://spreadsheets.google.com/feeds",
-        "https://www.googleapis.com/auth/drive"
-    ]
-
-    try:
-        creds = Credentials.from_service_account_file("credentials.json", scopes=SCOPES)
-        client = gspread.authorize(creds)
-
-        if test_mode:
-            sheet_url = "https://docs.google.com/spreadsheets/d/1QCb4xYKoLJPaMrGaBW311VQIyDg2Xa08V5DmsD2H81g/"
-        else:
-            sheet_url = "https://docs.google.com/spreadsheets/d/1NeepTinvfUrYDP0t9jIqzUe_d2wjfNYQpuxII22Mej8/"
-
-        spreadsheet = client.open_by_url(sheet_url)
-        worksheet = spreadsheet.worksheet(cuenta)
-    except Exception as e:
-        print(f"  [!] Error conectando a Sheet: {e}")
-        return 0
-
-    video_ids_set = {v['video_id'] for v in videos}
-    all_values = worksheet.get_all_values()
-    rows_to_delete = []
-
-    for i, row in enumerate(all_values):
-        if len(row) > 4 and row[4] in video_ids_set:
-            rows_to_delete.append(i + 1)
-
-    if not rows_to_delete:
-        print("  No se encontraron filas en Sheet")
-        return 0
-
-    borradas = 0
-    for row_num in reversed(rows_to_delete):
-        try:
-            worksheet.delete_rows(row_num)
-            borradas += 1
-        except Exception as e:
-            print(f"  [!] Error borrando fila {row_num}: {e}")
-
-    return borradas
-
-
 # ═══════════════════════════════════════════════════════════
 # CLI
 # ═══════════════════════════════════════════════════════════
@@ -336,8 +272,6 @@ def main():
     parser.add_argument("--fecha-desde", help="Revertir desde fecha (YYYY-MM-DD)")
     parser.add_argument("--video-ids", help="Video IDs separados por coma")
     parser.add_argument("--ultima", action="store_true", help="Revertir ultima tanda programada")
-    parser.add_argument("--test", action="store_true", help="Usar Sheet TEST")
-    parser.add_argument("--skip-sheet", action="store_true", help="No tocar Google Sheet")
     parser.add_argument("--si", action="store_true", help="Confirmar sin preguntar")
 
     args = parser.parse_args()
@@ -373,8 +307,6 @@ def main():
         video_ids=video_ids,
         fecha_desde=args.fecha_desde,
         ultima=args.ultima,
-        test_mode=args.test,
-        skip_sheet=args.skip_sheet,
     )
 
 
