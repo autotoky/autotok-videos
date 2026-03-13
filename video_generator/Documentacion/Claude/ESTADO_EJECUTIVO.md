@@ -1,12 +1,28 @@
-# 📊 ESTADO ACTUAL EJECUTIVO - AUTOTOK v4.8
+# 📊 ESTADO ACTUAL EJECUTIVO - AUTOTOK v4.9
 
-**Fecha:** 2026-03-12
-**Versión:** 4.8
-**Estado:** es_ia automático por formato, importación de videos externos, codebase migrada a db_connection
+**Fecha:** 2026-03-13
+**Versión:** 4.9
+**Estado:** Programador web con paridad completa CLI, export lotes automático, overnight scheduling
 
 ---
 
-## 🎉 **ÚLTIMOS LOGROS (2026-03-12, sesión 2)**
+## 🎉 **ÚLTIMOS LOGROS (2026-03-13)**
+
+### **QUA-228 COMPLETADO — Programador web: paridad completa con CLI:**
+- ✅ **Overnight window** — ventana horaria nocturna (ej: 22:00-09:00) funciona correctamente
+- ✅ **Buffer 30 min** — no se asignan horas en el pasado al programar para hoy
+- ✅ **Todas las restricciones CLI portadas:** distancia hook, distancia SEO (dinámica), anti-consecutivo por producto, testing acumulativo, distribución por categoría lifecycle, horas ocupadas, gap-finding para producto específico
+- ✅ **2 pasadas por defecto** (igual que CLI; 4 solo con relajación interactiva)
+- ✅ **Anti-duplicados** — excluye videos con estado != 'Generado'
+- ✅ **Export de lotes automático** — `_export_lotes()` crea entradas en tabla `lotes` de Turso tras programar, para que operadoras vean los videos en PUBLICAR.bat
+- ✅ **Verificación completa** — tabla comparativa de ~20 características, todas coinciden CLI↔web
+
+### **Dashboard: 6 páginas**
+- Estado (calendario), Formatos, Productos, Programar, Cuentas, Importar
+
+---
+
+## 🎉 **LOGROS ANTERIORES (2026-03-12, sesión 2)**
 
 ### **QUA-218 COMPLETADO — es_ia migrado de CLI a formato:**
 - ✅ **es_ia en producto_bofs** — cada formato declara si usa contenido IA (16 migrados)
@@ -23,9 +39,6 @@
 ### **QUA-102 COMPLETADO — Migración db_connection:**
 - ✅ **13 archivos activos migrados** de get_connection() a db_connection() context manager
 - ✅ Archivos deprecated no tocados (no aplica)
-
-### **Dashboard: 6 páginas**
-- Estado (calendario), Formatos, Productos, Programar, Cuentas, **Importar** (nuevo)
 
 ---
 
@@ -70,6 +83,7 @@
 - ✅ Simulación dry-run con preview calendario + estadísticas
 - ✅ Ejecución directa desde dashboard (UPDATE masivo en Turso)
 - ✅ Distribución lifecycle (top_seller/validated/testing) configurable
+- ✅ **QUA-228: paridad total con CLI** — todas las restricciones portadas + export lotes automático
 
 ### **QUA-200 — Edit formato + view variantes:**
 - ✅ Modal de edición + panel expandible con variantes, audios, hashtags, guión
@@ -409,7 +423,7 @@ Sara: programador.py → auto-import resultados de API → BD actualizada
 **Videos en BD:** 1670+ (migrados a Synology)
 **Almacenamiento:** Synology Drive con backup RAID (RECURSOS_BASE migrado de Google Drive)
 **BD:** Turso cloud (fuente única de verdad)
-**Dashboard:** 5 páginas (estado, formatos, stats, programar, cuentas) — gestión completa desde web
+**Dashboard:** 6 páginas (estado, formatos, stats, programar, cuentas, importar) — gestión completa desde web
 **Sistema:** Operativo y estable
 
 ---
@@ -464,4 +478,4 @@ Sara definió migrar toda la gestión posible al panel web. Resultado: gestión 
 
 ---
 
-**Última actualización:** 2026-03-12
+**Última actualización:** 2026-03-13

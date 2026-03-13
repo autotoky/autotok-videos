@@ -1,7 +1,7 @@
 # MANUAL: PROGRAMADOR DE CALENDARIO
 
-**Version:** 4.0
-**Fecha:** 2026-03-12
+**Version:** 5.0
+**Fecha:** 2026-03-13
 **Para:** Sara
 
 ---
@@ -27,6 +27,23 @@ Acceso protegido por PIN (el mismo que el dashboard de estado).
 3. Click "Simular" → preview calendario con estadisticas
 4. Revisar distribucion: top_seller / validated / testing
 5. Click "Programar" para ejecutar (actualiza BD directamente)
+
+### Algoritmo y restricciones (QUA-228)
+
+El programador web tiene **paridad completa** con el CLI. Ambos aplican exactamente las mismas restricciones:
+
+- Distancia minima entre hooks (configurable por cuenta)
+- Distancia minima entre SEO texts (dinamica segun volumen)
+- Anti-consecutivo: no repetir mismo producto en slots adyacentes
+- Testing acumulativo: limite global de videos testing, no solo por programacion
+- Distribucion lifecycle: top_seller / validated / testing segun porcentajes de config
+- Horas ocupadas: no solapar con videos ya programados en la misma fecha
+- Gap-finding: busqueda de huecos para programacion de producto especifico
+- Overnight window: soporte para ventanas horarias que cruzan medianoche (ej: 22:00-09:00)
+- Buffer 30 min: si se programa para hoy, no asigna horas que ya han pasado + 30min margen
+- 2 pasadas por defecto (relajacion a 4 solo disponible en CLI interactivo)
+- Anti-duplicados: excluye videos con estado != 'Generado'
+- Export automatico de lotes a tabla `lotes` de Turso para que operadoras los vean en PUBLICAR.bat
 
 ### Ventajas sobre CLI
 
@@ -165,4 +182,4 @@ Generado → En Calendario → Programado (automatico, via publisher)
 
 ---
 
-**Ultima actualizacion:** 2026-03-12 (QUA-217: config en Turso, desprogramar desde panel, sheet eliminada)
+**Ultima actualizacion:** 2026-03-13 (QUA-228: paridad completa CLI↔web, overnight window, buffer 30min, export lotes automatico)

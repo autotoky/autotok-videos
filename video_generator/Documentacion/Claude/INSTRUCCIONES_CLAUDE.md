@@ -1,7 +1,7 @@
 # INSTRUCCIONES DE TRABAJO PARA CLAUDE
 
-**Version:** 2.2
-**Fecha:** 2026-03-08
+**Version:** 2.3
+**Fecha:** 2026-03-13
 **Proyecto:** AutoTok — Sistema de generacion y publicacion automatica de videos TikTok
 
 ---
@@ -19,7 +19,8 @@ AutoTok es un sistema Python que automatiza la creacion y publicacion de videos 
 - Playwright + Chrome real via CDP (publicacion en TikTok Studio)
 - Synology Drive (`C:\Users\gasco\SynologyDrive`) — almacenamiento unico de videos + distribucion a operadoras
 - API Vercel + Turso (coordinacion de lotes/resultados entre PCs) — BD unificada (QUA-155)
-- Google Sheets (legacy, en proceso de eliminacion — ya no es necesaria para operar)
+- Dashboard web Vercel: 6 paginas (estado, formatos, stats, programar, cuentas, importar)
+- Google Sheets ELIMINADA (QUA-217) — no hay codigo activo que escriba en Sheet
 
 **Repositorio:** La carpeta raiz del proyecto es `video_generator/`
 
@@ -193,7 +194,7 @@ El documento `Tecnico/CASOS_DE_USO.md` y su diagrama visual `FLUJOS_CASOS_DE_USO
 5. **Imports:** stdlib primero, luego third-party, luego locales
 6. **Logging:** usar `log` (modulo logging), no `print` para debug
 7. **BD:** usar funciones de `scripts/db_config.py`, no abrir conexiones directamente
-8. **Sheet:** usar `scripts/sheet_sync.py` para cualquier actualizacion de estado en Sheet. **NOTA:** La sincronizacion API↔BD local esta pendiente de implementar. Hasta que se resuelva, sheet_sync.py sigue siendo el mecanismo principal de sync de estados.
+8. **Sheet:** ELIMINADA (QUA-217). No usar sheet_sync.py — Turso es la fuente de verdad unica. El dashboard web reemplaza completamente la Sheet.
 9. **API:** usar `scripts/api_client.py` para comunicacion con la API Vercel (lotes, resultados, versiones).
 10. **Errores:** nunca `except: pass` — siempre capturar excepciones especificas y loguear
 
@@ -211,7 +212,7 @@ El documento `Tecnico/CASOS_DE_USO.md` y su diagrama visual `FLUJOS_CASOS_DE_USO
 ### Programacion y calendario
 | Archivo | Funcion |
 |---------|---------|
-| `programador.py` | Programacion de calendario + auto-export lotes |
+| `programador.py` | Programacion de calendario CLI + auto-export lotes. NOTA: el programador web (`autotok-api/api/programar.py`) tiene paridad completa con este (QUA-228) |
 | `rollback_calendario.py` | Deshacer programacion (revertir estados a Generado) — **CRITICO, no eliminar**. v3.0: solo revierte BD, ya no mueve archivos (QUA-151) |
 | `mover_videos.py` | **DEPRECATED (QUA-151)** — Sincronizacion de estados Sheet → BD. Codigo conservado pero funcionalidad obsoleta |
 
@@ -264,7 +265,7 @@ El documento `Tecnico/CASOS_DE_USO.md` y su diagrama visual `FLUJOS_CASOS_DE_USO
 ### Infraestructura
 5. **Synology Drive es el almacen UNICO de videos (QUA-151).** Ruta: `C:\Users\gasco\SynologyDrive`. Estructura plana: `SynologyDrive/{cuenta}/{video_id}.mp4`. Los videos se generan ahi y NO se mueven nunca. El estado vive solo en la BD. Synology tiene backup RAID integrado.
 6. **API Vercel + Turso (BD unificada, QUA-155).** Turso es la fuente de verdad unica. Sara accede via HTTP API (`db_config.py` v4.1). Las operadoras acceden via API REST de Vercel. Ya no hay SQLite local como fuente de verdad.
-7. **Google Sheet en proceso de eliminacion.** El programador aun escribe en Sheet (opcional, no bloquea si falla). El dashboard HTML (QUA-92) la reemplaza progresivamente.
+7. **Google Sheet ELIMINADA (QUA-217).** No hay codigo activo que escriba en Sheet. Turso es fuente de verdad unica. El dashboard web (6 paginas) la reemplaza completamente.
 
 ### Publisher y Chrome
 7. **El publisher usa Chrome real, NO Playwright Chromium.** No es necesario `playwright install chromium`. El publisher lanza chrome.exe via subprocess con `--remote-debugging-port` y se conecta via CDP.
@@ -273,7 +274,8 @@ El documento `Tecnico/CASOS_DE_USO.md` y su diagrama visual `FLUJOS_CASOS_DE_USO
 10. **Primera vez en TikTok Studio requiere subir video manual.** La primera vez que se abre Studio en un perfil nuevo, hay pop-ups, tooltips y alertas de bienvenida que bloquean la automatizacion. La operadora debe subir un video a mano para limpiar todo.
 
 ### Programacion y lotes
-8. **Opcion 7 del CLI (programar calendario).** Programa videos y exporta lotes a API. QUA-151: ya no mueve archivos ni copia a Drive. El video se queda donde se genero.
+8. **Programador web (QUA-228, QUA-193).** `autotok-api/api/programar.py` tiene paridad completa con el CLI (`video_generator/programador.py`). Incluye: distancia hook/SEO, anti-consecutivo, testing acumulativo, distribución lifecycle, overnight window, buffer 30min, 2 pasadas por defecto, y export automático de lotes a tabla `lotes` de Turso. Cualquier cambio en restricciones del CLI debe replicarse en el web y viceversa.
+8b. **Opcion 7 del CLI (programar calendario).** Programa videos y exporta lotes a API. QUA-151: ya no mueve archivos ni copia a Drive. El video se queda donde se genero.
 9. **Lotes JSON usan rutas relativas.** El filepath en los lotes es relativo a la carpeta de la cuenta. QUA-151: con estructura plana, la ruta es simplemente `{video_id}.mp4`. El publisher lo resuelve usando `drive_path/cuenta/` de config_operadora.json. **CRITICO:** si se insertan lotes manualmente via API/Turso, SIEMPRE usar rutas relativas (solo el nombre del archivo), NUNCA rutas absolutas de un PC concreto.
 10. **Adaptacion de filepath cross-PC (QUA-184).** `tiktok_publisher.py` tiene cadena de fallbacks para resolver filepath: (1) ruta relativa completa `drive_path/cuenta/filepath`, (2) fallback por filename `drive_path/cuenta/os.path.basename(filepath)` — util con estructura plana Synology, (3) ruta absoluta adaptada con `drive_path`, (4) `filepath_original` directo. Detecta paths Windows con regex `^[A-Za-z]:[/\\]` (ya que `os.path.isabs` no funciona para paths Windows en Linux). Ademas, `_find_chrome()` auto-detecta Chrome en `Program Files`, `Program Files (x86)` y `%LOCALAPPDATA%`, y `get_cuenta_config()` verifica que el chrome_path existe antes de usarlo.
 11. **config_operadora.json es per-PC (QUA-184).** Se guarda en `%LOCALAPPDATA%\AutoTok\config_operadora.json`, fuera de Synology Drive. Cada PC tiene su propia config independiente. `_find_config_operadora()` busca: (1) LOCALAPPDATA, (2) kevin/ (legacy fallback). `setup_operadora.py` guarda en ambos sitios (LOCALAPPDATA + kevin/ backup). El publisher carga config una sola vez por video via `_load_config_operadora(lote_path)`.
@@ -299,4 +301,4 @@ El documento `Tecnico/CASOS_DE_USO.md` y su diagrama visual `FLUJOS_CASOS_DE_USO
 
 ---
 
-**Ultima actualizacion:** 2026-03-10 (QUA-184: config LOCALAPPDATA per-PC, busqueda hibrida API+local)
+**Ultima actualizacion:** 2026-03-13 (QUA-228: programador web paridad CLI, Sheet eliminada, dashboard 6 paginas)
