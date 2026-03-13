@@ -89,167 +89,133 @@ def cargar_config():
 
 
 def buscar_todos_lotes_pendientes(cuenta, drive_path):
-    """Busca TODOS los lotes pendientes — híbrido API + local (QUA-184).
+    """Busca videos pendientes directamente en la BD (tabla videos).
 
-    Siempre busca en AMBAS fuentes y hace merge por fecha para no perder
-    lotes que solo existan localmente (ej: sincronizados via Synology pero
-    no exportados a API, o API caída).
+    La tabla `videos` es la ÚNICA fuente de verdad. Se consulta por
+    estado='En Calendario' o 'Error', agrupados por fecha_programada.
+    Se genera un JSON temporal por fecha para compatibilidad con
+    run_from_lote().
 
     Returns:
         list[dict]: lista de lotes, cada uno con claves:
             fecha, n_pendientes, total_videos, lote_data, lote_path
     """
-    lotes_por_fecha = {}  # fecha → lote_info (merge key)
+    lotes_por_fecha = {}
 
-    # ── Fuente 1: API ──
     try:
-        from api_client import obtener_todos_lotes, is_api_configured
-        if is_api_configured():
-            api_lotes = obtener_todos_lotes(cuenta)
-            if api_lotes:
-                lotes_dir = os.path.join(drive_path, cuenta, '_lotes')
-                os.makedirs(lotes_dir, exist_ok=True)
+        sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'scripts'))
+        from db_config import get_connection
+        conn = get_connection()
+        cur = conn.cursor()
 
-                for api_lote in api_lotes:
-                    fecha = api_lote.get('fecha', 'unknown')
-                    local_path = os.path.join(lotes_dir, f"lote_{cuenta}_{fecha}.json")
+        hoy = datetime.now().strftime('%Y-%m-%d')
 
-                    resultados = api_lote.get('resultados', {})
-                    videos = api_lote.get('videos', [])
-                    pendientes = [
-                        v for v in videos
-                        if v['video_id'] not in resultados
-                        or resultados[v['video_id']].get('estado') == 'Error'
-                    ]
+        # Query: all publishable videos for today+future, with product info
+        cur.execute("""
+            SELECT
+                v.video_id, v.filepath, v.fecha_programada, v.hora_programada,
+                v.es_ia, v.bof_id, v.estado,
+                p.nombre as producto_nombre,
+                b.deal_math, b.hashtags, b.url_producto, b.gancho
+            FROM videos v
+            LEFT JOIN productos p ON v.producto_id = p.id
+            LEFT JOIN producto_bofs b ON v.bof_id = b.id
+            WHERE v.cuenta = ?
+              AND v.estado IN ('En Calendario', 'Error')
+              AND v.fecha_programada >= ?
+            ORDER BY v.fecha_programada, v.hora_programada
+        """, [cuenta, hoy])
 
-                    if pendientes:
-                        # Guardar copia local del lote de API
-                        with open(local_path, 'w', encoding='utf-8') as f:
-                            json.dump(api_lote, f, ensure_ascii=False, indent=2)
-                        lotes_por_fecha[fecha] = {
-                            'fecha': fecha,
-                            'n_pendientes': len(pendientes),
-                            'total_videos': len(videos),
-                            'lote_data': api_lote,
-                            'lote_path': local_path,
-                        }
-    except Exception:
-        pass  # Silencioso — seguimos con búsqueda local
+        rows = cur.fetchall()
 
-    # ── Fuente 2: Drive local (archivos JSON en _lotes/) ──
-    lotes_dir = os.path.join(drive_path, cuenta, '_lotes')
-    if os.path.exists(lotes_dir):
-        pattern = os.path.join(lotes_dir, 'lote_*.json')
-        archivos = sorted(glob.glob(pattern), key=os.path.getmtime)
+        # Get SEO texts (one per video via bof_id, pick first match)
+        seo_cache = {}
+        bof_ids = list(set(r['bof_id'] for r in rows if r['bof_id']))
+        if bof_ids:
+            ph = ",".join(["?" for _ in bof_ids])
+            cur.execute(
+                f"SELECT bof_id, seo_text FROM variantes_overlay_seo "
+                f"WHERE bof_id IN ({ph}) ORDER BY id",
+                bof_ids
+            )
+            for seo_row in cur.fetchall():
+                # First SEO per bof_id wins (don't overwrite)
+                if seo_row['bof_id'] not in seo_cache:
+                    seo_cache[seo_row['bof_id']] = seo_row['seo_text']
 
-        for filepath in archivos:
-            try:
-                with open(filepath, 'r', encoding='utf-8') as f:
-                    lote = json.load(f)
+        conn.close()
 
-                fecha = lote.get('fecha', '?')
+        # Group by fecha
+        for row in rows:
+            fecha = row['fecha_programada']
+            if fecha not in lotes_por_fecha:
+                lotes_por_fecha[fecha] = {
+                    'version': 1,
+                    'cuenta': cuenta,
+                    'fecha': fecha,
+                    'exportado_at': datetime.now().isoformat(),
+                    'total_videos': 0,
+                    'videos': [],
+                    'resultados': {},
+                }
 
-                # Si ya tenemos este lote de API, API gana (tiene resultados frescos)
-                if fecha in lotes_por_fecha:
-                    continue
+            lote = lotes_por_fecha[fecha]
+            producto_nombre = row['producto_nombre'] or ''
 
-                resultados = lote.get('resultados', {})
-                videos = lote.get('videos', [])
-                pendientes = [
-                    v for v in videos
-                    if v['video_id'] not in resultados
-                    or resultados[v['video_id']].get('estado') == 'Error'
-                ]
+            lote['videos'].append({
+                'video_id': row['video_id'],
+                'filepath': row['filepath'] or f"{row['video_id']}.mp4",
+                'filepath_original': row['filepath'] or '',
+                'fecha_programada': fecha,
+                'hora_programada': row['hora_programada'] or '',
+                'deal_math': row['deal_math'] or '',
+                'seo_text': seo_cache.get(row['bof_id'], ''),
+                'hashtags': row['hashtags'] or '',
+                'es_ia': row['es_ia'] or 0,
+                'producto_busqueda': producto_nombre,
+                'url_producto': row['url_producto'] or '',
+            })
+            lote['total_videos'] = len(lote['videos'])
 
-                if pendientes:
-                    lotes_por_fecha[fecha] = {
-                        'fecha': fecha,
-                        'n_pendientes': len(pendientes),
-                        'total_videos': len(videos),
-                        'lote_data': lote,
-                        'lote_path': filepath,
-                    }
-            except Exception:
-                continue
-
-    # ── QUA-190: Cross-check con BD (Turso) ──
-    # Los archivos locales pueden estar desactualizados si se hicieron
-    # cambios desde el dashboard (ej: "Quitar"). Verificamos el estado
-    # actual de cada video directamente en la BD.
-    if lotes_por_fecha:
+    except Exception as e:
+        print(f"  [!] Error consultando BD: {e}")
+        # Intentar fallback a API si la BD falla
         try:
-            sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'scripts'))
-            from db_config import get_connection
-            conn = get_connection()
-            cur = conn.cursor()
-
-            # Recopilar todos los video_ids de todos los lotes
-            all_video_ids = []
-            for lote_info in lotes_por_fecha.values():
-                for v in lote_info['lote_data'].get('videos', []):
-                    all_video_ids.append(v['video_id'])
-
-            if all_video_ids:
-                # Consultar estados actuales en la BD
-                ph = ",".join(["?" for _ in all_video_ids])
-                cur.execute(
-                    f"SELECT video_id, estado, tiktok_post_id FROM videos WHERE video_id IN ({ph})",
-                    all_video_ids
-                )
-                rows_bd = {row['video_id']: row for row in cur.fetchall()}
-                conn.close()
-
-                # Un video necesita que PUBLICAR.bat actúe si:
-                # - estado = 'En Calendario' (pendiente de subir a TikTok)
-                # - estado = 'Error' (fallo previo, reintentar)
-                # NO necesita acción si:
-                # - estado = 'Programado' (ya publicado en TikTok)
-                # - estado = 'Generado' (quitado del calendario)
-                # - estado = 'Descartado', 'Violation', etc.
-                def necesita_publicar(video_id):
-                    row = rows_bd.get(video_id)
-                    if not row:
-                        return False  # Video no existe en BD
-                    estado = row['estado']
-                    if estado == 'En Calendario':
-                        return True
-                    if estado == 'Error':
-                        return True
-                    return False
-
-                # Filtrar videos de cada lote
-                fechas_a_borrar = []
-                for fecha, lote_info in lotes_por_fecha.items():
-                    lote_data = lote_info['lote_data']
-                    videos_orig = lote_data.get('videos', [])
-
-                    # Solo mantener videos que realmente necesitan publicación
-                    videos_filtrados = [
-                        v for v in videos_orig
-                        if necesita_publicar(v['video_id'])
-                    ]
-                    lote_data['videos'] = videos_filtrados
-                    lote_data['total_videos'] = len(videos_filtrados)
-
-                    if videos_filtrados:
-                        lote_info['n_pendientes'] = len(videos_filtrados)
-                        lote_info['total_videos'] = len(videos_filtrados)
-                    else:
-                        fechas_a_borrar.append(fecha)
-
-                for fecha in fechas_a_borrar:
-                    del lotes_por_fecha[fecha]
-
+            from api_client import obtener_todos_lotes, is_api_configured
+            if is_api_configured():
+                api_lotes = obtener_todos_lotes(cuenta)
+                if api_lotes:
+                    for api_lote in api_lotes:
+                        fecha = api_lote.get('fecha', 'unknown')
+                        if fecha >= hoy:
+                            lotes_por_fecha[fecha] = api_lote
         except Exception:
-            pass  # Si falla la BD, usar datos tal cual (backward compatible)
+            pass
 
-    # Filtrar lotes con fecha anterior a hoy (no se puede publicar en el pasado)
-    from datetime import datetime
-    hoy = datetime.now().strftime('%Y-%m-%d')
-    lotes_por_fecha = {f: info for f, info in lotes_por_fecha.items() if f >= hoy}
+    # Build result: write temp JSON per fecha and return lote_info list
+    result = []
+    lotes_dir = os.path.join(drive_path, cuenta, '_lotes')
+    os.makedirs(lotes_dir, exist_ok=True)
 
-    # Devolver ordenados por fecha
-    return sorted(lotes_por_fecha.values(), key=lambda x: x['fecha'])
+    for fecha, lote_data in sorted(lotes_por_fecha.items()):
+        n = len(lote_data.get('videos', []))
+        if n == 0:
+            continue
+
+        # Write temp JSON for run_from_lote compatibility
+        lote_path = os.path.join(lotes_dir, f"lote_{cuenta}_{fecha}.json")
+        with open(lote_path, 'w', encoding='utf-8') as f:
+            json.dump(lote_data, f, ensure_ascii=False, indent=2)
+
+        result.append({
+            'fecha': fecha,
+            'n_pendientes': n,
+            'total_videos': n,
+            'lote_data': lote_data,
+            'lote_path': lote_path,
+        })
+
+    return result
 
 
 def mostrar_resumen_lote(lote, n_pendientes, lote_path):
