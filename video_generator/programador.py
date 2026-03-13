@@ -196,8 +196,8 @@ def _parse_ventana_horaria(config, fecha):
     # Si es hoy, no programar en el pasado
     ahora = datetime.now()
     if inicio_dt.date() == ahora.date() and ahora > inicio_dt:
-        # Margen de 15 min desde ahora (redondeado a 5 min)
-        minimo = ahora + timedelta(minutes=15)
+        # Margen de 30 min desde ahora (redondeado a 5 min) — QUA-231, parity with web
+        minimo = ahora + timedelta(minutes=30)
         # Redondear al siguiente múltiplo de 5
         minuto = minimo.minute
         resto = minuto % 5
@@ -747,6 +747,15 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
     if videos_no_disponibles:
         print(f"[INFO] {len(videos_no_disponibles)} videos ya usados/descartados en BD (se excluirán)")
 
+    # QUA-231: Detect overnight window for date adjustment
+    _h_ini = config.get('horario_inicio', '08:00') or '08:00'
+    _h_fin = config.get('horario_fin', '21:30') or '21:30'
+    _ini_parts = _h_ini.split(':')
+    _fin_parts = _h_fin.split(':')
+    _ini_total = int(_ini_parts[0]) * 60 + int(_ini_parts[1])
+    _fin_total = int(_fin_parts[0]) * 60 + int(_fin_parts[1])
+    is_overnight = _fin_total <= _ini_total
+
     # ── Programar día a día ──
     calendario = []
     videos_usados = set()  # IDs ya usados (para no repetir)
@@ -844,10 +853,18 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
                 print(f"  [WARNING] {horario} - No hay videos que cumplan restricciones")
                 continue
 
+            # QUA-231: If overnight window and hour is after midnight, date = next day
+            video_fecha = fecha_str
+            if is_overnight:
+                hp = horario.split(':')
+                h_min = int(hp[0]) * 60 + int(hp[1])
+                if h_min < _ini_total:
+                    video_fecha = (datetime.strptime(fecha_str, "%Y-%m-%d") + timedelta(days=1)).strftime("%Y-%m-%d")
+
             # Registrar video
             videos_dia.append({
                 'video': video_seleccionado,
-                'fecha': fecha_str,
+                'fecha': video_fecha,
                 'hora': horario
             })
 
@@ -862,7 +879,7 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
             # Añadir a programados (para distancia hook)
             videos_programados.append({
                 'video_id': video_seleccionado['video_id'],
-                'fecha': fecha_str,
+                'fecha': video_fecha,
                 'hook_id': video_seleccionado['hook_id'],
                 'producto_id': video_seleccionado['producto_id'],
                 'seo_text': video_seleccionado.get('seo_text', '')

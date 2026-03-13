@@ -426,9 +426,11 @@ def generar_videos():
         row = cursor.fetchone()
         if row:
             producto_id = row['id']
+            # QUA-232: Count audios from formato_material (not legacy audios table)
             cursor.execute("""
                 SELECT pb.id, pb.deal_math, pb.activo,
-                       (SELECT COUNT(*) FROM audios WHERE bof_id = pb.id) as num_audios
+                       (SELECT COUNT(*) FROM formato_material fm
+                        WHERE fm.bof_id = pb.id AND fm.tipo = 'audio') as num_audios
                 FROM producto_bofs pb
                 WHERE pb.producto_id = ?
                 ORDER BY pb.id
@@ -436,31 +438,38 @@ def generar_videos():
             bofs = [dict(r) for r in cursor.fetchall()]
 
             if len(bofs) > 1:
+                # Build lookup by BOF ID for QUA-235
+                bof_by_id = {bof['id']: bof for bof in bofs}
+
                 print("  BOFs disponibles:")
                 print()
                 for i, bof in enumerate(bofs, 1):
                     estado = "ACTIVO" if bof['activo'] else "INACTIVO"
                     print(f"    {i}. [ID:{bof['id']}] {bof['deal_math']} ({estado}, {bof['num_audios']} audios)")
                 print()
-                print("    Enter = auto (usa BOFs activos con audios)")
+                print("    Introduce el ID del BOF (ej: 32) o Enter para auto")
                 print()
-                sel = input("  Forzar un BOF concreto? (numero o Enter): ").strip()
+                sel = input("  Forzar un BOF concreto? (ID o Enter): ").strip()
                 if sel:
                     try:
-                        idx = int(sel) - 1
-                        if 0 <= idx < len(bofs):
-                            bof_id = bofs[idx]['id']
-                            if not bofs[idx]['activo']:
+                        sel_id = int(sel)
+                        # QUA-235: Accept BOF ID directly (not list position)
+                        if sel_id in bof_by_id:
+                            selected_bof = bof_by_id[sel_id]
+                            bof_id = sel_id
+                            if not selected_bof['activo']:
                                 print(f"\n  [!] ATENCION: BOF {bof_id} esta INACTIVO")
                                 confirma = input("      Usar igualmente? (S/N): ").strip().upper()
                                 if confirma != "S":
                                     bof_id = None
-                            if bof_id and bofs[idx]['num_audios'] == 0:
-                                print(f"\n  [!] ERROR: BOF {bof_id} no tiene audios, no se pueden generar videos")
+                            if bof_id and selected_bof['num_audios'] == 0:
+                                print(f"\n  [!] ERROR: BOF {bof_id} no tiene audios asignados en formato_material")
                                 input("\nPresiona Enter para continuar...")
                                 return
                             if bof_id:
-                                print(f"\n  Forzando BOF {bof_id}: {bofs[idx]['deal_math']}")
+                                print(f"\n  Forzando BOF {bof_id}: {selected_bof['deal_math']}")
+                        else:
+                            print(f"  [!] BOF ID {sel_id} no encontrado, usando auto")
                     except (ValueError, IndexError):
                         print("  [!] Seleccion invalida, usando auto")
                 print()
