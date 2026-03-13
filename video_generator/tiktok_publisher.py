@@ -1165,7 +1165,10 @@ class TikTokPublisher:
             # Pausa natural — como si scrollearas para ver opciones
             delay((2.0, 3.0), "revisando opciones")
 
-            # ── Paso 5b: Etiqueta IA si el video lo requiere (QUA-39) ──
+            # ── Paso 5b: Etiqueta IA — activar o desactivar según el video ──
+            # IMPORTANTE: TikTok Studio mantiene el toggle entre uploads consecutivos.
+            # Si el video anterior activó IA, el toggle sigue ON para el siguiente.
+            # Por eso hay que SIEMPRE verificar y ajustar el estado del toggle.
             es_ia = video_data.get('es_ia', 0)
             if es_ia:
                 ia_ok = self._activar_etiqueta_ia()
@@ -1178,6 +1181,10 @@ class TikTokPublisher:
                                             'No se pudo activar etiqueta IA — se reintentará')
                     return False
                 delay((1.0, 2.0), "post etiqueta IA")
+            else:
+                # Desactivar IA si estaba activada de un video anterior
+                self._desactivar_etiqueta_ia()
+                delay((0.5, 1.0), "post check etiqueta IA")
 
             # ── Paso 6: Settings → Schedule → fecha + hora ──
             log.info(f"  Programando para {fecha} {hora}...")
@@ -1828,6 +1835,66 @@ class TikTokPublisher:
         except Exception as e:
             log.warning(f"  ⚠️ Error activando etiqueta IA: {e}")
             return False
+
+    def _desactivar_etiqueta_ia(self):
+        """Desactiva la etiqueta 'Contenido generado por IA' si está activada.
+
+        TikTok Studio mantiene el estado del toggle entre uploads consecutivos.
+        Si el video anterior tenía IA activada, el toggle sigue ON para el siguiente.
+        Este método lo desactiva cuando el video actual NO es IA.
+
+        No es crítico si falla (el video no es IA, así que lo peor es que
+        se publique con etiqueta IA de más, que es preferible a no ponerla).
+        """
+        try:
+            # Scroll abajo para ver la sección IA
+            self.page.mouse.wheel(0, 500)
+            delay((0.5, 1.0))
+
+            # Buscar el toggle IA
+            ia_container = self.page.locator('[data-e2e="aigc_container"]')
+            if not ia_container.is_visible(timeout=3000):
+                # Intentar expandir "Mostrar más"
+                mostrar_mas_all = self.page.locator('text=/Mostrar más|Show more/i')
+                count_mm = mostrar_mas_all.count()
+                if count_mm > 0:
+                    mostrar_mas_all.nth(count_mm - 1).click()
+                    delay((0.5, 1.0))
+
+            ia_toggle = self.page.locator(
+                '[data-e2e="aigc_container"] .Switch__content'
+            ).first
+
+            if not ia_toggle.is_visible(timeout=3000):
+                log.debug("  Toggle IA no visible (puede que no exista en esta versión)")
+                return
+
+            checked = ia_toggle.get_attribute('aria-checked')
+            if checked == 'true':
+                # Está activado pero este video NO es IA — desactivar
+                ia_toggle.click()
+                delay((0.5, 1.0))
+                log.info("  ✓ Etiqueta IA desactivada (video no es IA)")
+
+                # Cerrar popup si aparece
+                try:
+                    popup_btn = self.page.locator(
+                        'button:has-text("Got it"), '
+                        'button:has-text("Entendido"), '
+                        'button:has-text("OK"), '
+                        'button:has-text("Aceptar")'
+                    ).first
+                    if popup_btn.is_visible(timeout=2000):
+                        popup_btn.click()
+                        delay((0.3, 0.5))
+                except Exception:
+                    pass
+            else:
+                log.debug("  Toggle IA ya estaba desactivado")
+
+        except Exception as e:
+            log.warning(f"  ⚠️ Error verificando/desactivando etiqueta IA: {e}")
+            # No abortamos — preferible publicar con IA de más que no publicar
 
     def _descartar_video_actual(self):
         """Descarta el video actual en TikTok Studio (NO guardar borrador — evita duplicados).
