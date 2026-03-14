@@ -86,11 +86,47 @@ Requiere API key en header `X-API-Key`. Timeout de 55 segundos (Vercel free tier
 
 El scraper automático guarda log en `video_generator/scraper_log.txt`.
 
+## Engagement por Cuenta (CSV TikTok Studio)
+
+**URL:** `https://autotok-api-git-main-autotoky-6890s-projects.vercel.app/api/analytics` → pestaña **Engagement**
+
+Vista de engagement agregado por cuenta (no por video individual). Los datos vienen de los CSV que exporta TikTok Studio con métricas diarias de la cuenta.
+
+### Qué muestra
+
+- **KPIs globales:** total views, likes, comments, shares, engagement rate, profile views
+- **Gráfico de views diarias** (últimos 90 días, filtrable por cuenta)
+- **Tabla resumen por cuenta:** días cubiertos, rango de fechas, totales, media/día, máximo/día
+
+### Cómo importar datos
+
+1. Abrir TikTok Studio → Analytics → Overview
+2. Exportar CSV (cubre hasta 60 días por export)
+3. En la pestaña Engagement del dashboard:
+   - Seleccionar la cuenta
+   - Poner la fecha en que se hizo el export (importante para inferir el año)
+   - Subir el archivo CSV
+4. Los datos se insertan/actualizan automáticamente (upsert por cuenta+fecha)
+
+### Formato del CSV
+
+TikTok Studio exporta un CSV con formato español:
+- **Columnas:** Date, Video Views, Profile Views, Likes, Comments, Shares
+- **Fechas:** formato "13 de marzo" (sin año — el sistema lo infiere a partir de la fecha de export)
+- **Encoding:** UTF-8 con BOM
+
+### Notas
+
+- El CSV cubre hasta el día anterior al export (no incluye el día del export)
+- Se pueden importar varios CSV de diferentes rangos; los duplicados se actualizan (upsert)
+- Para borrar datos de una cuenta: botón "Eliminar datos" en el panel de import
+
 ## Tablas de BD (Turso)
 
 - **`video_stats`**: último snapshot de engagement por video (upsert por video_id)
 - **`video_stats_history`**: historial de snapshots — un registro por video por día de scrape
 - **`video_sales`**: ventas por video+fecha (UNIQUE) — un registro por video por día
+- **`tiktok_studio_daily`**: engagement diario por cuenta desde CSV TikTok Studio (UNIQUE por cuenta+fecha)
 
 ## Configurar Task Scheduler
 

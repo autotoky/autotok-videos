@@ -19,7 +19,7 @@ AutoTok es un sistema Python que automatiza la creacion y publicacion de videos 
 - Playwright + Chrome real via CDP (publicacion en TikTok Studio)
 - Synology Drive (`C:\Users\gasco\SynologyDrive`) — almacenamiento unico de videos + distribucion a operadoras
 - API Vercel + Turso (coordinacion de lotes/resultados entre PCs) — BD unificada (QUA-155)
-- Dashboard web Vercel: 6 paginas (estado, formatos, stats, programar, cuentas, importar)
+- Dashboard web Vercel: 7 paginas (estado, formatos, stats, programar, cuentas, importar, analytics)
 - Google Sheets ELIMINADA (QUA-217) — no hay codigo activo que escriba en Sheet
 
 **Repositorio:** La carpeta raiz del proyecto es `video_generator/`
@@ -301,4 +301,4 @@ El documento `Tecnico/CASOS_DE_USO.md` y su diagrama visual `FLUJOS_CASOS_DE_USO
 
 ---
 
-**Ultima actualizacion:** 2026-03-13 (publicar_facil.py reescrito: lectura directa tabla `videos`, QUA-250 overnight scheduling fix, _export_lotes corregido)
+**Ultima actualizacion:** 2026-03-14 (Fase 5 engagement analytics, scheduler lifecycle fix, 7 paginas dashboard)

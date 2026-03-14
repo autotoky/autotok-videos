@@ -1,12 +1,34 @@
 # 📊 ESTADO ACTUAL EJECUTIVO - AUTOTOK v5.0
 
-**Fecha:** 2026-03-13
-**Versión:** 5.0
-**Estado:** PUBLICAR.bat lee directo de BD (tabla videos), overnight scheduling fix, export lotes corregido
+**Fecha:** 2026-03-14
+**Versión:** 5.1
+**Estado:** Engagement analytics (Fase 5), scheduler lifecycle distribution fix, 7 páginas dashboard
 
 ---
 
-## 🎉 **ÚLTIMOS LOGROS (2026-03-13, sesión 2)**
+## 🎉 **ÚLTIMOS LOGROS (2026-03-14)**
+
+### **QUA-263 COMPLETADO — Fase 5 Analytics: Engagement híbrido (CSV TikTok Studio):**
+- ✅ **Tabla `tiktok_studio_daily`** — cuenta, fecha, video_views, profile_views, likes, comments, shares
+- ✅ **Import CSV TikTok Studio** — endpoint POST con parseo de fechas en español, batched upsert
+- ✅ **Vista Engagement** (4ª pestaña analytics) — KPIs, gráfico views diarias, tabla resumen por cuenta, import UI
+- ✅ **Datos cargados** — 3 cuentas × 132 días (Nov 2024 — Mar 2025)
+
+### **QUA-265 COMPLETADO — Fix distribución lifecycle en scheduler:**
+- ✅ **Root cause 1:** `LIMIT 200 + ORDER BY id` cortaba top_seller con IDs altos → `LIMIT 500 + ORDER BY estado_comercial`
+- ✅ **Root cause 2:** Loop de scheduling sin enforcement de slots → tracking `cat_programados` vs `cat_target`, pasadas 0-1 respetan límites, pasada 2 overflow
+- ✅ **Stats mejorados** — simulación muestra Pool, Programados y Target por categoría
+- ✅ **Paridad CLI ↔ web** — ambos programar.py actualizados
+
+### **QUA-266 COMPLETADO — Fix SQL error material_filename en vista Actividad:**
+- ✅ Reemplazado `b.material_filename` (inexistente) por `EXISTS (SELECT 1 FROM formato_material fm WHERE fm.bof_id = b.id)`
+
+### **QUA-267 COMPLETADO — Fix tiktok_product_id faltante:**
+- ✅ Producto `cargador_coche_livopro` (id=18) actualizado con `tiktok_product_id = '1729632352728685357'`
+
+---
+
+## 🎉 **LOGROS ANTERIORES (2026-03-13, sesión 2)**
 
 ### **QUA-250 PARCIALMENTE RESUELTO — Scheduling overnight (06:00-02:00):**
 - ✅ **5 commits** con fixes incrementales para ventana overnight lotopdevicky
@@ -42,8 +64,8 @@
 - ✅ **Export de lotes automático** — `_export_lotes()` crea entradas en tabla `lotes` de Turso tras programar, para que operadoras vean los videos en PUBLICAR.bat
 - ✅ **Verificación completa** — tabla comparativa de ~20 características, todas coinciden CLI↔web
 
-### **Dashboard: 6 páginas**
-- Estado (calendario), Formatos, Productos, Programar, Cuentas, Importar
+### **Dashboard: 7 páginas**
+- Estado (calendario), Formatos, Productos, Programar, Cuentas, Importar, Analytics (stats + engagement)
 
 ---
 
@@ -448,7 +470,7 @@ Sara: programador.py → auto-import resultados de API → BD actualizada
 **Videos en BD:** 1670+ (migrados a Synology)
 **Almacenamiento:** Synology Drive con backup RAID (RECURSOS_BASE migrado de Google Drive)
 **BD:** Turso cloud (fuente única de verdad)
-**Dashboard:** 6 páginas (estado, formatos, stats, programar, cuentas, importar) — gestión completa desde web
+**Dashboard:** 7 páginas (estado, formatos, stats, programar, cuentas, importar, analytics) — gestión completa desde web
 **Sistema:** Operativo y estable
 
 ---
@@ -506,4 +528,4 @@ Sara definió migrar toda la gestión posible al panel web. Resultado: gestión 
 
 ---
 
-**Última actualización:** 2026-03-13 (v5.0 — PUBLICAR.bat directo BD, QUA-250 overnight fix)
+**Última actualización:** 2026-03-14 (v5.1 — Engagement analytics Fase 5, scheduler lifecycle fix)
