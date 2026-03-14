@@ -169,8 +169,13 @@ class TursoHTTPCursor:
         self._rowcount = -1
         self._description = None
 
-    def _http_call(self, statements):
-        """Ejecuta statements via HTTP pipeline. Devuelve results array."""
+    def _http_call(self, statements, _max_retries=3):
+        """Ejecuta statements via HTTP pipeline. Devuelve results array.
+
+        Incluye retry con backoff exponencial para errores de conexión.
+        """
+        import time as _time
+
         requests_body = []
         for stmt in statements:
             req_obj = {"type": "execute", "stmt": {"sql": stmt["sql"]}}
@@ -180,19 +185,25 @@ class TursoHTTPCursor:
         requests_body.append({"type": "close"})
 
         body = json.dumps({"requests": requests_body}).encode('utf-8')
-        req = Request(self._api_url, data=body, method='POST')
-        req.add_header('Authorization', f'Bearer {self._auth_token}')
-        req.add_header('Content-Type', 'application/json')
 
-        try:
-            resp = urlopen(req, timeout=30)
-            data = json.loads(resp.read().decode('utf-8'))
-            return data.get('results', [])
-        except HTTPError as e:
-            error_body = e.read().decode('utf-8', errors='replace')
-            raise RuntimeError(f"Turso HTTP error {e.code}: {error_body}")
-        except URLError as e:
-            raise RuntimeError(f"Turso connection error: {e.reason}")
+        for attempt in range(_max_retries):
+            try:
+                req = Request(self._api_url, data=body, method='POST')
+                req.add_header('Authorization', f'Bearer {self._auth_token}')
+                req.add_header('Content-Type', 'application/json')
+                resp = urlopen(req, timeout=30)
+                data = json.loads(resp.read().decode('utf-8'))
+                return data.get('results', [])
+            except HTTPError as e:
+                error_body = e.read().decode('utf-8', errors='replace')
+                raise RuntimeError(f"Turso HTTP error {e.code}: {error_body}")
+            except URLError as e:
+                if attempt < _max_retries - 1:
+                    wait = 2 ** (attempt + 1)
+                    log.warning(f"[DB] Turso connection error (attempt {attempt+1}/{_max_retries}), retrying in {wait}s: {e.reason}")
+                    _time.sleep(wait)
+                else:
+                    raise RuntimeError(f"Turso connection error after {_max_retries} attempts: {e.reason}")
 
     def execute(self, sql, params=None):
         """Ejecuta una query SQL contra Turso."""
@@ -765,6 +776,25 @@ CREATE TABLE IF NOT EXISTS historial_programacion (
 
 CREATE INDEX IF NOT EXISTS idx_historial_cuenta ON historial_programacion(cuenta);
 CREATE INDEX IF NOT EXISTS idx_historial_accion ON historial_programacion(accion);
+
+-- ============================================================
+-- TABLA 11: TIKTOK_STUDIO_DAILY (QUA-263: engagement CSV import)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS tiktok_studio_daily (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    cuenta TEXT NOT NULL,
+    fecha DATE NOT NULL,
+    video_views INTEGER DEFAULT 0,
+    profile_views INTEGER DEFAULT 0,
+    likes INTEGER DEFAULT 0,
+    comments INTEGER DEFAULT 0,
+    shares INTEGER DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(cuenta, fecha)
+);
+
+CREATE INDEX IF NOT EXISTS idx_studio_daily_cuenta ON tiktok_studio_daily(cuenta);
+CREATE INDEX IF NOT EXISTS idx_studio_daily_fecha ON tiktok_studio_daily(fecha);
 """
 
 
