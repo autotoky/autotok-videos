@@ -89,7 +89,15 @@ def get_videos_disponibles(cuenta, producto_filter=None):
             query += " AND p.nombre = ?"
             params.append(producto_filter)
 
-        query += " ORDER BY v.created_at ASC LIMIT 200"
+        query += """ ORDER BY
+            CASE p.estado_comercial
+                WHEN 'top_seller' THEN 1
+                WHEN 'validated' THEN 2
+                WHEN 'testing' THEN 3
+                ELSE 4
+            END,
+            v.created_at ASC
+            LIMIT 500"""
 
         cursor.execute(query, params)
         videos = [dict(row) for row in cursor.fetchall()]
@@ -806,11 +814,12 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
             video_seleccionado = None
 
             # Buscar en TODA la cola con restricciones progresivas:
-            #   Pasada 0: todas las restricciones + anti-consecutivos
-            #   Pasada 1: todas las restricciones (sin anti-consecutivos)
-            #   Pasada 2: sin SEO (si restricciones_relajadas)
-            #   Pasada 3: sin hook ni SEO (si restricciones_relajadas)
-            max_pasadas = 4 if restricciones_relajadas else 2
+            #   Pasada 0: todas las restricciones + anti-consecutivos + límites categoría
+            #   Pasada 1: todas las restricciones + límites categoría (sin anti-consecutivos)
+            #   Pasada 2: todas las restricciones sin límites categoría (overflow)
+            #   Pasada 3: sin SEO (si restricciones_relajadas)
+            #   Pasada 4: sin hook ni SEO (si restricciones_relajadas)
+            max_pasadas = 5 if restricciones_relajadas else 3
             for pasada in range(max_pasadas):
                 for video in cola_videos:
                     if video['id'] in videos_usados:
@@ -823,6 +832,12 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
                     producto_id = video['producto_id']
                     hook_id = video['hook_id']
                     seo_text = video['seo_text']
+                    video_cat = video.get('estado_comercial') or 'testing'
+
+                    # Pasadas 0-1: respetar límites de slots por categoría
+                    if pasada < 2:
+                        if cat_programados.get(video_cat, 0) >= cat_target.get(video_cat, 0):
+                            continue
 
                     # Pasada 0: anti-consecutivos
                     if pasada == 0 and ultimo_producto_id is not None and producto_id == ultimo_producto_id:
@@ -832,13 +847,13 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
                     if productos_usados_hoy.get(producto_id, 0) >= max_mismo_producto:
                         continue
 
-                    # Distancia hook (se salta en pasada 3)
-                    if pasada < 3:
+                    # Distancia hook (se salta en pasada 4)
+                    if pasada < 4:
                         if not cumple_distancia_hook(hook_id, posicion_calendario, videos_programados, distancia_minima_hook):
                             continue
 
-                    # Distancia SEO (se salta en pasada 2+)
-                    if pasada < 2:
+                    # Distancia SEO (se salta en pasada 3+)
+                    if pasada < 3:
                         if not cumple_distancia_seo(seo_text, posicion_calendario, videos_programados, distancia_seo):
                             continue
 
