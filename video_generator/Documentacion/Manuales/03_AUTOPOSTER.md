@@ -1,14 +1,14 @@
 # MANUAL: AUTOPOSTER (TikTok Publisher)
 
-**Version:** 2.0
-**Fecha:** 2026-03-07
+**Version:** 3.0
+**Fecha:** 2026-03-13
 **Para:** Sara y operadoras (Carol, Vicky)
 
 ---
 
 ## Que hace
 
-Publica automaticamente videos en TikTok Studio usando Chrome real + Playwright CDP. Lee videos programados desde BD (modo Sara) o desde JSON de lote (modo operadora), sube cada video, configura SEO/hashtags, selecciona fecha/hora y programa la publicacion. Actualiza estado en BD + Sheet simultaneamente.
+Publica automaticamente videos en TikTok Studio usando Chrome real + Playwright CDP. Lee videos programados directamente de la tabla `videos` de Turso (fuente de verdad unica), sube cada video, configura SEO/hashtags, selecciona fecha/hora y programa la publicacion. Actualiza estado en BD via API.
 
 **Nota tecnica:** El publisher NO usa Playwright Chromium. Lanza el Chrome real del sistema via subprocess con `--remote-debugging-port` y se conecta via CDP. No es necesario instalar `playwright install chromium`.
 
@@ -53,15 +53,17 @@ python tiktok_publisher.py --listar --cuenta ofertastrendy20
 
 ---
 
-## Modo operadora (con lotes JSON)
+## Modo operadora (con lotes via API)
 
 ### Flujo completo
 
 ```
-Sara: programador.py → BD + Sheet + auto-export JSON a Drive
-Operadora: PUBLICAR.bat → lee JSON → publica en TikTok → escribe resultados
-Sara: programador.py → auto-import resultados → BD + Sheet actualizados
+Sara: programador web o CLI → BD (Turso) + auto-export lote a tabla lotes
+Sara: edita hora/fecha/estado en panel → BD (Turso) actualizada directamente
+Operadora: PUBLICAR.bat → publicar_facil.py → lee tabla `videos` de Turso directamente → publica en TikTok → POST resultado a API
 ```
+
+**IMPORTANTE:** `publicar_facil.py` lee directamente de la tabla `videos` de Turso (fuente de verdad unica). Ya NO depende de la tabla `lotes` ni de JSON locales. Cualquier cambio que Sara haga en el panel se refleja inmediatamente porque la operadora lee de la misma BD. Los JSON locales en `_lotes/` se generan como cache temporal para compatibilidad con `run_from_lote()` del publisher.
 
 ### Setup operadora (primera vez)
 
@@ -122,11 +124,34 @@ Caracteristicas:
 
 ---
 
-## Lotes JSON
+## Lotes
 
 ### Que son
 
-"Ordenes de trabajo" en formato JSON que permiten a operadoras publicar sin tener BD. Se exportan automaticamente a Drive cuando Sara programa calendario.
+"Ordenes de trabajo" que representan los videos a publicar para una fecha. Historicamente se almacenaban en la tabla `lotes` de Turso y en JSON locales, pero esto generaba desincronizaciones. Desde la sesion del 13/03/2026, `publicar_facil.py` lee directamente de la tabla `videos` de Turso, que es la fuente de verdad unica.
+
+### Comportamiento de publicar_facil.py (lectura directa de BD)
+
+1. **Lee directamente de tabla `videos`** via Turso HTTP API (`db_config.py`) — consulta videos con estado `En Calendario` o `Error` y fecha >= hoy
+2. **Agrupa por fecha** y construye lotes en memoria
+3. **Genera JSON temporal** en `_lotes/` para compatibilidad con `run_from_lote()` del publisher
+4. **Solo si la BD no responde** (fallback), intenta leer de la API REST `/api/lotes`
+5. La tabla `lotes` de Turso sigue existiendo para compatibilidad con el programador, pero ya no es la fuente primaria para PUBLICAR.bat
+
+### SINCRONIZAR.bat (refrescar JSON locales)
+
+Si Sara quiere verificar visualmente que los JSON locales coinciden con el panel, puede ejecutar `SINCRONIZAR.bat`. Esto ejecuta `scripts/sync_lotes.py` que lee de la API y sobreescribe los JSON locales. No es necesario ejecutarlo antes de PUBLICAR.bat — PUBLICAR.bat lee de la tabla `videos` directamente.
+
+```bash
+# Sincronizar todas las cuentas
+python scripts/sync_lotes.py
+
+# Solo una cuenta
+python scripts/sync_lotes.py --cuenta totokydeals
+
+# Solo una fecha
+python scripts/sync_lotes.py --fecha 2026-03-13
+```
 
 ### Formato de rutas en lotes
 
@@ -177,12 +202,12 @@ G:\Mi unidad\material_programar\
 
 **NOTA:** La estructura de carpetas en Drive puede tener o no la subcarpeta `calendario/` dependiendo de como se copien los archivos. Los lotes ahora guardan la ruta relativa completa para que el publisher pueda encontrar los videos en cualquier caso.
 
-### Auto-export/import
+### Auto-export al programar
 
-Al ejecutar `programador.py`:
-1. **Auto-import primero:** importa resultados pendientes de operadoras (garantia anti-desync)
-2. Genera calendario y escribe en Sheet
-3. **Auto-export despues:** genera lotes JSON para las fechas programadas
+Al ejecutar el programador (web o CLI):
+1. Genera calendario y actualiza BD (Turso)
+2. **Auto-export:** crea/actualiza entradas en tabla `lotes` de Turso con `_export_lotes()`
+3. Los JSON locales se actualizan cuando la operadora ejecuta PUBLICAR.bat (publicar_facil.py los sobreescribe con datos de la API)
 
 ---
 
@@ -223,7 +248,7 @@ Para cada video, el publisher:
 3. Escribe descripcion con SEO text + hashtags
 4. Selecciona fecha y hora programada
 5. Hace click en "Schedule"
-6. Actualiza estado: En Calendario → Programado (en BD+Sheet o en JSON)
+6. Actualiza estado: En Calendario → Programado (via API → Turso)
 
 **Si falla:** el video se marca como "Error" (no como "Descartado") y se puede reintentar en la siguiente ejecucion.
 
@@ -242,9 +267,9 @@ El publisher envia email al terminar con resumen de resultados, incluyendo error
 **"No se encontro config_operadora.json"** → Ejecutar INSTALAR.bat
 
 **"No hay videos pendientes"** → Posibles causas:
-1. Sara debe programar nuevos videos con programador.py
-2. El lote JSON ya tiene resultados para todos los videos (ya se publicaron)
-3. La API devolvio datos sin el lote esperado y `publicar_facil.py` no busco localmente (QUA-184, bug conocido). **Workaround:** usar `tiktok_publisher.py --lote RUTA_JSON` directamente
+1. Sara debe programar nuevos videos con programador web o CLI
+2. Todos los videos ya han sido publicados (estado != `En Calendario` ni `Error`)
+3. La conexion con Turso falla y el fallback a la API tampoco responde. **Workaround:** usar `tiktok_publisher.py --lote RUTA_JSON` directamente si hay un JSON disponible
 
 **Chrome abre pero no hay sesion de TikTok:**
 1. Cerrar Chrome completamente
@@ -269,4 +294,4 @@ El publisher envia email al terminar con resumen de resultados, incluyendo error
 
 ---
 
-**Ultima actualizacion:** 2026-03-09 (QUA-184: Chrome auto-deteccion, filepath fallback por filename)
+**Ultima actualizacion:** 2026-03-13 (publicar_facil.py reescrito: lee directo de tabla `videos` via Turso, elimina dependencia de tabla `lotes` y JSON locales como fuente primaria)

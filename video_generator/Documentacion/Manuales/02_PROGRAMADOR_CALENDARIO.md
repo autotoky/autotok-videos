@@ -39,8 +39,9 @@ El programador web tiene **paridad completa** con el CLI. Ambos aplican exactame
 - Distribucion lifecycle: top_seller / validated / testing segun porcentajes de config
 - Horas ocupadas: no solapar con videos ya programados en la misma fecha
 - Gap-finding: busqueda de huecos para programacion de producto especifico
-- Overnight window: soporte para ventanas horarias que cruzan medianoche (ej: 22:00-09:00)
+- Overnight window: soporte para ventanas horarias que cruzan medianoche (ej: 06:00-02:00). Internamente, las horas post-medianoche se representan con +24h (ej: 02:00 = 1560 min). Al programar para hoy: si la hora actual esta en la franja de dia, se limita a medianoche; si esta en la franja post-medianoche, se ajusta la hora actual con +24h para comparacion correcta (QUA-250, 5 commits)
 - Buffer 30 min: si se programa para hoy, no asigna horas que ya han pasado + 30min margen
+- CET/CEST en Vercel: `_now_cet()` calcula la hora correcta de España en Vercel (que usa UTC), con cambio automatico DST (ultimo domingo marzo → CEST +2h, ultimo domingo octubre → CET +1h)
 - 2 pasadas por defecto (relajacion a 4 solo disponible en CLI interactivo)
 - Anti-duplicados: excluye videos con estado != 'Generado'
 - Export automatico de lotes a tabla `lotes` de Turso para que operadoras los vean en PUBLICAR.bat
@@ -147,18 +148,20 @@ python rollback_calendario.py CUENTA --video-ids vid1,vid2,vid3 --si
 
 ---
 
-## Editar fecha/hora desde dashboard estado (QUA-209)
+## Editar fecha/hora desde dashboard estado (QUA-209, QUA-229)
 
 **URL:** `/api/estado`
 
 Para cambiar la fecha u hora de un video ya programado:
 
 1. Ir al dashboard de estado
-2. Click en la fecha del video → aparece input date, editar y pulsar Enter o click fuera
-3. Click en la hora del video → aparece input time, editar y pulsar Enter o click fuera
+2. Click en la fecha del video → aparece input date, editar y pulsar Enter o click ✓
+3. Click en la hora del video → aparece input time, editar y pulsar Enter o click ✓
 4. Feedback visual: borde verde = guardado OK
 
 **Nota:** No se puede editar fecha/hora de videos ya publicados (con tiktok_post_id).
+
+**Sincronización con lotes (QUA-244):** Cada cambio de fecha/hora/estado en el panel actualiza automáticamente el lote correspondiente en Turso via `_sincronizar_lote()`. Si se cambia la fecha, el video se mueve del lote antiguo al nuevo. Las operadoras siempre obtienen los datos actualizados porque `publicar_facil.py` lee de la API (Turso) primero, no del JSON local. Para refrescar los JSON locales manualmente, usar `SINCRONIZAR.bat`.
 
 ---
 
@@ -182,4 +185,4 @@ Generado → En Calendario → Programado (automatico, via publisher)
 
 ---
 
-**Ultima actualizacion:** 2026-03-13 (QUA-228: paridad completa CLI↔web, overnight window, buffer 30min, export lotes automatico)
+**Ultima actualizacion:** 2026-03-13 (QUA-228: paridad completa CLI↔web, QUA-250: overnight scheduling fix con _now_cet() y caps daytime/after-midnight, _export_lotes corregido para no pisar lotes anteriores)

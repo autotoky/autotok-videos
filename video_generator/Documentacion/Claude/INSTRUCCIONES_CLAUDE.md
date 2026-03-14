@@ -46,7 +46,7 @@ AutoTok es un sistema Python que automatiza la creacion y publicacion de videos 
    - **Kevin:** `C:\Users\gasco\SynologyDrive\kevin` (montada en `/mnt/SynologyDrive/kevin`) — subset para operadoras (INSTALAR.bat, PUBLICAR.bat, publisher)
    - **Videos:** `C:\Users\gasco\SynologyDrive\{cuenta}\{video_id}.mp4` — almacenamiento plano de videos
 
-   Kevin NO es una copia del proyecto — es un subset curado. Cuando se modifique CUALQUIER archivo que este en kevin, **copiar SIEMPRE de proyecto → kevin despues de cada cambio**. Archivos de kevin: `tiktok_publisher.py, config.py, api_client.py, publicar_facil.py, logger.py, drive_sync.py, config_publisher.json, config_operadora.json, VERSION, INSTALAR.bat, PUBLICAR.bat, scripts/db_config.py, scripts/setup_operadora.py, scripts/sheet_sync.py, scripts/email_notifier.py, scripts/lote_manager.py`.
+   Kevin NO es una copia del proyecto — es un subset curado. Cuando se modifique CUALQUIER archivo que este en kevin, **copiar SIEMPRE de proyecto → kevin despues de cada cambio**. Archivos de kevin: `tiktok_publisher.py, config.py, api_client.py, publicar_facil.py, logger.py, drive_sync.py, config_publisher.json, config_operadora.json, VERSION, INSTALAR.bat, PUBLICAR.bat, SINCRONIZAR.bat, scripts/db_config.py, scripts/setup_operadora.py, scripts/sheet_sync.py, scripts/email_notifier.py, scripts/lote_manager.py, scripts/sync_lotes.py`.
 
    Si la carpeta SynologyDrive no esta montada, pedir a Sara que la monte antes de hacer cambios. Script de referencia: `copiar_kevin_a_synology.py`.
 
@@ -220,7 +220,7 @@ El documento `Tecnico/CASOS_DE_USO.md` y su diagrama visual `FLUJOS_CASOS_DE_USO
 | Archivo | Funcion |
 |---------|---------|
 | `tiktok_publisher.py` | Publicacion automatica en TikTok Studio |
-| `publicar_facil.py` | Wrapper amigable para operadoras — multi-lote: muestra todos los lotes pendientes (A, B, C...), la operadora elige cuales publicar, y se ejecutan sin interrupcion |
+| `publicar_facil.py` | Wrapper amigable para operadoras — lee directamente de tabla `videos` (Turso), muestra todos los pendientes agrupados por fecha (A, B, C...), la operadora elige cuales publicar, y se ejecutan sin interrupcion |
 | `PUBLICAR.bat` | Doble-click para que las operadoras lancen la publicacion |
 | `INSTALAR.bat` | Instalacion inicial en PC de operadora |
 | `scripts/setup_operadora.py` | Setup de cuenta, Chrome y login TikTok |
@@ -281,9 +281,9 @@ El documento `Tecnico/CASOS_DE_USO.md` y su diagrama visual `FLUJOS_CASOS_DE_USO
 11. **config_operadora.json es per-PC (QUA-184).** Se guarda en `%LOCALAPPDATA%\AutoTok\config_operadora.json`, fuera de Synology Drive. Cada PC tiene su propia config independiente. `_find_config_operadora()` busca: (1) LOCALAPPDATA, (2) kevin/ (legacy fallback). `setup_operadora.py` guarda en ambos sitios (LOCALAPPDATA + kevin/ backup). El publisher carga config una sola vez por video via `_load_config_operadora(lote_path)`.
 11. **productos_escaparate en config_publisher.json** mapea nombre_producto → termino de busqueda. PERO la busqueda real en TikTok Shop es por PRODUCT ID extraido de la URL, NO por el texto de productos_escaparate. No inventar terminos de busqueda.
 
-### Multi-lote (publicar_facil.py)
-12. **Flujo multi-lote hibrido (QUA-184).** `buscar_todos_lotes_pendientes()` busca en AMBAS fuentes (API + local) y hace merge por fecha. API gana en conflictos (resultados mas frescos). Local complementa con lotes que solo existen en disco (sincronizados via Synology pero no exportados a API). Los muestra al operador con letras (A, B, C...). El operador elige cuales publicar. Luego publica secuencialmente SIN mas intervencion. Al final muestra resumen acumulado.
-13. **API lotes: retry de errores.** El endpoint GET /api/lotes busca lotes de los ultimos 7 dias (no solo del dia actual). Cuenta como "pendiente" cualquier video sin resultado O con estado=Error. Esto permite reintentar automaticamente videos que fallaron en dias anteriores.
+### Publicacion (publicar_facil.py)
+12. **Lectura directa de tabla `videos` (2026-03-13).** `buscar_todos_lotes_pendientes()` lee directamente de la tabla `videos` de Turso via HTTP API (`db_config.py`). Consulta videos con estado `En Calendario` o `Error` y fecha >= hoy. Agrupa por fecha, construye lotes en memoria y genera JSON temporal en `_lotes/` para compatibilidad con `run_from_lote()` del publisher. Ya NO depende de la tabla `lotes` ni de la API REST `/api/lotes` como fuente primaria. Fallback: si la BD falla, intenta la API REST. Los muestra al operador con letras (A, B, C...). El operador elige cuales publicar. Luego publica secuencialmente SIN mas intervencion. Al final muestra resumen acumulado.
+13. **Tabla `lotes` (legacy).** Sigue existiendo para compatibilidad con `_export_lotes()` del programador web y para el endpoint GET /api/lotes. El endpoint busca lotes de los ultimos 7 dias y cross-checks con tabla `videos`. Pero PUBLICAR.bat ya no la usa como fuente primaria.
 14. **TikTok requiere 15-20 minutos de margen** para programar videos. Si se intenta programar con menos margen, TikTok rechaza la hora. Ticket QUA-175 abierto para resolver esto (pendiente decision de approach).
 
 ### Arquitectura de almacenamiento (QUA-151)
@@ -301,4 +301,4 @@ El documento `Tecnico/CASOS_DE_USO.md` y su diagrama visual `FLUJOS_CASOS_DE_USO
 
 ---
 
-**Ultima actualizacion:** 2026-03-13 (QUA-228: programador web paridad CLI, Sheet eliminada, dashboard 6 paginas)
+**Ultima actualizacion:** 2026-03-13 (publicar_facil.py reescrito: lectura directa tabla `videos`, QUA-250 overnight scheduling fix, _export_lotes corregido)

@@ -1,15 +1,40 @@
-# 📊 ESTADO ACTUAL EJECUTIVO - AUTOTOK v4.9
+# 📊 ESTADO ACTUAL EJECUTIVO - AUTOTOK v5.0
 
 **Fecha:** 2026-03-13
-**Versión:** 4.9
-**Estado:** Programador web con paridad completa CLI, export lotes automático, overnight scheduling
+**Versión:** 5.0
+**Estado:** PUBLICAR.bat lee directo de BD (tabla videos), overnight scheduling fix, export lotes corregido
 
 ---
 
-## 🎉 **ÚLTIMOS LOGROS (2026-03-13)**
+## 🎉 **ÚLTIMOS LOGROS (2026-03-13, sesión 2)**
+
+### **QUA-250 PARCIALMENTE RESUELTO — Scheduling overnight (06:00-02:00):**
+- ✅ **5 commits** con fixes incrementales para ventana overnight lotopdevicky
+- ✅ **Fix fecha:** overnight date bump solo se aplica cuando `dias > 1` (commit `6fe9051`)
+- ✅ **Fix after-midnight detection:** cuando hora actual está en franja post-medianoche, se suma +24h para comparación interna (commit `7920b07`)
+- ✅ **Fix daytime cap:** si hora actual es de día (ej: 19:30), cap `fin_min` a medianoche para no generar slots a las 00:xx/01:xx que ya pasaron (commit `458ffaa`)
+- ✅ **`_now_cet()` function:** calcula CET/CEST correctamente en Vercel (que usa UTC)
+- ⏳ **Pendiente verificación en producción** — lógica correcta en tests locales
+
+### **PUBLICAR.bat reescrito — Lectura directa de tabla `videos` (elimina Frankenstein):**
+- ✅ **Root cause:** `publicar_facil.py` tenía 3 fuentes de datos (tabla lotes, JSON files, tabla videos) que no siempre coincidían
+- ✅ **`buscar_todos_lotes_pendientes()` reescrito** — lee directamente de tabla `videos` via Turso HTTP API (commit `74a3f75`)
+- ✅ **`_export_lotes()` corregido** — ya no pisa lotes anteriores al programar nuevos videos. Consulta ALL `En Calendario` para la fecha (commit `be4538f`)
+- ✅ **Copiado a Kevin** — `publicar_facil.py` actualizado en SynologyDrive/kevin/
+
+### **QUA-229 COMPLETADO — Fix inline edit hora/fecha en dashboard Calendario:**
+- ✅ **Root cause:** `editTime()`, `editDate()` y `saveSchedule()` usaban `VIDEOS[gidx]` pero `gidx` es índice del array filtrado (`getFiltered()`), no del original. Con tabla ordenada/filtrada, editaba el video incorrecto
+- ✅ **Fix:** Cambio a `getFiltered()[gidx]` en las 3 funciones (commit `18a38c8`)
+- ✅ Verificado por Sara: "ya se guarda el edit"
+
+### **QUA-244 COMPLETADO — Sincronización panel ↔ lotes (datos siempre iguales):**
+- ✅ **`_sincronizar_lote()`** en `api/estado.py` mantiene Turso sincronizado con cada cambio del panel (hora, fecha, estado, es_ia)
+- ✅ **`publicar_facil.py` lee de tabla `videos` directamente** — la operadora siempre publica con datos frescos de la BD
+- ✅ **`scripts/sync_lotes.py` + `SINCRONIZAR.bat`** creados para refrescar JSON locales manualmente si se necesita verificación visual
+- ✅ Principio: la tabla `videos` (Turso) es la fuente de verdad única
 
 ### **QUA-228 COMPLETADO — Programador web: paridad completa con CLI:**
-- ✅ **Overnight window** — ventana horaria nocturna (ej: 22:00-09:00) funciona correctamente
+- ✅ **Overnight window** — ventana horaria nocturna (ej: 06:00-02:00) funciona correctamente
 - ✅ **Buffer 30 min** — no se asignan horas en el pasado al programar para hoy
 - ✅ **Todas las restricciones CLI portadas:** distancia hook, distancia SEO (dinámica), anti-consecutivo por producto, testing acumulativo, distribución por categoría lifecycle, horas ocupadas, gap-finding para producto específico
 - ✅ **2 pasadas por defecto** (igual que CLI; 4 solo con relajación interactiva)
@@ -297,7 +322,7 @@
 - ✅ **BD Turso cloud** — fuente de verdad única (QUA-155)
 - ✅ **Almacenamiento Synology** — estructura plana, sin movimiento de archivos (QUA-151)
 - ✅ **Publicación automática en TikTok Studio** (tiktok_publisher.py)
-- ✅ **Flujo operadoras multi-lote** (PUBLICAR.bat con selección A/B/C) — sin BD en PC operadora
+- ✅ **Flujo operadoras** (PUBLICAR.bat lee directo de tabla `videos` via Turso) — sin BD local en PC operadora
 - ✅ **Auto-export/import** de lotes en programador
 - ✅ **Dashboard HTML v2.0** (QUA-92) — reemplaza Sheet como vista operativa
 - ✅ Reemplazo automático de Descartado/Violation
@@ -471,11 +496,14 @@ Sara definió migrar toda la gestión posible al panel web. Resultado: gestión 
 8. ✅ **QUA-70/185/186/201/208**: Panel formatos completo + material por formato + generación OK
 9. ✅ **QUA-209**: Fecha/hora editable en dashboard estado
 10. ✅ **QUA-217**: Audit completo — limpieza, Sheet eliminada, panel cuentas, toggle formatos, desprogramar
-11. ⏳ **QUA-202 parte 2**: Generación overlay/SEO diferenciada entre formatos narrativos y de oferta
-12. ⏳ **QUA-36 Fase 3**: Gráficos de tendencia, exportar datos
-13. ⏳ **QUA-175**: TikTok requiere 15-20 min de antelación para programar (valorar solución)
-14. ⏳ **QUA-173**: Dashboard: permitir devolver video a estado Generado
+11. ✅ **QUA-229**: Fix inline edit hora/fecha en dashboard (getFiltered() fix)
+12. ✅ **QUA-244**: Sincronización panel ↔ lotes (API-first, sync_lotes.py)
+13. ⏳ **QUA-250**: Overnight scheduling fix — verificar en producción
+14. ⏳ **QUA-202 parte 2**: Generación overlay/SEO diferenciada entre formatos narrativos y de oferta
+15. ⏳ **QUA-36 Fase 3**: Gráficos de tendencia, exportar datos
+16. ⏳ **QUA-175**: TikTok requiere 15-20 min de antelación para programar (valorar solución)
+17. ⏳ **QUA-173**: Dashboard: permitir devolver video a estado Generado
 
 ---
 
-**Última actualización:** 2026-03-13
+**Última actualización:** 2026-03-13 (v5.0 — PUBLICAR.bat directo BD, QUA-250 overnight fix)
