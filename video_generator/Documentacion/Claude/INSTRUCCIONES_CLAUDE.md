@@ -1,7 +1,7 @@
 # INSTRUCCIONES DE TRABAJO PARA CLAUDE
 
-**Version:** 2.3
-**Fecha:** 2026-03-13
+**Version:** 2.4
+**Fecha:** 2026-03-16
 **Proyecto:** AutoTok — Sistema de generacion y publicacion automatica de videos TikTok
 
 ---
@@ -19,7 +19,7 @@ AutoTok es un sistema Python que automatiza la creacion y publicacion de videos 
 - Playwright + Chrome real via CDP (publicacion en TikTok Studio)
 - Synology Drive (`C:\Users\gasco\SynologyDrive`) — almacenamiento unico de videos + distribucion a operadoras
 - API Vercel + Turso (coordinacion de lotes/resultados entre PCs) — BD unificada (QUA-155)
-- Dashboard web Vercel: 7 paginas (estado, formatos, stats, programar, cuentas, importar, analytics)
+- Dashboard web Vercel: 7 paginas con shell unificado (estado/calendario, programar, analytics x4 vistas, productos, formatos, cuentas, importar). Shell compartido via `shell_html()` en `_helpers.py` (QUA-233)
 - Google Sheets ELIMINADA (QUA-217) — no hay codigo activo que escriba en Sheet
 
 **Repositorio:** La carpeta raiz del proyecto es `video_generator/`
@@ -179,6 +179,10 @@ Si hay un documento de propuesta aprobado por Sara (ej: PROPUESTA_QUA92), seguir
 
 Si algo no esta claro, preguntar. Es infinitamente mejor preguntar una vez que romper algo y tener que rehacer el trabajo. Aplica especialmente a: eliminacion de archivos/funciones, cambios de arquitectura, y cualquier cosa que afecte a flujos en produccion.
 
+### 9b. Todo trabajo pasa por un ticket en Linear
+
+**Antes de empezar cualquier tarea**, comprobar si existe ticket en Linear. Si no existe, crearlo con: titulo claro en espanol, descripcion del trabajo a hacer y archivos implicados. Si existe, leerlo para entender el contexto. Durante el trabajo, actualizar el ticket con cada decision importante o cambio de estado. Al terminar, marcar Done con comentario resumen. Sin ticket = no se trabaja. Esto asegura que si la sesion se compacta o se cambia de sesion, nada se pierde — el ticket tiene toda la historia.
+
 ### 9. Mantener los casos de uso actualizados
 
 El documento `Tecnico/CASOS_DE_USO.md` y su diagrama visual `FLUJOS_CASOS_DE_USO.html` son la referencia de lo que el sistema DEBE hacer. Antes de implementar cualquier cambio, verificar que responde a un caso de uso real. Tras implementar, actualizar el estado del caso correspondiente. Si se descubre un caso nuevo, añadirlo al documento.
@@ -301,4 +305,4 @@ El documento `Tecnico/CASOS_DE_USO.md` y su diagrama visual `FLUJOS_CASOS_DE_USO
 
 ---
 
-**Ultima actualizacion:** 2026-03-14 (Fase 5 engagement analytics, scheduler lifecycle fix, 7 paginas dashboard)
+**Ultima actualizacion:** 2026-03-16 (QUA-233 dashboard unificado: shell compartido + body redesign pills/title-bars/tokens CSS)

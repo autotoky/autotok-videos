@@ -1,12 +1,41 @@
 # 📊 ESTADO ACTUAL EJECUTIVO - AUTOTOK v5.0
 
-**Fecha:** 2026-03-14
-**Versión:** 5.1
-**Estado:** Engagement analytics (Fase 5), scheduler lifecycle distribution fix, 7 páginas dashboard
+**Fecha:** 2026-03-16
+**Versión:** 5.2
+**Estado:** Dashboard unificado (QUA-233), 7 páginas con shell compartido + pills + title-bars
 
 ---
 
-## 🎉 **ÚLTIMOS LOGROS (2026-03-14)**
+## 🎉 **ÚLTIMOS LOGROS (2026-03-16)**
+
+### **QUA-233 EN PROGRESO — Dashboard unificado (shell + body redesign):**
+
+**Fase A — Shell compartido (completado):**
+- ✅ **`shell_html()` en `_helpers.py`** — genera header, nav principal, sub-nav y footer unificados
+- ✅ **7 tickets shell cerrados** (QUA-271 a QUA-277) — todas las páginas integradas
+- ✅ **Sub-nav activa** — analítica marca correctamente la vista actual
+- ✅ **Título dinámico** — cada vista de analítica tiene su propio título
+
+**Fase B — Body redesign (completado):**
+- ✅ **7 tickets body cerrados** (QUA-280 a QUA-286) — todas las secciones rediseñadas
+- ✅ **Pill design pattern** — KPIs con label/valor/sub-data, borde izquierdo 4px de color
+- ✅ **Title-bars unificados** — `<h1>` + botones de acción
+- ✅ **Tokens CSS del shell** — eliminados aliases locales (`--card, --primary, --error`)
+- ✅ **Ancho unificado** — todas las páginas a `max-width:1400px`
+
+**Fase C — Feedback de Sara (en curso):**
+- ✅ Calendario: quitado info redundante del title-bar, Desprogramar movido arriba
+- ✅ Analítica: eliminadas tabs duplicadas, font-size aumentado, sub-nav activa
+- ✅ Productos: Nuevo producto movido al title-bar
+- ⏳ Pendiente: feedback del resto de secciones
+
+**Tickets pendientes de QUA-233:**
+- ⏳ **QUA-278**: Eliminar ventas.py (mover modal a analytics)
+- ⏳ **QUA-279**: Cleanup final (prototipo misc.py, docs)
+
+---
+
+## 🎉 **LOGROS ANTERIORES (2026-03-14)**
 
 ### **QUA-263 COMPLETADO — Fase 5 Analytics: Engagement híbrido (CSV TikTok Studio):**
 - ✅ **Tabla `tiktok_studio_daily`** — cuenta, fecha, video_views, profile_views, likes, comments, shares
@@ -64,8 +93,10 @@
 - ✅ **Export de lotes automático** — `_export_lotes()` crea entradas en tabla `lotes` de Turso tras programar, para que operadoras vean los videos en PUBLICAR.bat
 - ✅ **Verificación completa** — tabla comparativa de ~20 características, todas coinciden CLI↔web
 
-### **Dashboard: 7 páginas**
-- Estado (calendario), Formatos, Productos, Programar, Cuentas, Importar, Analytics (stats + engagement)
+### **Dashboard: 7 páginas (rediseño unificado QUA-233)**
+- Estado (calendario), Formatos, Productos, Programar, Cuentas, Importar, Analytics (4 vistas)
+- Shell compartido: header + nav + sub-nav + footer via `shell_html()`
+- KPIs en formato pill, title-bars, tokens CSS, ancho unificado 1400px
 
 ---
 
@@ -528,4 +559,4 @@ Sara definió migrar toda la gestión posible al panel web. Resultado: gestión 
 
 ---
 
-**Última actualización:** 2026-03-14 (v5.1 — Engagement analytics Fase 5, scheduler lifecycle fix)
+**Última actualización:** 2026-03-16 (v5.2 — Dashboard unificado QUA-233, shell + body redesign)
