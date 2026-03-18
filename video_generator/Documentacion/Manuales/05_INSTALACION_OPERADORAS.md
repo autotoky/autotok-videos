@@ -1,7 +1,7 @@
 # MANUAL: INSTALACION Y USO PARA OPERADORAS
 
-**Version:** 1.0
-**Fecha:** 2026-03-07
+**Version:** 1.1
+**Fecha:** 2026-03-18
 **Para:** Sara (como referencia para onboarding de Carol y Vicky)
 
 ---
@@ -167,7 +167,7 @@ G:\Mi unidad\material_programar\
         └── lote_ofertastrendy20_2026-03-08.json
 ```
 
-Los lotes JSON pueden referenciar los videos con rutas relativas (ej: `calendario/07-03-2026/video.mp4`) o con rutas absolutas del PC de Sara. El publisher resuelve la ruta con multiples fallbacks: ruta relativa completa, fallback por filename (solo el nombre del .mp4 en `drive_path/cuenta/`), y ruta absoluta adaptada. Con la estructura plana de Synology (QUA-151), los videos estan directamente en `SynologyDrive/{cuenta}/video.mp4` y el fallback por filename los encuentra siempre.
+Los lotes JSON siempre usan rutas **relativas** (solo el nombre del archivo, ej: `video_id.mp4`). **QUA-299:** Esto permite que el publisher funcione correctamente en PCs de operadoras. El publisher resuelve la ruta con multiples fallbacks: ruta relativa (solo el nombre del .mp4 en `drive_path/cuenta/`), fallback por filename, y ruta absoluta adaptada. Con la estructura plana de Synology (QUA-151), los videos estan directamente en `SynologyDrive/{cuenta}/video.mp4` y el fallback por filename los encuentra siempre.
 
 ---
 
@@ -222,4 +222,4 @@ CADA DIA:
 
 ---
 
-**Ultima actualizacion:** 2026-03-09 (QUA-184: Chrome auto-deteccion, filepath fallback)
+**Ultima actualizacion:** 2026-03-18 (QUA-299: rutas relativas en lotes JSON)

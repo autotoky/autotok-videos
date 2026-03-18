@@ -1,37 +1,39 @@
-# 📊 ESTADO ACTUAL EJECUTIVO - AUTOTOK v5.0
+# 📊 ESTADO ACTUAL EJECUTIVO - AUTOTOK v5.3
 
-**Fecha:** 2026-03-16
-**Versión:** 5.2
-**Estado:** Dashboard unificado (QUA-233), 7 páginas con shell compartido + pills + title-bars
+**Fecha:** 2026-03-18
+**Versión:** 5.3 — Versión estable
+**Estado:** Dashboard completo, scheduling mejorado, sistema operativo y estable. Manuales actualizados para formación operadoras.
 
 ---
 
-## 🎉 **ÚLTIMOS LOGROS (2026-03-16)**
+## 🎉 **ÚLTIMOS LOGROS (2026-03-18)**
 
-### **QUA-233 EN PROGRESO — Dashboard unificado (shell + body redesign):**
+### **11 tickets cerrados — Mejoras dashboard + scheduling + operadoras:**
 
-**Fase A — Shell compartido (completado):**
-- ✅ **`shell_html()` en `_helpers.py`** — genera header, nav principal, sub-nav y footer unificados
-- ✅ **7 tickets shell cerrados** (QUA-271 a QUA-277) — todas las páginas integradas
-- ✅ **Sub-nav activa** — analítica marca correctamente la vista actual
-- ✅ **Título dinámico** — cada vista de analítica tiene su propio título
+**Dashboard Analytics:**
+- ✅ **QUA-292**: Totales de tabla movidos arriba (thead, debajo de headers) en Producto y Video
+- ✅ **QUA-290**: Columna Producto añadida a tabla Inventario en Actividad
+- ✅ **QUA-289**: Fecha publicación extraída de Snowflake ID (tiktok_post_id >> 32). Funciona para TODOS los videos. Nueva columna "Días" = días hasta primera venta (color: verde ≤1d, naranja ≤7d, rojo >7d, promedio en totales)
+- ✅ **QUA-288**: Formato vacío en inventario → fallback a gancho (overlay_line1)
+- ✅ **QUA-221**: Importar marca desde ventas xlsx (columna "Nombre de la tienda") + backfill retroactivo
 
-**Fase B — Body redesign (completado):**
-- ✅ **7 tickets body cerrados** (QUA-280 a QUA-286) — todas las secciones rediseñadas
-- ✅ **Pill design pattern** — KPIs con label/valor/sub-data, borde izquierdo 4px de color
-- ✅ **Title-bars unificados** — `<h1>` + botones de acción
-- ✅ **Tokens CSS del shell** — eliminados aliases locales (`--card, --primary, --error`)
-- ✅ **Ancho unificado** — todas las páginas a `max-width:1400px`
+**Scheduling:**
+- ✅ **QUA-298**: Nueva restricción distancia mínima entre mismo producto (min(N-1, 3)). Paridad CLI ↔ web
+- ✅ **QUA-230**: Panel "Ver restricciones aplicadas" read-only en Programar
+- ✅ **QUA-250**: Verificado overnight scheduling en producción
 
-**Fase C — Feedback de Sara (en curso):**
-- ✅ Calendario: quitado info redundante del title-bar, Desprogramar movido arriba
-- ✅ Analítica: eliminadas tabs duplicadas, font-size aumentado, sub-nav activa
-- ✅ Productos: Nuevo producto movido al title-bar
-- ⏳ Pendiente: feedback del resto de secciones
+**Operadoras + Sistema:**
+- ✅ **QUA-299**: Filepath relativo en publicar_facil.py (fix cross-PC para operadoras)
+- ✅ **QUA-55**: Notificación email al terminar generación de videos
+- ✅ **QUA-233**: Layout unificado cerrado (QUA-278 cleanup en Backlog)
+- ✅ **QUA-220**: Cerrado (campo descripcion ya existe)
+- ✅ Fix conteo audios en listado de formatos (formato_material vs legacy)
 
-**Tickets pendientes de QUA-233:**
-- ⏳ **QUA-278**: Eliminar ventas.py (mover modal a analytics)
-- ⏳ **QUA-279**: Cleanup final (prototipo misc.py, docs)
+### **QUA-233 COMPLETADO — Dashboard unificado:**
+- ✅ Shell compartido (`shell_html()`) + 7 páginas integradas
+- ✅ Body redesign: pills, title-bars, tokens CSS, ancho 1400px
+- ✅ Feedback de Sara incorporado
+- ⏳ **QUA-278** (Backlog): Eliminar ventas.py + liberar slot Vercel
 
 ---
 
@@ -496,13 +498,15 @@ Sara: programador.py → auto-import resultados de API → BD actualizada
 
 ## 📈 **PRODUCCIÓN ACTUAL**
 
-**Material listo:** 25 productos, 27 formatos con material asignado via formato_material
+**Material listo:** 25+ productos, formatos con material asignado via formato_material
 **Cuentas activas:** 3 (ofertastrendy20, lotopdevicky, totokydeals)
 **Videos en BD:** 1670+ (migrados a Synology)
 **Almacenamiento:** Synology Drive con backup RAID (RECURSOS_BASE migrado de Google Drive)
 **BD:** Turso cloud (fuente única de verdad)
-**Dashboard:** 7 páginas (estado, formatos, stats, programar, cuentas, importar, analytics) — gestión completa desde web
-**Sistema:** Operativo y estable
+**Dashboard:** 7 páginas con shell unificado — gestión completa desde web
+**Notificaciones:** Email automático al terminar generación (QUA-55) y publicación (QUA-41)
+**Manuales:** 6 manuales operativos actualizados (v1.1/v5.1) — listos para formación operadoras
+**Sistema:** Operativo y estable — versión 5.3 marcada como estable
 
 ---
 
@@ -551,12 +555,14 @@ Sara definió migrar toda la gestión posible al panel web. Resultado: gestión 
 10. ✅ **QUA-217**: Audit completo — limpieza, Sheet eliminada, panel cuentas, toggle formatos, desprogramar
 11. ✅ **QUA-229**: Fix inline edit hora/fecha en dashboard (getFiltered() fix)
 12. ✅ **QUA-244**: Sincronización panel ↔ lotes (API-first, sync_lotes.py)
-13. ⏳ **QUA-250**: Overnight scheduling fix — verificar en producción
-14. ⏳ **QUA-202 parte 2**: Generación overlay/SEO diferenciada entre formatos narrativos y de oferta
-15. ⏳ **QUA-36 Fase 3**: Gráficos de tendencia, exportar datos
-16. ⏳ **QUA-175**: TikTok requiere 15-20 min de antelación para programar (valorar solución)
-17. ⏳ **QUA-173**: Dashboard: permitir devolver video a estado Generado
+13. ✅ **QUA-250**: Overnight scheduling fix — verificado en producción
+14. ⏳ **QUA-227**: CTAs editables en dashboard (análisis hecho, pendiente implementación)
+15. ⏳ **QUA-310**: Campo carpeta_material para desacoplar nombre BD de carpeta disco
+16. ⏳ **QUA-305**: Checkboxes para ajustar restricciones en programador
+17. ⏳ **QUA-202 parte 2**: Generación overlay/SEO diferenciada entre formatos narrativos y de oferta
+18. ⏳ **QUA-224**: Acciones en lote en calendario (bulk edit estados, bulk quitar)
+19. ⏳ **QUA-175**: TikTok requiere 15-20 min de antelación para programar (valorar solución)
 
 ---
 
-**Última actualización:** 2026-03-16 (v5.2 — Dashboard unificado QUA-233, shell + body redesign)
+**Última actualización:** 2026-03-18 (v5.3 — 11 tickets cerrados, versión estable, manuales actualizados)

@@ -1,5 +1,9 @@
 # 06 — Estadísticas y Ventas
 
+**Version:** 1.1
+**Fecha:** 2026-03-18
+**Para:** Sara
+
 ## Dashboard de Estadísticas
 
 **URL:** `https://autotok-api-git-main-autotoky-6890s-projects.vercel.app/api/stats`
@@ -10,15 +14,47 @@ Acceso protegido por PIN (el mismo que el dashboard de estado).
 
 - **Por Producto**: tabla de engagement agregado por producto (views, likes, saves, ventas, GMV)
 - **Por Deal Math**: engagement por tipo de deal math + engagement rate
-- **Todos los Videos**: lista completa con fecha, título SEO, producto, engagement, ventas, link a TikTok
+- **Todos los Videos** (QUA-289, QUA-292): lista completa con fecha de publicacion, título SEO, producto, engagement, ventas, link a TikTok. Fila de totales en la parte superior (dentro de `<thead>` tras headers). Incluye nueva columna "Días" mostrando dias desde publicacion a primera venta (color-coded: verde ≤1d, naranja ≤7d, rojo >7d). Media de "Días" se muestra en fila de totales.
 - **Evolución**: deltas diarios de engagement entre snapshots del scraper (requiere al menos 2 días de datos)
-- **Ventas**: formulario para registrar ventas diarias + historial + totales acumulados por video con tasa de conversión
+- **Ventas** (QUA-221): formulario para registrar ventas diarias + historial + totales acumulados por video con tasa de conversión. Columna "Marca" se autorrellena a partir de importacion de sales.xlsx
 
 ### Filtros
 
 - **Cuenta**: filtrar por ofertastrendy20, lotopdevicky, totokydeals
 - **Producto**: filtrar por producto
 - **Rango de fechas**: desde/hasta por fecha de publicación
+
+### Fecha de publicacion (QUA-289)
+
+La fecha de publicacion se extrae automaticamente del Snowflake ID del video (tiktok_post_id) usando la formula: `(post_id >> 32) * 1000`. Esta fecha funciona para todos los videos (internos + externos), no requiere scraping.
+
+### Columna "Días" y performance a venta (QUA-289)
+
+Nueva columna en "Todos los Videos" que muestra cuantos dias pasaron entre la publicacion del video y la primera venta:
+
+- **Verde (≤1 dia)**: venta dentro del primer dia
+- **Naranja (≤7 dias)**: venta dentro de la primera semana
+- **Rojo (>7 dias)**: venta despues de una semana
+
+La fila de totales en la parte superior muestra el **promedio** de "Días" de todos los videos en la vista actual (filtros aplicados).
+
+**Nota:** Si un video no tiene ventas registradas, la columna muestra "—".
+
+### Fila de totales en la parte superior (QUA-292)
+
+En las pestañas "Por Producto" y "Todos los Videos", la fila de totales se ha movido de la parte inferior a la parte superior, dentro de `<thead>` justo despues de los headers. Esto permite ver los totales sin scroll.
+
+## Importar Marca desde sales.xlsx (QUA-221)
+
+Al importar ventas via archivo xlsx (en la pestaña Ventas):
+
+- La columna **"Nombre de la tienda"** del Excel se interpreta como **marca**
+- Se aplica **auto-backfill** a todos los productos existentes con marca vacia
+- Tambien disponible como **endpoint manual** (accion: `backfill_marcas`)
+
+Esto asegura que todos los videos tengan marca asignada automaticamente tras importar ventas.
+
+---
 
 ## Registrar Ventas
 
@@ -41,6 +77,27 @@ Cada registro = ventas de 1 video en 1 día concreto. Los totales se calculan au
 - **Unidades vendidas**: número de artículos vendidos via ese video
 - **GMV (€)**: volumen bruto de mercancía (Gross Merchandise Value)
 - **Comisión (€)**: comisión de afiliado
+
+## Vista Actividad - Inventario (QUA-290, QUA-288)
+
+La tabla de inventario en la pestana "Actividad" muestra el estado de formatos por cuenta/formato/variante.
+
+### Cambios recientes
+
+**QUA-290:** Columna "Producto" ahora muestra el nombre del producto para cada formato.
+
+**QUA-288:** Nombre de formato con fallback — Si `deal_math` esta vacio, el sistema usa `overlay_line1` (gancho) de la tabla `variantes_overlay_seo` para mostrar el nombre del formato. Esto garantiza que siempre hay nombre visible incluso si `deal_math` no se ha ingresado.
+
+### Estructura
+
+La tabla muestra:
+- **Cuenta**
+- **Formato** (nombre del BOF)
+- **Producto** (nuevo en QUA-290)
+- **Variantes overlay** (estado: active/inactive)
+- **Uso en videos** (contador acumulativo)
+
+---
 
 ## Scraper de Engagement
 
@@ -140,3 +197,7 @@ schtasks /change /tn "AutoTok Scraper Diario" /st 10:00    # Cambiar hora
 schtasks /change /tn "AutoTok Scraper Diario" /disable      # Desactivar
 schtasks /delete /tn "AutoTok Scraper Diario" /f             # Eliminar
 ```
+
+---
+
+**Ultima actualizacion:** 2026-03-18 (QUA-289: fecha publicacion + columna Días, QUA-292: totales en parte superior, QUA-290: columna Producto en inventario, QUA-288: fallback overlay_line1 para nombre formato, QUA-221: import marca desde sales.xlsx)

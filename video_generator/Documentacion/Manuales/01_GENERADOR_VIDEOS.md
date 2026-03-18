@@ -1,7 +1,7 @@
 # MANUAL: GENERADOR DE VIDEOS
 
-**Version:** 1.0
-**Fecha:** 2026-03-03
+**Version:** 1.1
+**Fecha:** 2026-03-18
 **Para:** Sara
 
 ---
@@ -178,6 +178,43 @@ python main.py --producto PRODUCTO --batch 20 --cuenta CUENTA --bof-id 5
 
 ---
 
+## Notificaciones email de generacion (QUA-55)
+
+El generador envia automaticamente un email HTML al terminar (con exito o error) mostrando resultados de la generacion.
+
+### Configuracion
+
+En `config_publisher.json`, agregar seccion `email`:
+
+```json
+{
+  "email": {
+    "enabled": true,
+    "smtp_server": "smtp.gmail.com",
+    "smtp_port": 587,
+    "from_email": "tu-email@gmail.com",
+    "password": "tu-app-password"
+  }
+}
+```
+
+Email por defecto se envia a: `gasconsara@gmail.com`
+
+### Contenido del email
+
+- **En caso de exito:** resumen de videos generados, estadisticas (total, por BOF, por cuenta)
+- **En caso de error:** listado de errores categorizados con sugerencias accionables
+
+### Integracion en main.py
+
+La funcion `enviar_reporte_generacion()` se llama automaticamente en `main.py`:
+- Tras completar una generacion exitosa
+- Tras capturar un error durante generacion
+
+> **Nota:** Si `config_publisher.json` no tiene la seccion `email` o `enabled: false`, el email se salta silenciosamente (no bloquea la ejecucion).
+
+---
+
 ## Procedimiento: Cambio de precio en producto
 
 **Contexto:** Cuando un producto cambia de precio hay que reemplazar TODOS los videos existentes porque el BOF contiene el precio en deal_math, guion de audio y overlays.
@@ -223,4 +260,4 @@ El JSON del BOF puede llamarse como quieras — solo contiene la info del BOF, N
 
 ---
 
-**Ultima actualizacion:** 2026-03-12 (QUA-218: es_ia automatico por formato)
+**Ultima actualizacion:** 2026-03-18 (QUA-55: notificaciones email de generacion)

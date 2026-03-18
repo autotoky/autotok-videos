@@ -22,7 +22,34 @@ AutoTok es un sistema Python que automatiza la creacion y publicacion de videos 
 - Dashboard web Vercel: 7 paginas con shell unificado (estado/calendario, programar, analytics x4 vistas, productos, formatos, cuentas, importar). Shell compartido via `shell_html()` en `_helpers.py` (QUA-233)
 - Google Sheets ELIMINADA (QUA-217) — no hay codigo activo que escriba en Sheet
 
-**Repositorio:** La carpeta raiz del proyecto es `video_generator/`
+**Repositorios:** El proyecto usa DOS repos git independientes:
+- **`autotok-videos`** (repo principal): carpeta raiz montada en `/mnt/autotok-videos`. Contiene `video_generator/` (generacion, CLI, publisher, docs, scripts). Remote: `github.com/autotoky/autotok-videos`. En `.gitignore` tiene `autotok-api/` excluido.
+- **`autotok-api`** (repo separado dentro de `autotok-videos/autotok-api/`): tiene su propio `.git`, su propio remote (`github.com/autotoky/autotok-api`) y se despliega a Vercel automaticamente al hacer push. Contiene todo el dashboard web y la API REST.
+
+**Protocolo git al iniciar sesion:**
+1. Hacer `git pull` en AMBOS repos (`autotok-videos` y `autotok-api`)
+2. Si hay lock files (`.git/index.lock`, etc.) que impiden operar, pedir a Sara que los borre desde PowerShell: `del .git\index.lock`
+
+**Protocolo git para commits:**
+- Cambios en `video_generator/`, docs, scripts → commit y push en repo `autotok-videos`
+- Cambios en `autotok-api/api/`, `vercel.json`, etc. → commit y push en repo `autotok-api` (cd a esa carpeta primero)
+- NUNCA mezclar commits entre repos. Son independientes
+- **Lock files:** La VM no puede borrar archivos (`unlink` bloqueado), pero SÍ puede renombrarlos (`mv`). Tras cada `git add`/`git commit`, quedan locks residuales. **Protocolo:** al inicio de cada sesion, crear el script `git_clean_locks.sh` en el directorio de trabajo de la sesion (`/sessions/<nombre-sesion>/`) con este contenido:
+    ```bash
+    #!/bin/bash
+    GIT_DIR="$1"
+    if [ -z "$GIT_DIR" ]; then echo "Usage: bash git_clean_locks.sh /path/to/.git"; exit 1; fi
+    find "$GIT_DIR" -name "*.lock" -exec mv {} {}.stale 2>/dev/null \;
+    find "$GIT_DIR" -name "*.stale_lock" -exec mv {} {}.stale2 2>/dev/null \;
+    ```
+    Luego, antes y despues de cada operacion git:
+    ```
+    bash /sessions/<nombre-sesion>/git_clean_locks.sh /sessions/<nombre-sesion>/mnt/autotok-videos/autotok-api/.git
+    git add api/archivo.py && git commit -m "mensaje" && git push origin main
+    bash /sessions/<nombre-sesion>/git_clean_locks.sh /sessions/<nombre-sesion>/mnt/autotok-videos/autotok-api/.git
+    ```
+    **IMPORTANTE:** El path de sesion cambia cada vez (ej: `focused-festive-hypatia`, `loving-vigilant-maxwell`). NUNCA hardcodear un nombre de sesion anterior — usar siempre el de la sesion actual.
+  - Si el script de limpieza no resuelve, Sara borra locks desde PowerShell: `Get-ChildItem -Path ".git" -Recurse -Filter "*.lock" | Remove-Item -Force`
 
 ---
 
@@ -202,6 +229,18 @@ El documento `Tecnico/CASOS_DE_USO.md` y su diagrama visual `FLUJOS_CASOS_DE_USO
 9. **API:** usar `scripts/api_client.py` para comunicacion con la API Vercel (lotes, resultados, versiones).
 10. **Errores:** nunca `except: pass` — siempre capturar excepciones especificas y loguear
 
+### Convención formato números y fechas en dashboard (QUA-293)
+
+Todo el dashboard web debe seguir estas reglas:
+- **Números < 1.000:** formato `XXX,xx` (2 decimales, coma como separador decimal)
+- **Números ≥ 1.000:** sin decimales, punto como separador de miles
+- **Moneda:** siempre con símbolo `€` (ej: `1.234 €` o `456,78 €`)
+- **Porcentajes:** siempre con símbolo `%`
+- **Fechas:** DD/MM/AAAA
+- **Horas:** formato 24h (11:00, 23:00)
+
+Funciones disponibles en analytics.py: `fmtNum()` (conteos enteros), `fmtVal()` (convención <1000/>=1000), `fmtEur()` (moneda), `fmtPct()` (porcentajes), `fmtDate()` (fechas DD/MM/YYYY). En productos.py hay copias de `fmtVal`, `fmtEur`, `fmtDate`.
+
 ---
 
 ## Archivos clave del proyecto
@@ -305,4 +344,4 @@ El documento `Tecnico/CASOS_DE_USO.md` y su diagrama visual `FLUJOS_CASOS_DE_USO
 
 ---
 
-**Ultima actualizacion:** 2026-03-16 (QUA-233 dashboard unificado: shell compartido + body redesign pills/title-bars/tokens CSS)
+**Ultima actualizacion:** 2026-03-17 (QUA-297, QUA-295, QUA-248, QUA-304, QUA-303, QUA-293 + fix sort + documentacion git lock files)

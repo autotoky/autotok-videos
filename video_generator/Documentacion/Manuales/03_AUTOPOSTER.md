@@ -1,7 +1,7 @@
 # MANUAL: AUTOPOSTER (TikTok Publisher)
 
-**Version:** 3.0
-**Fecha:** 2026-03-13
+**Version:** 3.1
+**Fecha:** 2026-03-18
 **Para:** Sara y operadoras (Carol, Vicky)
 
 ---
@@ -153,19 +153,21 @@ python scripts/sync_lotes.py --cuenta totokydeals
 python scripts/sync_lotes.py --fecha 2026-03-13
 ```
 
-### Formato de rutas en lotes
+### Formato de rutas en lotes (QUA-299)
 
-Los filepaths en el JSON son relativos a la carpeta de la cuenta en Drive:
+Los filepaths en el JSON son siempre **relativos** (solo el nombre del archivo):
 
 ```json
 {
-  "filepath": "calendario/07-03-2026/video.mp4",
+  "filepath": "video_id.mp4",
   "filepath_original": "C:/Users/gasco/Videos/.../video.mp4"
 }
 ```
 
+**QUA-299 (2026-03-18):** `publicar_facil.py` ahora SIEMPRE usa rutas relativas (solo `video_id.mp4`), no rutas absolutas de la BD. Esto permite que el publisher funcione correctamente en PCs de operadoras donde la ruta absoluta de Sara no existe.
+
 El publisher resuelve `filepath` con la siguiente cadena de fallbacks:
-1. Ruta relativa completa: `drive_path/cuenta/filepath` (ej: `drive_path/cuenta/calendario/10-03-2026/video.mp4`)
+1. Ruta relativa: `drive_path/cuenta/filepath` (ej: `drive_path/cuenta/video_id.mp4`)
 2. **Fallback por filename**: `drive_path/cuenta/filename.mp4` — extrae solo el nombre del archivo y busca en la raiz de la cuenta (util cuando los videos estan planos en Synology, no en subcarpetas)
 3. Ruta absoluta adaptada: si `filepath_original` es una ruta absoluta de otro PC, intenta reconstruirla usando el `drive_path` local
 4. `filepath_original` directo — solo funciona en el PC original (Sara)
@@ -294,4 +296,4 @@ El publisher envia email al terminar con resumen de resultados, incluyendo error
 
 ---
 
-**Ultima actualizacion:** 2026-03-13 (publicar_facil.py reescrito: lee directo de tabla `videos` via Turso, elimina dependencia de tabla `lotes` y JSON locales como fuente primaria)
+**Ultima actualizacion:** 2026-03-18 (QUA-299: filepath siempre relativo en lotes JSON para compatibilidad cross-PC)

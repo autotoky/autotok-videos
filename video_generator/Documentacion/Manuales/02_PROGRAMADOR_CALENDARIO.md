@@ -1,7 +1,7 @@
 # MANUAL: PROGRAMADOR DE CALENDARIO
 
-**Version:** 5.0
-**Fecha:** 2026-03-13
+**Version:** 5.1
+**Fecha:** 2026-03-18
 **Para:** Sara
 
 ---
@@ -28,12 +28,13 @@ Acceso protegido por PIN (el mismo que el dashboard de estado).
 4. Revisar distribucion: top_seller / validated / testing
 5. Click "Programar" para ejecutar (actualiza BD directamente)
 
-### Algoritmo y restricciones (QUA-228)
+### Algoritmo y restricciones (QUA-228, QUA-298)
 
 El programador web tiene **paridad completa** con el CLI. Ambos aplican exactamente las mismas restricciones:
 
 - Distancia minima entre hooks (configurable por cuenta)
 - Distancia minima entre SEO texts (dinamica segun volumen)
+- **Distancia minima producto (QUA-298):** Mismo producto separado por minimo N posiciones, donde N = min(unique_products - 1, 3). Aplicado en pasadas 0-1, relajado en pasada 2. Web y CLI tienen paridad.
 - Anti-consecutivo: no repetir mismo producto en slots adyacentes
 - Testing acumulativo: limite global de videos testing, no solo por programacion
 - Distribucion lifecycle: top_seller / validated / testing segun porcentajes de config
@@ -46,11 +47,25 @@ El programador web tiene **paridad completa** con el CLI. Ambos aplican exactame
 - Anti-duplicados: excluye videos con estado != 'Generado'
 - Export automatico de lotes a tabla `lotes` de Turso para que operadoras los vean en PUBLICAR.bat
 
+### Panel "Ver restricciones aplicadas" (QUA-230)
+
+Debajo del formulario del programador hay un panel colapsible que muestra todas las restricciones activas para la cuenta seleccionada:
+
+- Distancia minima hook
+- Distancia minima producto
+- Gap minimo horas
+- Distribucion lifecycle (pct_top_seller / pct_validated / pct_testing)
+- Horario inicio/fin
+- Videos por dia
+
+El panel es **de solo lectura** y se carga dinamicamente desde la tabla `cuentas_config` de Turso. Permite a Sara verificar que la configuracion es la correcta antes de programar.
+
 ### Ventajas sobre CLI
 
 - No requiere terminal ni acceso al PC local
 - Preview visual tipo calendario antes de ejecutar
 - Estadisticas de distribucion por lifecycle
+- Panel de restricciones para verificar configuracion
 - Accesible desde cualquier dispositivo
 
 ---
@@ -185,4 +200,4 @@ Generado → En Calendario → Programado (automatico, via publisher)
 
 ---
 
-**Ultima actualizacion:** 2026-03-13 (QUA-228: paridad completa CLI↔web, QUA-250: overnight scheduling fix con _now_cet() y caps daytime/after-midnight, _export_lotes corregido para no pisar lotes anteriores)
+**Ultima actualizacion:** 2026-03-18 (QUA-298: distancia minima producto, QUA-230: panel ver restricciones aplicadas)
