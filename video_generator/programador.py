@@ -469,6 +469,19 @@ def cumple_distancia_seo(seo_text, posicion_calendario, videos_programados, dist
     return distancia_actual >= distancia_minima
 
 
+def cumple_distancia_producto(producto_id, posicion_calendario, videos_programados, distancia_minima):
+    """Verifica si producto cumple distancia mínima de publicaciones (QUA-298).
+    Matches web programar.py: _cumple_distancia_producto()."""
+    if not producto_id:
+        return True
+    ultima_posicion = -999
+    for i, video in enumerate(videos_programados):
+        if str(video.get('producto_id', '')) == str(producto_id):
+            ultima_posicion = i
+    distancia_actual = posicion_calendario - ultima_posicion
+    return distancia_actual >= distancia_minima
+
+
 # ═══════════════════════════════════════════════════════════
 # DISTRIBUCIÓN INTELIGENTE POR CATEGORÍA
 # ═══════════════════════════════════════════════════════════
@@ -743,6 +756,11 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
     distancia_seo = min(distancia_seo, distancia_minima_hook)  # nunca más que la distancia de hooks
     print(f"[INFO] SEO texts únicos: {len(seos_unicos)} → distancia SEO: {distancia_seo}")
 
+    # QUA-298: Dynamic product distance
+    productos_unicos = set(str(v.get('producto_id', '')) for v in cola_videos if v.get('producto_id'))
+    distancia_producto = max(1, min(len(productos_unicos) - 1, 3))
+    print(f"[INFO] Productos únicos: {len(productos_unicos)} → distancia producto: {distancia_producto}")
+
     # ── Protección anti-duplicados: consultar BD (no Sheet) ──
     # Un video con estado != 'Generado' ya está en uso o descartado
     with db_connection() as conn_dup:
@@ -842,6 +860,12 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
                     # Pasada 0: anti-consecutivos
                     if pasada == 0 and ultimo_producto_id is not None and producto_id == ultimo_producto_id:
                         continue
+
+                    # Pasadas 0-1: distancia producto (QUA-298)
+                    if pasada < 2:
+                        if not cumple_distancia_producto(producto_id, posicion_calendario,
+                                                         videos_programados, distancia_producto):
+                            continue
 
                     # Max producto/día (hard limit, siempre aplica)
                     if productos_usados_hoy.get(producto_id, 0) >= max_mismo_producto:
