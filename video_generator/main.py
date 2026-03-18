@@ -187,7 +187,16 @@ Ejemplos:
             batch_size = args.batch if args.batch else None
             results = generator.generate_batch(batch_size)
         
-        if results and results["generated"] > 0:
+        # QUA-55: Send email notification
+        generated = results.get("generated", 0) if results else 0
+        errors_count = results.get("errors", 0) if results else 0
+        try:
+            from scripts.email_notifier import enviar_reporte_generacion
+            enviar_reporte_generacion(producto, args.cuenta, generated, errors_count, batch_size)
+        except Exception as email_err:
+            print(f"  [!] Email notification failed: {email_err}")
+
+        if generated > 0:
             print("✅ Generación completada")
             print(f"\n💡 Siguiente comando:")
             print(f"   python main.py --producto {producto} --batch {batch_size or 50} --cuenta {args.cuenta}")
@@ -195,15 +204,21 @@ Ejemplos:
         else:
             print("⚠️  No se generaron videos")
             return 1
-    
+
     except KeyboardInterrupt:
         print("\n\n⚠️  Cancelado por el usuario")
         return 1
-    
+
     except Exception as e:
         print(f"\n❌ ERROR: {e}")
         import traceback
         traceback.print_exc()
+        # QUA-55: Send error notification
+        try:
+            from scripts.email_notifier import enviar_reporte_generacion
+            enviar_reporte_generacion(producto, args.cuenta, 0, [str(e)], batch_size)
+        except Exception:
+            pass
         return 1
 
 

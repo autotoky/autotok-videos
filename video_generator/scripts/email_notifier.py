@@ -344,6 +344,125 @@ def enviar_reporte_publicacion(reporte):
         return False
 
 
+def enviar_reporte_generacion(producto, cuenta, generated, errors, batch_size=None):
+    """Envía reporte de generación de videos por email (QUA-55).
+
+    Args:
+        producto: Nombre del producto
+        cuenta: Cuenta TikTok
+        generated: Número de videos generados OK
+        errors: Número de errores (o lista de error msgs)
+        batch_size: Tamaño del batch solicitado
+
+    Returns:
+        bool: True si se envió correctamente
+    """
+    config = _cargar_config_email()
+    if not config:
+        return False
+
+    admin_email = config.get('admin_email', '')
+    if not admin_email:
+        log.warning("  No hay admin_email configurado")
+        return False
+
+    total = generated + (len(errors) if isinstance(errors, list) else (errors or 0))
+    n_errors = len(errors) if isinstance(errors, list) else (errors or 0)
+    todo_ok = n_errors == 0 and generated > 0
+
+    # Subject
+    if todo_ok:
+        asunto = f"✅ AutoTok Generación [{cuenta}]: {generated} videos de {producto}"
+    elif generated == 0:
+        asunto = f"⚠️ AutoTok Generación [{cuenta}]: 0 videos generados para {producto}"
+    else:
+        asunto = f"❌ AutoTok Generación [{cuenta}]: {generated} OK, {n_errors} error(es) — {producto}"
+
+    # HTML body
+    header_color = '#2e7d32' if todo_ok else ('#e65100' if generated > 0 else '#c62828')
+    header_emoji = '✅' if todo_ok else ('⚠️' if generated > 0 else '❌')
+
+    html = f"""
+    <html>
+    <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background-color: {header_color}; color: white; padding: 15px; border-radius: 8px 8px 0 0;">
+            <h2 style="margin: 0;">{header_emoji} Generación de Videos — {producto.replace('_', ' ')}</h2>
+            <p style="margin: 5px 0 0 0; opacity: 0.9;">Cuenta: {cuenta}</p>
+        </div>
+        <div style="background-color: #f5f5f5; padding: 15px; border: 1px solid #ddd;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr><td style="padding: 8px; font-weight: bold;">Producto</td>
+                    <td style="padding: 8px; text-align: right;">{producto.replace('_', ' ')}</td></tr>
+                <tr><td style="padding: 8px; font-weight: bold;">Batch solicitado</td>
+                    <td style="padding: 8px; text-align: right;">{batch_size or '—'}</td></tr>
+                <tr style="background-color: #e8f5e9;">
+                    <td style="padding: 8px;">✅ Generados</td>
+                    <td style="padding: 8px; text-align: right; font-weight: bold; color: #2e7d32;">{generated}</td></tr>
+                <tr style="background-color: #ffebee;">
+                    <td style="padding: 8px;">❌ Errores</td>
+                    <td style="padding: 8px; text-align: right; font-weight: bold; color: #c62828;">{n_errors}</td></tr>
+            </table>
+        </div>"""
+
+    if isinstance(errors, list) and errors:
+        html += """<div style="background-color: #fff3e0; padding: 15px; border: 1px solid #ddd; border-top: none;">
+            <h3 style="margin-top: 0; color: #e65100;">Errores</h3><ul>"""
+        for err in errors[:20]:
+            html += f"<li><code>{str(err)[:120]}</code></li>"
+        html += "</ul></div>"
+
+    html += f"""
+        <div style="padding: 10px; text-align: center; color: #999; font-size: 12px; border: 1px solid #ddd; border-top: none; border-radius: 0 0 8px 8px;">
+            AutoTok Generator — {datetime.now().strftime('%Y-%m-%d %H:%M')}
+        </div>
+    </body></html>"""
+
+    # Plain text
+    texto = f"GENERACIÓN AUTOTOK — {producto}\nCuenta: {cuenta}\nGenerados: {generated}\nErrores: {n_errors}"
+
+    # Build raw email
+    boundary = f"====AutoTokGen_{datetime.now().strftime('%Y%m%d%H%M%S')}===="
+    subject_b64 = base64.b64encode(asunto.encode('utf-8')).decode('ascii')
+    subject_encoded = f"=?utf-8?B?{subject_b64}?="
+    texto_b64 = base64.b64encode(texto.encode('utf-8')).decode('ascii')
+    html_b64 = base64.b64encode(html.encode('utf-8')).decode('ascii')
+
+    raw_email = (
+        f"From: {config['from_email']}\r\n"
+        f"To: {admin_email}\r\n"
+        f"Subject: {subject_encoded}\r\n"
+        f"MIME-Version: 1.0\r\n"
+        f"Content-Type: multipart/alternative; boundary=\"{boundary}\"\r\n"
+        f"\r\n"
+        f"--{boundary}\r\n"
+        f"Content-Type: text/plain; charset=utf-8\r\n"
+        f"Content-Transfer-Encoding: base64\r\n"
+        f"\r\n"
+        f"{texto_b64}\r\n"
+        f"--{boundary}\r\n"
+        f"Content-Type: text/html; charset=utf-8\r\n"
+        f"Content-Transfer-Encoding: base64\r\n"
+        f"\r\n"
+        f"{html_b64}\r\n"
+        f"--{boundary}--\r\n"
+    )
+
+    try:
+        raw_bytes = raw_email.encode('ascii')
+        with smtplib.SMTP(config['smtp_server'], config['smtp_port'],
+                          local_hostname='localhost') as server:
+            server.starttls()
+            server.login(config['from_email'], config['app_password'])
+            server.sendmail(config['from_email'], [admin_email], raw_bytes)
+
+        log.info(f"  ✅ Email de generación enviado a {admin_email}")
+        return True
+
+    except Exception as e:
+        log.error(f"  ❌ Error enviando email de generación: {e}")
+        return False
+
+
 if __name__ == '__main__':
     # Test rápido con reporte de ejemplo
     logging.basicConfig(level=logging.INFO)
