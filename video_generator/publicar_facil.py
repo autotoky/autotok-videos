@@ -162,9 +162,13 @@ def buscar_todos_lotes_pendientes(cuenta, drive_path):
             lote = lotes_por_fecha[fecha]
             producto_nombre = row['producto_nombre'] or ''
 
+            # QUA-299: Always use relative path (video_id.mp4) for Synology flat structure.
+            # The DB may store absolute paths from the generating PC (C:\Users\gasco\...)
+            # which don't exist on other PCs. run_from_lote() resolves relative paths
+            # via drive_path/cuenta/ from config_operadora.
             lote['videos'].append({
                 'video_id': row['video_id'],
-                'filepath': row['filepath'] or f"{row['video_id']}.mp4",
+                'filepath': f"{row['video_id']}.mp4",
                 'filepath_original': row['filepath'] or '',
                 'fecha_programada': fecha,
                 'hora_programada': row['hora_programada'] or '',
