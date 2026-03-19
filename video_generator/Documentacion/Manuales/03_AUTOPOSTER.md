@@ -1,7 +1,7 @@
 # MANUAL: AUTOPOSTER (TikTok Publisher)
 
-**Version:** 3.1
-**Fecha:** 2026-03-18
+**Version:** 3.2
+**Fecha:** 2026-03-19
 **Para:** Sara y operadoras (Carol, Vicky)
 
 ---
@@ -288,7 +288,7 @@ El publisher envia email al terminar con resumen de resultados, incluyendo error
 2. Verificar sesion: abrir Chrome manualmente y entrar en TikTok Studio
 3. Avisar a Sara con captura del error
 
-**Limite de 30 borradores TikTok** → TikTok no permite mas de 30 borradores por cuenta. El sistema descarta (no guarda como borrador) al fallar para evitar llenar el limite.
+**Limite de 30 videos programados TikTok (QUA-311)** → TikTok Studio no permite mas de 30 videos programados a la vez. El publisher tiene parada inteligente: si detecta 3 errores sistémicos consecutivos (upload_failed, timeout, navigation_error), para automáticamente y deja los videos restantes como "En Calendario" para reintentar en la próxima ejecución. Errores puntuales (escaparate, archivo no encontrado, etc.) NO paran la publicación porque son problemas del video concreto, no del sistema. Errores críticos (login caducado, límite detectado explícitamente) paran inmediatamente.
 
 **Videos no encontrados (filepath)** → Con QUA-151 (estructura plana en Synology), los videos estan directamente en `SynologyDrive/{cuenta}/{video}.mp4`. El publisher tiene fallback por filename: si la ruta relativa completa falla, busca solo por nombre de archivo en la carpeta de la cuenta. Si sigue fallando, verificar que el video existe y que `drive_path` en config_operadora.json es correcto.
 
