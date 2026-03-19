@@ -290,7 +290,11 @@ El publisher envia email al terminar con resumen de resultados, incluyendo error
 
 **Limite de 30 videos programados TikTok (QUA-311)** → TikTok Studio no permite mas de 30 videos programados a la vez. El publisher tiene parada inteligente: si detecta 3 errores sistémicos consecutivos (upload_failed, timeout, navigation_error), para automáticamente y deja los videos restantes como "En Calendario" para reintentar en la próxima ejecución. Errores puntuales (escaparate, archivo no encontrado, etc.) NO paran la publicación porque son problemas del video concreto, no del sistema. Errores críticos (login caducado, límite detectado explícitamente) paran inmediatamente.
 
+**Videos marcados Programado pero sin ID de TikTok (QUA-313)** → Si en el panel ves videos "Programado" sin columna TIKTOK rellena, es que TikTok no confirmó realmente la programación. Desde QUA-313, el publisher ya no permite esto: si no recibe post_id, el video queda como "En Calendario" para reintentar. Si encuentras videos antiguos sin ID, cambialos a "En Calendario" desde el panel y relanza PUBLICAR.bat.
+
 **Videos no encontrados (filepath)** → Con QUA-151 (estructura plana en Synology), los videos estan directamente en `SynologyDrive/{cuenta}/{video}.mp4`. El publisher tiene fallback por filename: si la ruta relativa completa falla, busca solo por nombre de archivo en la carpeta de la cuenta. Si sigue fallando, verificar que el video existe y que `drive_path` en config_operadora.json es correcto.
+
+**Error set_input_files en todos los videos** → Si TODOS los videos fallan con `set_input_files: UNKNOWN: unknown error, read`, probablemente los archivos de video en Synology Drive estan en modo cloud-only (nubecita). Solucion: reiniciar Synology Drive Client en el PC de la operadora y forzar descarga local de la carpeta de la cuenta (click derecho → Fijar descarga local).
 
 **Chrome no se encuentra (WinError 2)** → Chrome puede estar en `Program Files` o `Program Files (x86)` segun el PC. El publisher auto-detecta Chrome con `_find_chrome()`. Si falla, se puede forzar la ruta con la variable de entorno `AUTOTOK_CHROME_PATH`.
 
