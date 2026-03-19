@@ -1223,14 +1223,26 @@ class TikTokPublisher:
                                         'No se pudo confirmar la programación — se reintentará')
                 return False
 
-            # ── ÉXITO: marcar INMEDIATAMENTE como 'Programado' ──
-            # Extraer tiktok_post_id del resultado (QUA-78)
+            # ── Extraer tiktok_post_id del resultado (QUA-78) ──
             tiktok_post_id = None
             if isinstance(resultado_confirmacion, dict):
                 tiktok_post_id = resultado_confirmacion.get('tiktok_post_id')
 
+            # ── QUA-313: NUNCA marcar Programado sin tiktok_post_id ──
+            # Si TikTok no devolvió un post_id, la programación no se confirmó realmente
+            # (puede ser límite de 30 no detectado, error silencioso, etc.)
+            if not tiktok_post_id:
+                log.warning("  ⚠️ Programación NO confirmada — TikTok no devolvió post_id")
+                log.warning("  El video se mantiene como 'En Calendario' para reintentar")
+                self._descartar_video_actual()
+                self._marcar_estado(video_id, 'En Calendario',
+                                   error='Programación no confirmada — sin tiktok_post_id')
+                self._registrar_intento(video_id, 'error', 'schedule_failed',
+                                        'TikTok no devolvió post_id — posible límite alcanzado')
+                return False
+
             self._marcar_estado(video_id, 'Programado', tiktok_post_id=tiktok_post_id)
-            log.info(f"  ✅ Video programado exitosamente")
+            log.info(f"  ✅ Video programado exitosamente (ID: {tiktok_post_id})")
 
             # ── QUA-78: Guardar tiktok_post_id en campos de tracking (modo normal) ──
             if tiktok_post_id and not self._lote_path:
