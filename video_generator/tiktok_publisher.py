@@ -2485,6 +2485,16 @@ class TikTokPublisher:
         self.stats['total'] = len(videos)
         self._tiktok_limit_reached = False  # Flag para límite de 30 programados
 
+        # QUA-311: Smart stop — errores sistémicos vs puntuales
+        # Errores sistémicos: indican que el sistema está roto (límite TikTok, Chrome caído, etc.)
+        # Errores puntuales: del video concreto, el siguiente puede ir bien
+        IMMEDIATE_STOP_ERRORS = {'tiktok_schedule_limit', 'login_failed'}
+        SYSTEMIC_ERRORS = {'upload_failed', 'navigation_error', 'timeout', 'unknown'}
+        # Puntuales (no paran): file_not_found, product_search_failed, escaparate_failed,
+        #   description_failed, ia_label_failed, validation_failed
+        MAX_CONSECUTIVE_SYSTEMIC = 3
+        consecutive_systemic = 0
+
         log.info(f"\n{'═'*60}")
         log.info(f"  PUBLICANDO {len(videos)} VIDEOS — {self.cuenta}")
         log.info(f"{'═'*60}\n")
@@ -2512,18 +2522,31 @@ class TikTokPublisher:
 
                 if exito:
                     self.stats['exitosos'] += 1
-                    # Estado ya marcado como 'Programado' dentro de publicar_video()
+                    consecutive_systemic = 0  # QUA-311: reset on success
                 else:
                     self.stats['fallidos'] += 1
                     self.stats['errores'].append(video['video_id'])
+
+                    # Determine error type for this video
+                    last_error_type = 'unknown'
+                    for d in self.stats['error_details']:
+                        if d[0] == video['video_id']:
+                            last_error_type = d[1]
                     if not any(d[0] == video['video_id'] for d in self.stats['error_details']):
                         self.stats['error_details'].append(
                             (video['video_id'], 'unknown', 'Falló sin excepción capturada'))
 
-                    # Detectar si el fallo fue por límite de TikTok
-                    if any(d[0] == video['video_id'] and d[1] == 'tiktok_schedule_limit'
-                           for d in self.stats['error_details']):
+                    # QUA-311: Smart stop logic
+                    if last_error_type in IMMEDIATE_STOP_ERRORS:
+                        log.warning(f"  🛑 Error crítico ({last_error_type}) — parando publicación")
                         self._tiktok_limit_reached = True
+                    elif last_error_type in SYSTEMIC_ERRORS:
+                        consecutive_systemic += 1
+                        if consecutive_systemic >= MAX_CONSECUTIVE_SYSTEMIC:
+                            log.warning(f"  🛑 {consecutive_systemic} errores sistémicos consecutivos ({last_error_type}) — parando publicación")
+                            self._tiktok_limit_reached = True
+                    else:
+                        consecutive_systemic = 0  # Puntual: reset counter
 
             except KeyboardInterrupt:
                 log.warning("\n\n[!] Publicación interrumpida por el usuario")
@@ -2536,6 +2559,18 @@ class TikTokPublisher:
                 self.stats['errores'].append(video['video_id'])
                 self.stats['error_details'].append(
                     (video['video_id'], error_type, str(e)[:500]))
+
+                # QUA-311: Smart stop for uncaught exceptions
+                if error_type in IMMEDIATE_STOP_ERRORS:
+                    log.warning(f"  🛑 Error crítico ({error_type}) — parando publicación")
+                    self._tiktok_limit_reached = True
+                elif error_type in SYSTEMIC_ERRORS:
+                    consecutive_systemic += 1
+                    if consecutive_systemic >= MAX_CONSECUTIVE_SYSTEMIC:
+                        log.warning(f"  🛑 {consecutive_systemic} errores sistémicos consecutivos ({error_type}) — parando publicación")
+                        self._tiktok_limit_reached = True
+                else:
+                    consecutive_systemic = 0
 
             # Delay entre videos (excepto el último)
             if i < len(videos) - 1:
