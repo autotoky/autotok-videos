@@ -154,7 +154,8 @@ Importar Ventas (/api/ventas)
 | `toggleActivo(id, current)` | Toggle activo/inactivo | POST action=toggle_activo |
 | `openMaterialModal(bof_id)` | Modal asignacion material | GET formato=json |
 | `saveMaterialAssign(bof_id)` | Guardar asignacion | POST action=assign_material |
-| `saveMeta(mat_id, field, val)` | Guardar grupo/start_time | POST action=update_material_meta |
+| `saveMeta(input)` | Guardar grupo/start_time (AJAX, sin recarga) | POST action=update_material_meta |
+| `_rerenderBrolls()` | Re-render brolls desde cache local (QUA-316) | Local |
 | `registerMaterial(tipo)` | Registrar material nuevo | POST action=register_material |
 | `regenerateVariantes(id)` | Regenerar overlays/SEO | POST action=regenerate |
 
@@ -227,7 +228,7 @@ Importar Ventas (/api/ventas)
 
 ---
 
-## ANALYTICS.PY — Dashboard de analiticas (1.408 lineas)
+## ANALYTICS.PY — Dashboard de analiticas (~2.400 lineas)
 
 ### Endpoints
 
@@ -236,8 +237,10 @@ Importar Ventas (/api/ventas)
 | GET | `?vista=producto` | — | Vista por producto (default) |
 | GET | `?vista=video` | — | Vista por video individual |
 | GET | `?vista=actividad` | — | Vista actividad operativa |
+| GET | `?vista=evolucion` | — | Vista evolucion temporal (4 charts) |
 | GET | `?vista=engagement` | — | Vista engagement TikTok Studio |
 | GET | `?formato=json` | — | JSON (cualquier vista, requiere API key) |
+| POST | | `filter_data` | Recalcular datos con filtros backend (cuenta, formato, IA, marca, estado, fecha) |
 | POST | | `import_studio` | Importar CSV de TikTok Studio |
 | POST | | `delete_studio` | Borrar datos de engagement de una cuenta |
 
@@ -250,9 +253,17 @@ Importar Ventas (/api/ventas)
 | `video_sales` | SELECT | Ventas por video (vista producto y video) |
 | `video_stats` | SELECT | Engagement scrapeado (vistas, likes, etc.) |
 | `video_stats_history` | SELECT | Historial diario (vista actividad, deltas) |
-| `tiktok_studio_daily` | SELECT, INSERT | Engagement por cuenta (vista engagement) |
+| `tiktok_studio_daily` | SELECT, INSERT | Engagement por cuenta (vista engagement + evolucion) |
 | `producto_bofs` | LEFT JOIN | Info formato |
 | `formato_material` | EXISTS subquery | Check si tiene material asignado |
+
+### Funciones Python clave
+
+| Funcion | Proposito |
+|---------|-----------|
+| `_data_producto(**filters)` | Datos vista producto — acepta cuenta, formato, ia, marca, estado, desde, hasta |
+| `_data_video(**filters)` | Datos vista video — mismos filtros |
+| `_data_evolucion()` | 3 queries: ventas diarias, actividad diaria, engagement diario (tiktok_studio_daily) + KPIs week-over-week |
 
 ### Funciones JS principales
 
@@ -262,9 +273,30 @@ Importar Ventas (/api/ventas)
 | `renderProducto(data)` | Render tabla producto | Local |
 | `renderVideo(data)` | Render tabla video | Local |
 | `renderActividad(data)` | Render vista actividad | Local |
+| `renderEvolucion()` | Render 4 charts + KPIs evolucion | Local |
 | `renderEngagement(data)` | Render graficos engagement | Local |
+| `reloadWithFilters()` | Enviar filtros backend via POST | POST action=filter_data |
+| `getFiltered()` | Filtro frontend (origen + search) | Local |
 | `importCSV()` | Subir CSV TikTok Studio | POST action=import_studio |
 | `deleteStudioData()` | Borrar datos engagement | POST action=delete_studio |
+
+### Evolucion: 4 charts
+
+1. **GMV y Ventas** — linea dual axis (GMV izq, ventas der)
+2. **Comisiones por cuenta** — barras stacked
+3. **Actividad de Publicacion** — barras stacked (publicados, errores, violations, descartados)
+4. **Engagement por cuenta** — linea dual axis (views izq, likes der) por cuenta
+
+KPI pills en 2 lineas:
+- Linea 1: Ventas / GMV / Comision / % Conv. view→venta
+- Linea 2: Videos publicados / Violations / Views / Likes
+
+Filtros: preset 15d/3m/1a + cuenta. Agregacion diario/semanal/mensual.
+
+### Filtros backend vs frontend
+
+- **Backend** (POST filter_data): cuenta, formato, IA, marca, estado, desde, hasta → recalcula datos en servidor
+- **Frontend** (JS local): origen (nuestro/externo), search → filtra datos ya cargados
 
 ### Dependencias cruzadas
 
@@ -406,4 +438,4 @@ No hay otras dependencias JS cruzadas entre paginas.
 
 ---
 
-**Ultima actualizacion:** 2026-03-16
+**Ultima actualizacion:** 2026-03-20

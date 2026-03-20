@@ -1,12 +1,30 @@
-# 📊 ESTADO ACTUAL EJECUTIVO - AUTOTOK v5.3
+# 📊 ESTADO ACTUAL EJECUTIVO - AUTOTOK v5.4
 
-**Fecha:** 2026-03-18
-**Versión:** 5.3 — Versión estable
-**Estado:** Dashboard completo, scheduling mejorado, sistema operativo y estable. Manuales actualizados para formación operadoras.
+**Fecha:** 2026-03-20
+**Versión:** 5.4 — Dashboard analytics completo
+**Estado:** Dashboard completo con filtros backend, Evolución con engagement, sistema operativo y estable.
 
 ---
 
-## 🎉 **ÚLTIMOS LOGROS (2026-03-18)**
+## 🎉 **ÚLTIMOS LOGROS (2026-03-20)**
+
+### **7 tickets cerrados — Analytics backend filters + Evolución engagement + fixes:**
+
+**Dashboard Analytics:**
+- ✅ **QUA-318**: Backend filters completos en Rendimiento Producto/Video — todos los filtros (cuenta, formato, IA, marca, estado, fecha) recalculan datos y KPIs via POST
+- ✅ **QUA-321**: Engagement por cuenta en Evolución — chart 4 dual axis (views + likes por cuenta), KPI pills views/likes/% conversión view→venta
+- ✅ **QUA-320**: Evolución no muestra días futuros vacíos (filtro `<= yesterday`)
+- ✅ **QUA-319**: Mejora estilo gráficas (stacked bars, borderRadius, legend mejorada)
+- ✅ **QUA-315**: Informe Evolución cerrado (feature completa)
+- ✅ Detección ventas huérfanas en import ventas (aviso amarillo post-import)
+
+**Formatos + Email:**
+- ✅ **QUA-316**: Guardado AJAX sin recarga al asignar grupos de broll en Formatos (`_rerenderBrolls()` local)
+- ✅ **QUA-322**: Fix emails de generación — key mismatch `failed` vs `errors`, timeout SMTP, mejor feedback consola
+
+---
+
+## 🎉 **LOGROS ANTERIORES (2026-03-18)**
 
 ### **11 tickets cerrados — Mejoras dashboard + scheduling + operadoras:**
 
@@ -503,10 +521,10 @@ Sara: programador.py → auto-import resultados de API → BD actualizada
 **Videos en BD:** 1670+ (migrados a Synology)
 **Almacenamiento:** Synology Drive con backup RAID (RECURSOS_BASE migrado de Google Drive)
 **BD:** Turso cloud (fuente única de verdad)
-**Dashboard:** 7 páginas con shell unificado — gestión completa desde web
-**Notificaciones:** Email automático al terminar generación (QUA-55) y publicación (QUA-41)
+**Dashboard:** 7 páginas con shell unificado — gestión completa desde web. Analytics con 4 vistas + Evolución con 4 charts + KPIs engagement
+**Notificaciones:** Email automático al terminar generación (QUA-55, fix QUA-322) y publicación (QUA-41)
 **Manuales:** 6 manuales operativos actualizados (v1.1/v5.1) — listos para formación operadoras
-**Sistema:** Operativo y estable — versión 5.3 marcada como estable
+**Sistema:** Operativo y estable — versión 5.4
 
 ---
 
@@ -565,4 +583,4 @@ Sara definió migrar toda la gestión posible al panel web. Resultado: gestión 
 
 ---
 
-**Última actualización:** 2026-03-18 (v5.3 — 11 tickets cerrados, versión estable, manuales actualizados)
+**Última actualización:** 2026-03-20 (v5.4 — 7 tickets cerrados: backend filters, engagement evolución, fix email, AJAX grupo formatos)
