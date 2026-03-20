@@ -318,7 +318,7 @@ def enviar_reporte_publicacion(reporte):
             raise
 
         with smtplib.SMTP(config['smtp_server'], config['smtp_port'],
-                          local_hostname='localhost') as server:
+                          timeout=30) as server:
             log.info("  SMTP conectado")
             server.starttls()
             log.info("  STARTTLS OK")
@@ -450,7 +450,7 @@ def enviar_reporte_generacion(producto, cuenta, generated, errors, batch_size=No
     try:
         raw_bytes = raw_email.encode('ascii')
         with smtplib.SMTP(config['smtp_server'], config['smtp_port'],
-                          local_hostname='localhost') as server:
+                          timeout=30) as server:
             server.starttls()
             server.login(config['from_email'], config['app_password'])
             server.sendmail(config['from_email'], [admin_email], raw_bytes)

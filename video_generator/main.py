@@ -187,14 +187,20 @@ Ejemplos:
             batch_size = args.batch if args.batch else None
             results = generator.generate_batch(batch_size)
         
-        # QUA-55: Send email notification
+        # QUA-55 / QUA-322: Send email notification
         generated = results.get("generated", 0) if results else 0
-        errors_count = results.get("errors", 0) if results else 0
+        errors_count = results.get("failed", 0) if results else 0
         try:
             from scripts.email_notifier import enviar_reporte_generacion
-            enviar_reporte_generacion(producto, args.cuenta, generated, errors_count, batch_size)
+            ok = enviar_reporte_generacion(producto, args.cuenta, generated, errors_count, batch_size)
+            if ok:
+                print(f"  📧 Email de reporte enviado a config")
+            else:
+                print(f"  ⚠️  Email no enviado (revisa config_publisher.json sección 'email')")
         except Exception as email_err:
+            import traceback
             print(f"  [!] Email notification failed: {email_err}")
+            traceback.print_exc()
 
         if generated > 0:
             print("✅ Generación completada")
