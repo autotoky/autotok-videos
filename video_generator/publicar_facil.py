@@ -111,15 +111,18 @@ def buscar_todos_lotes_pendientes(cuenta, drive_path):
         hoy = datetime.now().strftime('%Y-%m-%d')
 
         # Query: all publishable videos for today+future, with product info
+        # QUA-325: Read url_producto from producto_links (via link_id) with fallback to producto_bofs
         cur.execute("""
             SELECT
                 v.video_id, v.filepath, v.fecha_programada, v.hora_programada,
                 v.es_ia, v.bof_id, v.estado,
                 p.nombre as producto_nombre,
-                b.deal_math, b.hashtags, b.url_producto, b.gancho
+                b.deal_math, b.hashtags, b.gancho,
+                COALESCE(pl.url, b.url_producto) as url_producto
             FROM videos v
             LEFT JOIN productos p ON v.producto_id = p.id
             LEFT JOIN producto_bofs b ON v.bof_id = b.id
+            LEFT JOIN producto_links pl ON b.link_id = pl.id
             WHERE v.cuenta = ?
               AND v.estado IN ('En Calendario', 'Error')
               AND v.fecha_programada >= ?
