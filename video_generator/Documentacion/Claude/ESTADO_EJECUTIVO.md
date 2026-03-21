@@ -1,14 +1,36 @@
-# 📊 ESTADO ACTUAL EJECUTIVO - AUTOTOK v5.4
+# 📊 ESTADO ACTUAL EJECUTIVO - AUTOTOK v5.5
 
-**Fecha:** 2026-03-20
-**Versión:** 5.4 — Dashboard analytics completo
-**Estado:** Dashboard completo con filtros backend, Evolución con engagement, sistema operativo y estable.
+**Fecha:** 2026-03-21
+**Versión:** 5.5 — Evolución overhaul completo
+**Estado:** Dashboard completo con Evolución mejorada (colores unificados, KPIs dinámicos, top sellers, preset 1 mes). Sistema operativo y estable.
 
 ---
 
-## 🎉 **ÚLTIMOS LOGROS (2026-03-20)**
+## 🎉 **ÚLTIMOS LOGROS (2026-03-21)**
 
-### **7 tickets cerrados — Analytics backend filters + Evolución engagement + fixes:**
+### **Overhaul Evolución — UX y datos mejorados:**
+
+**Colores y gráficas:**
+- ✅ Paleta unificada por cuenta: trendy=#ef4444, lotop=#8b5cf6, totoky=#007480
+- ✅ Gráficas Comisiones y Engagement convertidas a totales (filtro por cuenta arriba)
+- ✅ Bugfix gráfica Comisiones vacía en vista anual (usaba datos raw vs agregados)
+
+**KPIs dinámicos:**
+- ✅ KPIs se adaptan al periodo seleccionado (15d/1m/3m/1a)
+- ✅ Comparan periodos equivalentes completos (ya no siempre en rojo)
+- ✅ Se filtran por cuenta
+- ✅ Violations con color invertido (menos = verde)
+
+**Nuevas features:**
+- ✅ Preset "1 mes" (30 días, agrupado diario)
+- ✅ Bloque Top 10 Productos más vendidos en el periodo
+- ✅ **QUA-330** creado (Backlog): Date picker custom desde/hasta
+
+---
+
+## 🎉 **LOGROS ANTERIORES (2026-03-20)**
+
+### **8 tickets cerrados — Analytics backend filters + Evolución engagement + fixes:**
 
 **Dashboard Analytics:**
 - ✅ **QUA-318**: Backend filters completos en Rendimiento Producto/Video — todos los filtros (cuenta, formato, IA, marca, estado, fecha) recalculan datos y KPIs via POST

@@ -228,7 +228,7 @@ Importar Ventas (/api/ventas)
 
 ---
 
-## ANALYTICS.PY — Dashboard de analiticas (~2.400 lineas)
+## ANALYTICS.PY — Dashboard de analiticas (~2.600 lineas)
 
 ### Endpoints
 
@@ -263,7 +263,7 @@ Importar Ventas (/api/ventas)
 |---------|-----------|
 | `_data_producto(**filters)` | Datos vista producto — acepta cuenta, formato, ia, marca, estado, desde, hasta |
 | `_data_video(**filters)` | Datos vista video — mismos filtros |
-| `_data_evolucion()` | 3 queries: ventas diarias, actividad diaria, engagement diario (tiktok_studio_daily) + KPIs week-over-week |
+| `_data_evolucion()` | 4 queries: ventas diarias, actividad diaria, engagement diario (tiktok_studio_daily), ventas por producto (top sellers). KPIs calculados en frontend |
 
 ### Funciones JS principales
 
@@ -280,18 +280,22 @@ Importar Ventas (/api/ventas)
 | `importCSV()` | Subir CSV TikTok Studio | POST action=import_studio |
 | `deleteStudioData()` | Borrar datos engagement | POST action=delete_studio |
 
-### Evolucion: 4 charts
+### Evolucion: 4 charts + Top Sellers
 
 1. **GMV y Ventas** — linea dual axis (GMV izq, ventas der)
-2. **Comisiones por cuenta** — barras stacked
+2. **Comisiones** — barras (total o filtrado por cuenta)
 3. **Actividad de Publicacion** — barras stacked (publicados, errores, violations, descartados)
-4. **Engagement por cuenta** — linea dual axis (views izq, likes der) por cuenta
+4. **Engagement** — linea dual axis (views izq, likes der), total o filtrado por cuenta
+5. **Top 10 Productos** — tabla ranking de productos mas vendidos en el periodo
 
-KPI pills en 2 lineas:
+Colores unificados por cuenta: trendy=#ef4444, lotop=#8b5cf6, totoky=#007480 (ACCOUNT_COLORS + getAccountColor()).
+
+KPI pills dinamicos (calculados en frontend, se adaptan al periodo y filtro de cuenta):
 - Linea 1: Ventas / GMV / Comision / % Conv. view→venta
-- Linea 2: Videos publicados / Violations / Views / Likes
+- Linea 2: Videos publicados / Violations (color invertido) / Views / Likes
+- Comparan periodo actual vs periodo anterior equivalente (ambos completos)
 
-Filtros: preset 15d/3m/1a + cuenta. Agregacion diario/semanal/mensual.
+Filtros: preset 15d/1m/3m/1a + cuenta. Agregacion diario/semanal/mensual.
 
 ### Filtros backend vs frontend
 
@@ -438,4 +442,4 @@ No hay otras dependencias JS cruzadas entre paginas.
 
 ---
 
-**Ultima actualizacion:** 2026-03-20
+**Ultima actualizacion:** 2026-03-21
