@@ -832,11 +832,12 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
             video_seleccionado = None
 
             # Buscar en TODA la cola con restricciones progresivas:
-            #   Pasada 0: todas las restricciones + anti-consecutivos + límites categoría
-            #   Pasada 1: todas las restricciones + límites categoría (sin anti-consecutivos)
+            #   Pasada 0: todas las restricciones + límites categoría + distancia producto
+            #   Pasada 1: todas las restricciones + límites categoría (sin distancia producto)
             #   Pasada 2: todas las restricciones sin límites categoría (overflow)
             #   Pasada 3: sin SEO (si restricciones_relajadas)
             #   Pasada 4: sin hook ni SEO (si restricciones_relajadas)
+            #   Anti-consecutivo: restricción DURA en TODAS las pasadas (QUA-373)
             max_pasadas = 5 if restricciones_relajadas else 3
             for pasada in range(max_pasadas):
                 for video in cola_videos:
@@ -857,8 +858,8 @@ def programar_calendario(cuenta, dias, fecha_inicio=None, test_mode=False, produ
                         if cat_programados.get(video_cat, 0) >= cat_target.get(video_cat, 0):
                             continue
 
-                    # Pasada 0: anti-consecutivos
-                    if pasada == 0 and ultimo_producto_id is not None and producto_id == ultimo_producto_id:
+                    # QUA-373: anti-consecutivo en TODAS las pasadas (restricción dura)
+                    if ultimo_producto_id is not None and producto_id == ultimo_producto_id:
                         continue
 
                     # Pasadas 0-1: distancia producto (QUA-298)
