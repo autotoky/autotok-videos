@@ -82,6 +82,8 @@ def get_videos_disponibles(cuenta, producto_filter=None):
             JOIN producto_bofs b ON v.bof_id = b.id
             JOIN variantes_overlay_seo var ON v.variante_id = var.id
             WHERE v.cuenta = ? AND v.estado = 'Generado'
+            AND p.estado_comercial != 'dropped'
+            AND b.activo = 1
         """
         params = [cuenta]
 
